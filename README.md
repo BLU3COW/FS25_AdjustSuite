@@ -26,3 +26,11 @@ Enthaltene Module:
 - ADS - Fahrgeschwindigkeit
 - ABP - Bremskraft
 - ADR - Entladerate
+
+<img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/a741c3fc-acd6-43ea-bc52-bdff6b45592d" />
+<img width="1600" height="900" alt="006" src="https://github.com/user-attachments/assets/6ee6b37b-44ce-41f3-9953-11d53970b599" />
+<img width="1600" height="900" alt="004" src="https://github.com/user-attachments/assets/fc000484-ca70-4d23-8e98-d788a48e7b0e" />
+<img width="1600" height="900" alt="007" src="https://github.com/user-attachments/assets/113d4948-8d0d-4a6e-af93-a624dfee296d" />
+<img width="1600" height="900" alt="003" src="https://github.com/user-attachments/assets/b896198d-5765-404a-99bd-0ea191785b07" />
+<img width="1600" height="900" alt="002" src="https://github.com/user-attachments/assets/32d0f3f5-1161-46e5-86d4-482bcd4e0ed8" />
+
