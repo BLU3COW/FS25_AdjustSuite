@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="111">
+    <author>BLU3COW</author>
+    <version>1.0.0.0</version>
+
+    <title>
+        <en>AdjustSuite</en>
+    </title>
+
+    <description>
+        <en><![CDATA[This mod lets you adjust all vehicles and attachments however you need. Real: +20% to -20% (in 5% increments), Unreal: +200% to -80% (in 20% increments), Extreme: +800% (in 100% increments). By default, only “Real” is enabled. This setting can be changed in modSettings, where you can also adjust the price, individual modules, and the display in the help menu (the file is created when you first launch the mod). 
+
+Included modules:
+- AFV - Adjust Fill Volume
+- AMP - Adjust Motor Power
+- AWS - Adjust Working Speed
+- AWW - Adjust Working Width
+- APW - Adjust Pickup Width
+- ADS - Adjust Driving Speed
+- ABP - Adjust Brake Power
+- ADR - Adjust Discharge Rate
+
+For a link to our latest release, Help page and  report issues please visit <a href="https://github.com/BLU3COW/FS25_AdjustSuite">GitHub page</a>.]]></en>
+        <de><![CDATA[Dieser Mod ermöglicht es dir alles an Fahrzeugen und Anbaugeräten zu verändern, so wie du es brauchst. Real +20% -20% (5% Schritte), Unreal +200% -80% (20% Schritte), Extreme +800% (100% Schritte). Im Standard ist nur Real aktiviert. Diese Einstellung kann in modSettings verändert werden, dort kann auch der Preis, einzelne Module und die Anzeige im Hilfemenü angepasst werden (Datei erstellt sich beim ersten Starten des Mods).
+
+Enthaltene Module:
+- AFV - Füllvolumen
+- AMP - Motorleistung
+- AWS - Arbeitsgeschwindigkeit
+- AWW - Arbeitsbreite
+- APW - Pickupbreite
+- ADS - Fahrgeschwindigkeit
+- ABP - Bremskraft
+- ADR - Entladerate
+
+Einen Link zu unserer neuesten Version, zur Hilfeseite und zur Meldung von Problemen finden Sie unter <a href="https://github.com/BLU3COW/FS25_AdjustSuite">GitHub-Seite</a>.]]></de>
+        <es><![CDATA[Este mod te permite modificar todo lo relacionado con los vehículos y los accesorios según tus necesidades. Real: +20 % -20 % (en incrementos del 5 %), Unreal: +200 % -80 % (en incrementos del 20 %), Extreme: +800 % (en incrementos del 100 %). Por defecto, solo está activado el modo «Real». Esta configuración se puede modificar en «modSettings», donde también se pueden ajustar el precio, los módulos individuales y la visualización en el menú de ayuda (el archivo se crea al iniciar el mod por primera vez). 
+
+Módulos incluidos:
+- AFV - Capacidad
+- AMP - Potencia del motor
+- AWS - Velocidad de trabajo
+- AWW - Ancho de trabajo
+- APW - Ancho del recogedor
+- ADS - Velocidad de desplazamiento
+- ABP - Fuerza de frenado
+- ADR - Capacidad de descarga
+
+Para acceder al enlace de nuestra última versión, a la página de ayuda y para informar de problemas, visita <a href="https://github.com/BLU3COW/FS25_AdjustSuite">nuestra página de GitHub</a>.]]></es>
+        <fr><![CDATA[Ce mod te permet de modifier tous les paramètres des véhicules et des équipements selon tes besoins. Real : +20 % à -20 % (par paliers de 5 %), Unreal : +200 % à -80 % (par paliers de 20 %), Extreme : +800 % (par paliers de 100 %). Par défaut, seul le mode « Real » est activé. Ce paramètre peut être modifié dans le fichier modSettings, où il est également possible d'ajuster le prix, les modules individuels et l'affichage dans le menu d'aide (le fichier est créé lors du premier lancement du mod).
+
+Modules inclus :
+- AFV - Volume de remplissage
+- AMP - Puissance du moteur
+- AWS - Vitesse de travail
+- AWW - Largeur de travail
+- APW - Largeur du ramasseur
+- ADS - Vitesse d'avancement
+- ABP - Force de freinage
+- ADR - Débit de déchargement
+
+Pour accéder au lien vers notre dernière version, à la page d'aide et pour signaler des problèmes, rendez-vous sur <a href="https://github.com/BLU3COW/FS25_AdjustSuite">notre page GitHub</a>.]]></fr>
+        <it><![CDATA[Questo mod ti permette di modificare qualsiasi aspetto dei veicoli e degli accessori in base alle tue esigenze. Real +20% -20% (incrementi del 5%), Unreal +200% -80% (incrementi del 20%), Extreme +800% (incrementi del 100%). Per impostazione predefinita è attivata solo l’opzione Real. Questa impostazione può essere modificata in modSettings, dove è possibile personalizzare anche il prezzo, i singoli moduli e la visualizzazione nel menu di aiuto (il file viene creato al primo avvio della mod).
+
+Moduli inclusi:
+- AFV - Capacità
+- AMP - Potenza del motore
+- AWS - Velocità di lavoro
+- AWW - Larghezza di lavoro
+- APW - Larghezza del raccoglitore
+- ADS - Velocità di marcia
+- ABP - Forza frenante
+- ADR - Velocità di scarico
+
+Per il link alla nostra ultima versione, alla pagina della guida e per segnalare eventuali problemi, visita <a href="https://github.com/BLU3COW/FS25_AdjustSuite">la nostra pagina GitHub</a>.]]></it>
+        <nl><![CDATA[Met deze mod kun je alle voertuigen en aanbouwdelen naar eigen wens aanpassen. Real +20% -20% (stappen van 5%), Unreal +200% -80% (stappen van 20%), Extreme +800% (stappen van 100%). Standaard is alleen Real geactiveerd. Deze instelling kan worden gewijzigd in modSettings; daar kun je ook de prijs, afzonderlijke modules en de weergave in het helpmenu aanpassen (het bestand wordt aangemaakt bij de eerste keer opstarten van de mod). 
+
+Inbegrepen modules:
+- AFV - Vulvolume
+- AMP - Motorvermogen
+- AWS - Werksnelheid
+- AWW - Werkbreedte
+- APW - Ophaalbreedte
+- ADS - Rijsnelheid
+- ABP - Remkracht
+- ADR - Losvermogens
+
+Voor een link naar onze nieuwste release, de Help-pagina en het melden van problemen kun je terecht op <a href="https://github.com/BLU3COW/FS25_AdjustSuite">de GitHub-pagina</a>.]]></nl>
+        <pl><![CDATA[Ten mod pozwala na dowolną modyfikację pojazdów i osprzętu zgodnie z własnymi potrzebami. Real +20% –20% (w krokach co 5%), Unreal +200% –80% (w krokach co 20%), Extreme +800% (w krokach co 100%). Domyślnie aktywowany jest tylko tryb Real. Ustawienie to można zmienić w pliku modSettings, gdzie można również dostosować cenę, poszczególne moduły oraz wygląd menu pomocy (plik ten jest tworzony przy pierwszym uruchomieniu modu).
+
+Zawarte moduły:
+- AFV - Pojemność
+- AMP - Moc silnika
+- AWS - Prędkość robocza
+- AWW - Szerokość robocza
+- APW - Szerokość podbieracza
+- ADS - Prędkość jazdy
+- ABP - Siła hamowania
+- ADR - Szybkość rozładunku
+
+Aby uzyskać link do naszej najnowszej wersji, strony pomocy oraz zgłosić problemy, odwiedź stronę GitHub <a href="https://github.com/BLU3COW/FS25_AdjustSuite"></a>.]]></pl>
+    </description>
+
+    <iconFilename>dds/icon_AdjustSuite.dds</iconFilename>
+    <multiplayer supported="true" />
+    <l10n filenamePrefix="l10n/l10n" />
+
+    <extraSourceFiles>
+        <sourceFile filename="lua/AdjustSuite.lua" />
+        <sourceFile filename="lua/AdjustSuite_Register.lua" />
+    </extraSourceFiles>
+</modDesc>

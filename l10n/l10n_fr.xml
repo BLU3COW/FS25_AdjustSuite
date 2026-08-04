@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<l10n>
+    <texts>
+        <text name="CONFIG_AS_STANDARD" text="Standard" />
+        <text name="CONFIG_AS_BASE" text="Base" />
+        <text name="CONFIG_AS_REAL" text="Réel" />
+        <text name="CONFIG_AS_UNREAL" text="Irréel" />
+        <text name="CONFIG_AS_EXTREME" text="Extrême" />
+        <text name="CONFIG_AS_M3" text="m³" />
+        <text name="CONFIG_AS_L" text="l" />
+        <text name="CONFIG_AS_KMH" text="km/h" />
+        <text name="CONFIG_AS_MPH" text="mph" />
+        <text name="CONFIG_AS_M" text="m" />
+        <text name="CONFIG_AS_KN" text="kN" />
+        <text name="CONFIG_AS_LPS" text="l/s" />
+        <text name="CONFIG_AFV_TITLE" text="Volume de remplissage" />
+        <text name="CONFIG_AMP_TITLE" text="Puissance du moteur" />
+        <text name="CONFIG_AWS_TITLE" text="Vitesse de travail" />
+        <text name="CONFIG_AWW_TITLE" text="Largeur de travail" />
+        <text name="CONFIG_APW_TITLE" text="Largeur du ramasseur" />
+        <text name="CONFIG_ADS_TITLE" text="Vitesse d'avancement" />
+        <text name="CONFIG_ABP_TITLE" text="Force de freinage" />
+        <text name="CONFIG_ADR_TITLE" text="Débit de déchargement" />
+        <text name="ACTION_AWW_BROAD" text="Dépose en largeur" />
+        <text name="ACTION_AWW_SWATH" text="Dépose en andains" />
+    </texts>
+</l10n>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<l10n>
+    <texts>
+        <text name="CONFIG_AS_STANDARD" text="Standard" />
+        <text name="CONFIG_AS_BASE" text="Base" />
+        <text name="CONFIG_AS_REAL" text="Real" />
+        <text name="CONFIG_AS_UNREAL" text="Unreal" />
+        <text name="CONFIG_AS_EXTREME" text="Extreme" />
+        <text name="CONFIG_AS_M3" text="m³" />
+        <text name="CONFIG_AS_L" text="l" />
+        <text name="CONFIG_AS_KMH" text="km/h" />
+        <text name="CONFIG_AS_MPH" text="mph" />
+        <text name="CONFIG_AS_M" text="m" />
+        <text name="CONFIG_AS_KN" text="kN" />
+        <text name="CONFIG_AS_LPS" text="l/s" />
+        <text name="CONFIG_AFV_TITLE" text="Fill Volume" />
+        <text name="CONFIG_AMP_TITLE" text="Motor Power" />
+        <text name="CONFIG_AWS_TITLE" text="Working Speed" />
+        <text name="CONFIG_AWW_TITLE" text="Working Width" />
+        <text name="CONFIG_APW_TITLE" text="Pickup Width" />
+        <text name="CONFIG_ADS_TITLE" text="Driving Speed" />
+        <text name="CONFIG_ABP_TITLE" text="Brake Power" />
+        <text name="CONFIG_ADR_TITLE" text="Discharge Rate" />
+        <text name="ACTION_AWW_BROAD" text="Wide Spreading" />
+        <text name="ACTION_AWW_SWATH" text="Swath Spreading" />
+    </texts>
+</l10n>
