@@ -6,20 +6,22 @@ This changelog starts with the public GitHub repository setup. Older local or pr
 
 ## [Unreleased]
 
-### Added
-
-- GitHub issue templates for bug reports and feature requests.
-- GitHub issue template for localization and translation reports.
-- GitHub discussion templates for announcements, Q&A, ideas, general topics, and show-and-tell posts.
-- Pull request template with repository structure and FS25 testing checks.
-- Contributing guide documenting the intended repository layout.
-
-### Notes
-
-- No mod runtime behavior is changed by these repository metadata updates.
+- No unreleased mod changes.
 
 ## [1.0.0.0]
 
 ### Added
 
 - Initial public AdjustSuite mod release structure.
+
+### Repository
+
+- GitHub issue templates for bug reports, feature requests, and localization reports.
+- GitHub discussion templates for announcements, Q&A, ideas, general topics, and show-and-tell posts.
+- Pull request template with repository structure and FS25 testing checks.
+- Contributing guide documenting the intended repository layout.
+- Changelog for public GitHub repository tracking.
+
+### Notes
+
+- Repository metadata updates do not change mod runtime behavior.
