@@ -5,14 +5,15 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting a problem with FS25_AdjustSuite. Please include enough detail so the issue can be reproduced.
-        Danke fuer deine Fehlermeldung zu FS25_AdjustSuite. Bitte beschreibe das Problem so genau, dass es reproduziert werden kann.
+        
+        Thanks for reporting a problem with AdjustSuite. 
+        Danke fuer deine Fehlermeldung zu AdjustSuite. 
 
   - type: input
     id: mod_version
     attributes:
-      label: AdjustSuite version
-      description: Which version of the mod are you using?
+      label: AdjustSuite - Version
+      description: Which version of the mod are you using? | Welche Version des Mods verwendest du?
       placeholder: "Example: 1.0.0.0"
     validations:
       required: true
@@ -20,8 +21,8 @@ body:
   - type: input
     id: game_version
     attributes:
-      label: Farming Simulator 25 version
-      description: Which FS25 game version is installed?
+      label: Farming Simulator 25 - Version
+      description: Which FS25 game version is installed? |Welche FS25 Spielversion ist installiert?
       placeholder: "Example: 1.14.0.0"
     validations:
       required: true
