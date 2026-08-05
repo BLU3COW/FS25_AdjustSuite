@@ -1,6 +1,6 @@
 name: Bug report / Fehler melden
 description: Report a reproducible problem | Ein reproduzierbares Problem melden
-title: "[Bug]: "
+title: "[Bug | Fehler]: "
 body:
   - type: markdown
     attributes:
@@ -66,7 +66,7 @@ body:
     attributes:
       label: What happened? | Was ist passiert?
       description: Describe the actual behavior, error message, or broken result. | Beschreiben Sie das tatsächliche Verhalten, die Fehlermeldung oder das fehlerhafte Ergebnis.
-      placeholder: "When I change ..., the vehicle/attachment ..."
+      placeholder: "When I change ..., the vehicle/attachment ..." | „Wenn ich … wechsle, dann … das Fahrzeug/Anbaugerät …“
     validations:
       required: true
 
