@@ -1,0 +1,109 @@
+name: Translation / Uebersetzung
+description: Report a translation issue or suggest improved localization text.
+title: "[l10n]: "
+labels: ["localization"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve FS25_AdjustSuite translations.
+
+        Danke, dass du bei den Uebersetzungen von FS25_AdjustSuite hilfst.
+
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: Translation type
+      description: What kind of localization change is this?
+      options:
+        - Wrong translation
+        - Missing translation
+        - Better wording
+        - Text is too long in-game
+        - New language request
+        - Typo / spelling
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      description: Which language file or language is affected?
+      options:
+        - de - German
+        - en - English
+        - es - Spanish
+        - fr - French
+        - it - Italian
+        - nl - Dutch
+        - pl - Polish
+        - New language
+        - Multiple languages
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: l10n_key
+    attributes:
+      label: l10n key or screen
+      description: If known, name the l10n key, menu entry, help text, module, or in-game screen.
+      placeholder: "Example: AWW help text, modSettings price label, menu entry ..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: current_text
+    attributes:
+      label: Current text
+      description: Paste the current text as it appears in-game or in the l10n file.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: proposed_text
+    attributes:
+      label: Proposed text
+      description: Paste the corrected or suggested translation.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Explain where the text appears and why the proposed wording is better.
+      placeholder: "This appears in ... and should mean ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or references
+      description: Attach screenshots or links if they help explain layout, meaning, or text length.
+    validations:
+      required: false
+
+  - type: input
+    id: mod_version
+    attributes:
+      label: AdjustSuite version
+      description: Which AdjustSuite version are you using?
+      placeholder: "Example: 1.0.0.0"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked that this text is still present in the latest available AdjustSuite release.
+          required: true
+        - label: I understand that short in-game labels may need to stay concise.
+          required: true

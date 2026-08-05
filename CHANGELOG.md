@@ -9,6 +9,7 @@ This changelog starts with the public GitHub repository setup. Older local or pr
 ### Added
 
 - GitHub issue templates for bug reports and feature requests.
+- GitHub issue template for localization and translation reports.
 - GitHub discussion templates for announcements, Q&A, ideas, general topics, and show-and-tell posts.
 - Pull request template with repository structure and FS25 testing checks.
 - Contributing guide documenting the intended repository layout.
