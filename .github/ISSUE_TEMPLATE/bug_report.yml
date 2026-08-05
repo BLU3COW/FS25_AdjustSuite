@@ -6,15 +6,14 @@ body:
     attributes:
       value: |
         
-        Thanks for reporting a problem with AdjustSuite. 
-        Danke fuer deine Fehlermeldung zu AdjustSuite. 
+        Thanks for reporting a problem with AdjustSuite. | Danke fuer deine Fehlermeldung zu AdjustSuite. 
 
   - type: input
     id: mod_version
     attributes:
       label: AdjustSuite - Version
       description: Which version of the mod are you using? | Welche Version des Mods verwendest du?
-      placeholder: "Example: 1.0.0.0"
+      placeholder: "Example: | Beispiel: 1.0.0.0"
     validations:
       required: true
 
@@ -23,7 +22,7 @@ body:
     attributes:
       label: Farming Simulator 25 - Version
       description: Which FS25 game version is installed? |Welche FS25 Spielversion ist installiert?
-      placeholder: "Example: 1.14.0.0"
+      placeholder: "Example: | Beispiel: 1.14.0.0"
     validations:
       required: true
 
@@ -55,8 +54,8 @@ body:
         - ADS - Adjust Driving Speed
         - ABP - Adjust Brake Power
         - ADR - Adjust Discharge Rate
-        - Core / settings / help menu
-        - Multiple modules
+        - Core | Settings | Price | Helpmenu
+        - Multiple Modules
         - Not sure
     validations:
       required: true
@@ -73,29 +72,29 @@ body:
   - type: textarea
     id: expected_behavior
     attributes:
-      label: What should happen?
-      description: Describe the expected behavior.
+      label: What should happen? | Was sollte passieren?
+      description: Describe the expected behavior. | Beschreiben Sie das erwartete Verhalten.
     validations:
       required: true
 
   - type: textarea
     id: steps_to_reproduce
     attributes:
-      label: Steps to reproduce
-      description: Please list the exact steps needed to reproduce the issue.
+      label: Steps to reproduce | Schritte zur Reproduktion
+      description: Please list the exact steps needed to reproduce the issue. | Bitte geben Sie die genauen Schritte an, die erforderlich sind, um das Problem zu reproduzieren.
       placeholder: |
-        1. Start FS25 with ...
-        2. Buy/select ...
-        3. Change setting ...
-        4. See error ...
+        1. Start FS25 with ... | Starten Sie FS25 mit …
+        2. Buy/select ... | Kaufen/auswählen ...
+        3. Change Settings ... | Einstellungen ändern ...
+        4. See error ... | Siehe Fehler …
     validations:
       required: true
 
   - type: textarea
     id: mod_settings
     attributes:
-      label: Relevant modSettings values
-      description: Paste relevant FS25_AdjustSuite modSettings entries if the issue depends on settings.
+      label: Relevant „modSettings.xml“ Values | Relevante Werte für „modSettings.xml“
+      description: Paste relevant „modSettings.xml“ entries if the issue depends on settings. | Fügen Sie die entsprechenden Einträge aus der Datei „modSettings.xml“ ein, falls das Problem von den Einstellungen abhängt.
       render: text
     validations:
       required: false
@@ -103,8 +102,8 @@ body:
   - type: textarea
     id: logs
     attributes:
-      label: Log file and screenshots
-      description: Attach screenshots if useful and paste the relevant part of log.txt.
+      label: Log.txt and Screenshots
+      description: Attach screenshots if useful and paste the relevant part of „log.txt“. | Fügen Sie gegebenenfalls Screenshots bei und fügen Sie den relevanten Ausschnitt aus der Datei „log.txt“ ein.
       render: text
     validations:
       required: false
@@ -114,11 +113,11 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: I have checked that I am using the latest available AdjustSuite release.
+        - label: I have checked that I am using the latest available AdjustSuite release. | Ich habe überprüft, ob ich die aktuellste verfügbare Version von AdjustSuite verwende.
           required: true
-        - label: I searched existing issues before opening this one.
+        - label: I searched existing issues before opening this one. | Bevor ich dieses Ticket eröffnet habe, habe ich nach bereits bestehenden Tickets gesucht.
           required: true
-        - label: I can reproduce this issue after restarting the game.
+        - label: I can reproduce this issue after restarting the game. | Ich kann dieses Problem nach einem Neustart des Spiels reproduzieren.
           required: false
-        - label: I tried reproducing it without unrelated mods where possible.
+        - label: I tried reproducing it without unrelated mods where possible. | Ich habe versucht, den Fehler nachzustellen, soweit möglich ohne Mods, die nichts damit zu tun haben.
           required: false
