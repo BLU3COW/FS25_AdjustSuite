@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to FS25_AdjustSuite should be documented in this file.
+All notable changes to AdjustSuite should be documented in this file.
 
 ## [Unreleased]
 
