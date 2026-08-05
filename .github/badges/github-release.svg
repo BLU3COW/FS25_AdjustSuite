@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="176" height="20" role="img" aria-label="GitHub Release: v1.0.0.0">
+  <title>GitHub Release: v1.0.0.0</title>
+  <g shape-rendering="crispEdges">
+    <rect width="108" height="20" fill="#555"/>
+    <rect x="108" width="68" height="20" fill="#00B6FF"/>
+  </g>
+  <g font-family="'Exo 2','Exo2',Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11" text-anchor="middle">
+    <text x="54" y="14" fill="#fff">GitHub Release</text>
+    <text x="142" y="14" fill="#000">v1.0.0.0</text>
+  </g>
+</svg>
