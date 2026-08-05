@@ -1,7 +1,7 @@
 # FS25_AdjustSuite for Farming Simulator 25
 
 [![GitHub](https://img.shields.io/github/v/release/BLU3COW/FS25_AdjustSuite?style=flat-square&label=GitHub&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases/latest)
-![ModHub](https://img.shields.io/badge/ModHub-Pending-00B6FF?style=flat-square&labelColor=555)
+[![ModHub](https://img.shields.io/badge/ModHub-Pending-00B6FF?style=flat-square&labelColor=555)](https://github.com/BLU3COW/FS25_AdjustSuite)
 [![KingMods](https://img.shields.io/badge/KingMods-v1.0.0.0-00B6FF?style=flat-square&labelColor=555)](https://www.kingmods.net/en/fs25/mods/80441/adjust-suite)
 [![Downloads](https://img.shields.io/github/downloads/BLU3COW/FS25_AdjustSuite/total?style=flat-square&label=Downloads&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases)
 [![Issues](https://img.shields.io/github/issues-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen%20is%3Aissue&style=flat-square&label=Issues&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/issues)
