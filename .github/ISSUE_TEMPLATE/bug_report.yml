@@ -1,0 +1,125 @@
+name: Bug report / Fehler melden
+description: Report a reproducible problem with FS25_AdjustSuite.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem with FS25_AdjustSuite. Please include enough detail so the issue can be reproduced.
+
+        Danke fuer deine Fehlermeldung zu FS25_AdjustSuite. Bitte beschreibe das Problem so genau, dass es reproduziert werden kann.
+
+  - type: input
+    id: mod_version
+    attributes:
+      label: AdjustSuite version
+      description: Which version of the mod are you using?
+      placeholder: "Example: 1.0.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: game_version
+    attributes:
+      label: Farming Simulator 25 version
+      description: Which FS25 game version is installed?
+      placeholder: "Example: 1.14.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      description: Where does the issue happen?
+      options:
+        - Windows - Steam
+        - Windows - Epic Games Store
+        - Windows - Microsoft Store / Game Pass
+        - Dedicated server
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Affected module
+      description: Which AdjustSuite module is affected?
+      options:
+        - AFV - Adjust Fill Volume
+        - AMP - Adjust Motor Power
+        - AWS - Adjust Working Speed
+        - AWW - Adjust Working Width
+        - APW - Adjust Pickup Width
+        - ADS - Adjust Driving Speed
+        - ABP - Adjust Brake Power
+        - ADR - Adjust Discharge Rate
+        - Core / settings / help menu
+        - Multiple modules
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_behavior
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior, error message, or broken result.
+      placeholder: "When I change ..., the vehicle/attachment ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: What should happen?
+      description: Describe the expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Please list the exact steps needed to reproduce the issue.
+      placeholder: |
+        1. Start FS25 with ...
+        2. Buy/select ...
+        3. Change setting ...
+        4. See error ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: mod_settings
+    attributes:
+      label: Relevant modSettings values
+      description: Paste relevant FS25_AdjustSuite modSettings entries if the issue depends on settings.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log file and screenshots
+      description: Attach screenshots if useful and paste the relevant part of log.txt.
+      render: text
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked that I am using the latest available AdjustSuite release.
+          required: true
+        - label: I searched existing issues before opening this one.
+          required: true
+        - label: I can reproduce this issue after restarting the game.
+          required: false
+        - label: I tried reproducing it without unrelated mods where possible.
+          required: false

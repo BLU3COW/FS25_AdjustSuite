@@ -1,0 +1,85 @@
+name: Feature request / Vorschlag
+description: Suggest an improvement, balancing change, or new AdjustSuite module.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement for FS25_AdjustSuite.
+
+        Danke fuer deinen Vorschlag fuer FS25_AdjustSuite.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Give the request a short, clear summary.
+      placeholder: "Add an option to ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What situation should this solve?
+      placeholder: "I want to ... but currently ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior or option you would like to see.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which area does this request affect?
+      options:
+        - AFV - Adjust Fill Volume
+        - AMP - Adjust Motor Power
+        - AWS - Adjust Working Speed
+        - AWW - Adjust Working Width
+        - APW - Adjust Pickup Width
+        - ADS - Adjust Driving Speed
+        - ABP - Adjust Brake Power
+        - ADR - Adjust Discharge Rate
+        - New module
+        - Core / settings / help menu
+        - Documentation / release notes
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: balancing
+    attributes:
+      label: Balancing notes
+      description: If this changes values, ranges, prices, or gameplay balance, explain the expected limits.
+      placeholder: "Example: Real mode should stay within +/-20% ..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Are there workarounds or different designs you considered?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues before opening this request.
+          required: true
+        - label: This request fits the goal of AdjustSuite and is not specific to only one private savegame setup.
+          required: true
