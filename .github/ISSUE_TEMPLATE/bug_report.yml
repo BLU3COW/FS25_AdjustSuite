@@ -1,5 +1,5 @@
 name: Bug report / Fehler melden
-description: Report a reproducible problem with FS25_AdjustSuite.
+description: Report a reproducible problem | Ein reproduzierbares Problem melden
 title: "[Bug]: "
 labels: ["bug"]
 body:
