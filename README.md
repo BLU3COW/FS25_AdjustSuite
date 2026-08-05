@@ -17,7 +17,7 @@
 ## Adjustment Ranges
 
 | Range | - % | + % | Steps | Default |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | **BASE** | 0 | 0 | --- | Activated |
 | **REAL** | -20 % | +20 % | 5 % | Activated |
 | **UNREAL** | -80 % | +200 % | 20 % | --- |
