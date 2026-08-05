@@ -4,7 +4,6 @@ title: "[Bug]: "
 body:
   - type: markdown
     attributes:
-      label: AdjustSuite
       value: |
         Thanks for reporting a problem with FS25_AdjustSuite. Please include enough detail so the issue can be reproduced.
 
