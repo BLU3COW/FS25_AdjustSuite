@@ -5,7 +5,7 @@ labels: test
 body:
   - type: markdown
     attributes:
-      label: AdjustSuite version
+      label: test
       value: |
         Thanks for reporting a problem with FS25_AdjustSuite. Please include enough detail so the issue can be reproduced.
 
