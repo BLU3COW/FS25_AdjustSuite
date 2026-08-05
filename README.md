@@ -12,7 +12,7 @@
 [WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
 
 
-#### Adjust Vehicles and Attachments in Farming Simulator 25 so they fit the way you want to play.
+#### Adjust Vehicles and Attachments in „Farming Simulator 25“ so they fit the way you want to play. | Passe Fahrzeuge und Anbaugeräte in „Farming Simulator 25“ so an, dass sie zu deinem Spielstil passen.
 
 <img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/ab7716c0-4f5d-4a6c-8153-369d7e26bd04" />
 
@@ -20,35 +20,36 @@
 
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
-| **BASE** | -0 % | +0 % | --- | Activated |
-| **REAL** | -20 % | +20 % | 5 % | Activated |
-| **UNREAL** | -80 % | +200 % | 20 % | --- |
-| **EXTREME** | -80 % | +800 % | 100 % | --- |
+| **BASE** | -0 % | +0 % | --- | ON |
+| **REAL** | -20 % | +20 % | 5 % | ON |
+| **UNREAL** | -80 % | +200 % | 20 % | OFF |
+| **EXTREME** | -80 % | +800 % | 100 % | OFF |
 
 
-By default, only **Real** is activated. The default setup keeps adjustments close to realistic values. If you want more freedom, you can enable higher ranges in “modSettings.xml”.
+By default, only **Real** is on. The default setup keeps adjustments close to realistic values. If you want more freedom, you can adjust higher ranges in “modSettings.xml”. | Standardmäßig ist nur **Real** an. Die Standardeinstellung sorgt dafür, dass die Anpassungen nahe an realistischen Werten bleiben. Wenn Sie mehr Freiheit wünschen, können Sie in der Datei „modSettings.xml“ größere Bereiche einstellen.
 
 ## Module | Modul 
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
-| **AFV** | Adjust Fill Volume | Füllvolumen | Activated |
-| **AMP** | Adjust Motor Power | Motorleistung | Activated |
-| **AWS** | Adjust Working Speed | Arbeitsgeschwindigkeit | Activated |
-| **AWW** | Adjust Working Width | Arbeitsbreite | Activated |
-| **APW** | Adjust Pickup Width | Pickupbreite | Activated |
-| **ADS** | Adjust Driving Speed | Fahrgeschwindigkeit | Activated |
-| **ABP** | Adjust Brake Power | Bremskraft | Activated |
-| **ADR** | Adjust Discharge Rate | Entladerate | Activated |
+| **AFV** | Adjust Fill Volume | Füllvolumen | ON |
+| **AMP** | Adjust Motor Power | Motorleistung | ON |
+| **AWS** | Adjust Working Speed | Arbeitsgeschwindigkeit | ON |
+| **AWW** | Adjust Working Width | Arbeitsbreite | ON |
+| **APW** | Adjust Pickup Width | Pickupbreite | ON |
+| **ADS** | Adjust Driving Speed | Fahrgeschwindigkeit | ON |
+| **ABP** | Adjust Brake Power | Bremskraft | ON |
+| **ADR** | Adjust Discharge Rate | Entladerate | ON |
 
-By default, all modules are **Enabled**.
+By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
+
 
 ## Settings | Einstellungen 
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
-| **HELPMENU** | Show Modules in the Helpmenu | Zeigt Module im Hilfemenü | Activated |
-| **PRICE** | Adjust Prices | Einstellen der Preise | 100 % |
+| **HELPMENU** | Show in Helpmenu | Anzeige im Hilfemenü | Activ |
+| **PRICE** | Adjust Prices | Preise | 100 % |
 
 
 By default, all modules are **Enabled**.
