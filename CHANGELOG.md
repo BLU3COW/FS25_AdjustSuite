@@ -24,7 +24,7 @@ This changelog starts with the public GitHub repository setup. Older local or pr
 - README structured with release badges, project links, support links, module overview, and screenshots.
 - PayPal donation button added to the README.
 - README badge colors adjusted for Version, Downloads, Issues, and Discussions.
-- README badges switched to local SVGs for custom text colors, with GitHub, ModHub, and KingMods release badges.
+- README badges use Shields.io links for GitHub, ModHub, KingMods, version, downloads, issues, and discussions.
 
 ### Notes
 
