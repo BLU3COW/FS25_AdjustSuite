@@ -31,12 +31,12 @@ body:
     id: platform
     attributes:
       label: Platform
-      description: Where does the issue happen?
+      description: Where does the issue happen? | Wo tritt das Problem auf?
       options:
         - Windows - Steam
         - Windows - Epic Games Store
         - Windows - Microsoft Store / Game Pass
-        - Dedicated server
+        - Dedicated Server
         - Other
     validations:
       required: true
@@ -44,8 +44,8 @@ body:
   - type: dropdown
     id: module
     attributes:
-      label: Affected module
-      description: Which AdjustSuite module is affected?
+      label: Module
+      description: Which AdjustSuite module is affected? | Welches AdjustSuite Modul ist betroffen?
       options:
         - AFV - Adjust Fill Volume
         - AMP - Adjust Motor Power
@@ -64,8 +64,8 @@ body:
   - type: textarea
     id: current_behavior
     attributes:
-      label: What happened?
-      description: Describe the actual behavior, error message, or broken result.
+      label: What happened? | Was ist passiert?
+      description: Describe the actual behavior, error message, or broken result. | Beschreiben Sie das tatsächliche Verhalten, die Fehlermeldung oder das fehlerhafte Ergebnis.
       placeholder: "When I change ..., the vehicle/attachment ..."
     validations:
       required: true
