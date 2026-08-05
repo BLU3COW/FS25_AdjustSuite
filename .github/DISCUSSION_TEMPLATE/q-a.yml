@@ -1,0 +1,74 @@
+title: "[Q&A]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask setup, installation, configuration, and gameplay questions here.
+
+        Fuer reproduzierbare Fehler bitte ein Bug-Issue erstellen. Fuer Fragen zur Nutzung ist diese Kategorie richtig.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What do you need help with?
+      placeholder: "How can I ..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which area is your question about?
+      options:
+        - Installation / update
+        - modSettings
+        - Help menu display
+        - AFV - Adjust Fill Volume
+        - AMP - Adjust Motor Power
+        - AWS - Adjust Working Speed
+        - AWW - Adjust Working Width
+        - APW - Adjust Pickup Width
+        - ADS - Adjust Driving Speed
+        - ABP - Adjust Brake Power
+        - ADR - Adjust Discharge Rate
+        - Dedicated server
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: mod_version
+    attributes:
+      label: AdjustSuite version
+      description: Which AdjustSuite version are you using?
+      placeholder: "Example: 1.0.0.0"
+    validations:
+      required: false
+
+  - type: input
+    id: game_version
+    attributes:
+      label: Farming Simulator 25 version
+      description: Which FS25 game version is installed?
+      placeholder: "Example: 1.14.0.0"
+    validations:
+      required: false
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?
+      description: Mention settings, vehicles, modules, or docs you already checked.
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra_context
+    attributes:
+      label: Extra context
+      description: Add screenshots, log snippets, or related information if useful.
+      render: text
+    validations:
+      required: false

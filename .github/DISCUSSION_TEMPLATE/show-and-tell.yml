@@ -1,0 +1,50 @@
+title: "[Show and tell]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share AdjustSuite setups, configuration examples, screenshots, tests, and player stories here.
+
+        Hier koennen Setups, Konfigurationsbeispiele, Screenshots, Tests und Erfahrungsberichte geteilt werden.
+
+  - type: textarea
+    id: showcase
+    attributes:
+      label: What are you sharing?
+      description: Describe your setup, test, configuration, or result.
+      placeholder: "I configured ... and it works well for ..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Main area
+      description: Which area does your example relate to most?
+      options:
+        - Complete AdjustSuite setup
+        - Vehicle configuration
+        - Attachment configuration
+        - Dedicated server setup
+        - Balancing example
+        - Screenshots / media
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: settings
+    attributes:
+      label: Relevant settings or values
+      description: Paste useful modSettings values or describe the configuration.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: media
+    attributes:
+      label: Screenshots, links, or notes
+      description: Add screenshots, videos, links, or extra notes if useful.
+    validations:
+      required: false
