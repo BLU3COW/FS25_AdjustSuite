@@ -21,6 +21,7 @@ This changelog starts with the public GitHub repository setup. Older local or pr
 - Pull request template with repository structure and FS25 testing checks.
 - Contributing guide documenting the intended repository layout.
 - Changelog for public GitHub repository tracking.
+- README structured with release badges, project links, support links, module overview, and screenshots.
 
 ### Notes
 
