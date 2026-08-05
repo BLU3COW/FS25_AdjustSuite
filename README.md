@@ -1,11 +1,13 @@
 # FS25_AdjustSuite for Farming Simulator 25
 
-[![GitHub Release](https://img.shields.io/github/v/release/BLU3COW/FS25_AdjustSuite?style=flat-square&label=GitHub%20Release&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases/latest)
-![ModHub Release](https://img.shields.io/badge/ModHub%20Release-Pending-FFE900?style=flat-square&labelColor=555)
-[![KingMods Release](https://img.shields.io/badge/KingMods%20Release-v1.0.0.0-E6007E?style=flat-square&labelColor=555)](https://www.kingmods.net/en/fs25/mods/80441/adjust-suite)
-[![Downloads](https://img.shields.io/github/downloads/BLU3COW/FS25_AdjustSuite/total?style=flat-square&label=Downloads&labelColor=555&color=4c1)](https://github.com/BLU3COW/FS25_AdjustSuite/releases)
-[![Issues](https://img.shields.io/github/issues/BLU3COW/FS25_AdjustSuite?style=flat-square&label=Issues&labelColor=555&color=FFE900)](https://github.com/BLU3COW/FS25_AdjustSuite/issues)
-[![Discussions](https://img.shields.io/github/discussions/BLU3COW/FS25_AdjustSuite?style=flat-square&label=Discussions&labelColor=555&color=E6007E)](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
+[![GitHub](https://img.shields.io/github/v/release/BLU3COW/FS25_AdjustSuite?style=flat-square&label=GitHub&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases/latest)
+![ModHub](https://img.shields.io/badge/ModHub-Pending-00B6FF?style=flat-square&labelColor=555)
+[![KingMods](https://img.shields.io/badge/KingMods-v1.0.0.0-00B6FF?style=flat-square&labelColor=555)](https://www.kingmods.net/en/fs25/mods/80441/adjust-suite)
+[![Downloads](https://img.shields.io/github/downloads/BLU3COW/FS25_AdjustSuite/total?style=flat-square&label=Downloads&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases)
+[![Issues](https://img.shields.io/github/issues-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen%20is%3Aissue&style=flat-square&label=Issues&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/issues)
+[![Discussions](https://img.shields.io/github/discussions-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen&style=flat-square&label=Discussions&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
+[![Pulls](https://img.shields.io/github/issues-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen%20is%3Apr&style=flat-square&label=Pulls&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/pulls)
+[![Wiki](https://img.shields.io/website?url=https%3A%2F%2Fgithub.com%2FBLU3COW%2FFS25_AdjustSuite%2Fwiki&style=flat-square&label=Wiki&labelColor=555&up_color=00B6FF&up_message=online&down_message=offline)](https://github.com/BLU3COW/FS25_AdjustSuite/wiki)
 
 [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
 
