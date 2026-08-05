@@ -1,13 +1,5 @@
 name: Bug report / Fehler melden
 description: Report a reproducible problem | Ein reproduzierbares Problem melden
-title: "[Bug]: "
-body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for reporting a problem with FS25_AdjustSuite. Please include enough detail so the issue can be reproduced.
-
-        Danke fuer deine Fehlermeldung zu FS25_AdjustSuite. Bitte beschreibe das Problem so genau, dass es reproduziert werden kann.
 
   - type: input
     id: mod_version
