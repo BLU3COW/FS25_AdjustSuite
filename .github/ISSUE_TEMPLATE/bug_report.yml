@@ -1,10 +1,10 @@
 name: Bug report / Fehler melden
 description: Report a reproducible problem | Ein reproduzierbares Problem melden
 title: "[Bug]: "
-labels: test
 body:
   - type: markdown
     attributes:
+      label: AdjustSuite
       value: |
         Thanks for reporting a problem with FS25_AdjustSuite. Please include enough detail so the issue can be reproduced.
 
