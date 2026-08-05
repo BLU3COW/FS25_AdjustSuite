@@ -12,45 +12,65 @@
 [WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
 
 
-AdjustSuite lets you adjust vehicles and attachments in Farming Simulator 25 so they fit the way you want to play.
-The default setup keeps adjustments close to realistic values. If you want more freedom, you can enable higher ranges in `modSettings`.
+#### AdjustSuite lets you Adjust Vehicles and Attachments in Farming Simulator 25 so they fit the way you want to play.
 
-#### ↓ Click here to view the “modSettings.xml” file | Klicken Sie hier, um die Datei „modSettings.xml“ anzuzeigen ↓
+## Adjustment Ranges
+
+| Range | - % | + % | Steps | Default |
+| --- | --- | --- | --- |
+| **BASE** | 0 | 0 | --- | Activated |
+| **REAL** | -20 % | +20 % | 5 % | Activated |
+| **UNREAL** | -80 % | +200 % | 20 % | --- |
+| **EXTREME** | -80 % | +800 % | 100 % | --- |
+
+
+By default, only **Real** is enabled. The default setup keeps adjustments close to realistic values. If you want more freedom, you can enable higher ranges in “modSettings.xml”.
+
+## Included Modules
+
+| Module | English | German | Default |
+| --- | --- | --- | --- |
+| **AFV** | Adjust Fill Volume | Füllvolumen | Activated |
+| **AMP** | Adjust Motor Power | Motorleistung | Activated |
+| **AWS** | Adjust Working Speed | Arbeitsgeschwindigkeit | Activated |
+| **AWW** | Adjust Working Width | Arbeitsbreite | Activated |
+| **APW** | Adjust Pickup Width | Pickupbreite | Activated |
+| **ADS** | Adjust Driving Speed | Fahrgeschwindigkeit | Activated |
+| **ABP** | Adjust Brake Power | Bremskraft | Activated |
+| **ADR** | Adjust Discharge Rate | Entladerate | Activated |
+
+By default, all modules are **Enabled**.
+
+#### ↓ Click here to view the “modSettings.xml” file ↓
 <details>
-
-<summary>“modSettings” view | Ansicht „modSettings“</summary>
+<summary>“modSettings.xml”</summary>
 
 #### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
+The “modSettings.xml” is created automatically when the mod is started for the first time.
+
+You can Adjust:
+
+- Show information in the Helpmenu 
+- Price
+- Modules
+- Adjustment Ranges
 
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
-
 </details>
+
+
+
+
+
+
 
 Please use the “Issues” section to report problems
 Bitte nutzen Sie den Bereich „Issues“, um Probleme zu melden.
 
 
 
-## Adjustment Ranges
 
-- **Real:** +20% to -20% in 5% steps
-- **Unreal:** +200% to -80% in 20% steps
-- **Extreme:** up to +800% in 100% steps
 
-By default, only **Real** is enabled.
-
-The settings file is created automatically when the mod is started for the first time. In `modSettings`, you can adjust the price, enable or disable individual modules, and configure whether values are shown in the help menu.
-
-## Included Modules
-
-- **AFV - Adjust Fill Volume
-- **AMP - Adjust Motor Power
-- **AWS - Adjust Working Speed
-- **AWW - Adjust Working Width
-- **APW - Adjust Pickup Width
-- **ADS - Adjust Driving Speed
-- **ABP - Adjust Brake Power
-- **ADR - Adjust Discharge Rate
 
 ## Support and Feedback
 
