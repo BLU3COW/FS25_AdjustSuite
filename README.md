@@ -1,9 +1,9 @@
 # FS25_AdjustSuite for Farming Simulator 25
 
-[![Version](https://img.shields.io/github/v/tag/BLU3COW/FS25_AdjustSuite?style=flat-square&label=Version)](https://github.com/BLU3COW/FS25_AdjustSuite/tags)
-[![GitHub Downloads](https://img.shields.io/github/downloads/BLU3COW/FS25_AdjustSuite/total?style=flat-square&label=Downloads)](https://github.com/BLU3COW/FS25_AdjustSuite/releases)
-[![GitHub Issues](https://img.shields.io/github/issues/BLU3COW/FS25_AdjustSuite?style=flat-square)](https://github.com/BLU3COW/FS25_AdjustSuite/issues)
-[![GitHub Discussions](https://img.shields.io/github/discussions/BLU3COW/FS25_AdjustSuite?style=flat-square)](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
+[![Version](https://img.shields.io/github/v/tag/BLU3COW/FS25_AdjustSuite?style=flat-square&label=Version&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/tags)
+[![GitHub Downloads](https://img.shields.io/github/downloads/BLU3COW/FS25_AdjustSuite/total?style=flat-square&label=Downloads&color=4c1)](https://github.com/BLU3COW/FS25_AdjustSuite/releases)
+[![GitHub Issues](https://img.shields.io/github/issues/BLU3COW/FS25_AdjustSuite?style=flat-square&color=FFE900)](https://github.com/BLU3COW/FS25_AdjustSuite/issues)
+[![GitHub Discussions](https://img.shields.io/github/discussions/BLU3COW/FS25_AdjustSuite?style=flat-square&color=E6007E)](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
 
 [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
 
