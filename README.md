@@ -18,7 +18,7 @@
 
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
-| **BASE** | 0 | 0 | --- | Activated |
+| **BASE** | 0 % | 0 % | --- | Activated |
 | **REAL** | -20 % | +20 % | 5 % | Activated |
 | **UNREAL** | -80 % | +200 % | 20 % | --- |
 | **EXTREME** | -80 % | +800 % | 100 % | --- |
