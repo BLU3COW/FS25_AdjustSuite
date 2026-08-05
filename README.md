@@ -12,7 +12,7 @@
 [WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
 
 
-#### AdjustSuite lets you Adjust Vehicles and Attachments in Farming Simulator 25 so they fit the way you want to play.
+#### Adjust Vehicles and Attachments in Farming Simulator 25 so they fit the way you want to play.
 
 <img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/ab7716c0-4f5d-4a6c-8153-369d7e26bd04" />
 
@@ -78,7 +78,7 @@ You can Adjust:
 If AdjustSuite helps you, you can support development through PayPal or Buy Me a Coffee:
 
 [![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00B6FF?style=for-the-badge&labelColor=555&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=JAB2D3DPW2794)
-[![Donate with Buy Me a Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
+[![Donate with Buy Me a Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
 
 
 ## Screenshots
