@@ -32,14 +32,14 @@ By default, only **Real** is on. The default setup keeps adjustments close to re
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
-| **AFV** | Adjust Fill Volume | Füll Volumen | ON |
-| **AMP** | Adjust Motor Power | Motor Leistung | ON |
-| **AWS** | Adjust Working Speed | Arbeits Geschwindigkeit | ON |
-| **AWW** | Adjust Working Width | Arbeits Breite | ON |
-| **APW** | Adjust Pickup Width | Pickup Breite | ON |
-| **ADS** | Adjust Driving Speed | Fahr Geschwindigkeit | ON |
-| **ABP** | Adjust Brake Power | Bremskraft | ON |
-| **ADR** | Adjust Discharge Rate | Entladerate | ON |
+| **AFV** | Fill Volume | Füllvolumen | ON |
+| **AMP** | Motor Power | Motorleistung | ON |
+| **AWS** | Working Speed | Arbeitsgeschwindigkeit | ON |
+| **AWW** | Working Width | Arbeitsbreite | ON |
+| **APW** | Pickup Width | Pickupbreite | ON |
+| **ADS** | Driving Speed | Fahrgeschwindigkeit | ON |
+| **ABP** | Brake Power | Bremskraft | ON |
+| **ADR** | Discharge Rate | Entladerate | ON |
 
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
@@ -52,7 +52,8 @@ By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 | **PRICE** | Adjust Prices | Preise | 100 % |
 
 
-By default, all modules are **Enabled**.
+By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
+
 
 ### ↓ Click here for “modSettings.xml”  ↓
 ### ↓ Hier Klicken für “modSettings.xml” ↓
