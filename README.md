@@ -15,24 +15,21 @@
 AdjustSuite lets you adjust vehicles and attachments in Farming Simulator 25 so they fit the way you want to play.
 The default setup keeps adjustments close to realistic values. If you want more freedom, you can enable higher ranges in `modSettings`.
 
+#### ↓ Click here to view the “modSettings.xml” file | Klicken Sie hier, um die Datei „modSettings.xml“ anzuzeigen ↓
 <details>
 
-<summary>Tips for collapsed sections</summary>
+<summary>“modSettings” view | Ansicht „modSettings“</summary>
 
-### You can add a header
+#### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
 
-You can add text within a collapsed section.
+<img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 
-You can add an image or a code block, too.
+</details>
 
-```ruby
-   puts "Hello World"
-```
-
-</details><img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
+Please use the “Issues” section to report problems
+Bitte nutzen Sie den Bereich „Issues“, um Probleme zu melden.
 
 
-<img width="1600" height="900" alt="FS25_AdjustSuite preview" src="https://github.com/user-attachments/assets/a741c3fc-acd6-43ea-bc52-bdff6b45592d" />
 
 ## Adjustment Ranges
 
