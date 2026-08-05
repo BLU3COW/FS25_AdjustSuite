@@ -1,5 +1,12 @@
 # FS25_AdjustSuite for Farming Simulator 25
 
+[![GitHub Release](https://img.shields.io/github/v/release/BLU3COW/FS25_AdjustSuite?style=flat-square&label=GitHub%20Release&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases/latest)
+![ModHub Release](https://img.shields.io/badge/ModHub%20Release-Pending-FFE900?style=flat-square&labelColor=555)
+[![KingMods Release](https://img.shields.io/badge/KingMods%20Release-v1.0.0.0-E6007E?style=flat-square&labelColor=555)](https://www.kingmods.net/en/fs25/mods/80441/adjust-suite)
+[![Downloads](https://img.shields.io/github/downloads/BLU3COW/FS25_AdjustSuite/total?style=flat-square&label=Downloads&labelColor=555&color=4c1)](https://github.com/BLU3COW/FS25_AdjustSuite/releases)
+[![Issues](https://img.shields.io/github/issues/BLU3COW/FS25_AdjustSuite?style=flat-square&label=Issues&labelColor=555&color=FFE900)](https://github.com/BLU3COW/FS25_AdjustSuite/issues)
+[![Discussions](https://img.shields.io/github/discussions/BLU3COW/FS25_AdjustSuite?style=flat-square&label=Discussions&labelColor=555&color=E6007E)](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
+
 [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
 
 **[Releases and downloads](https://github.com/BLU3COW/FS25_AdjustSuite/releases)**
