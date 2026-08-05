@@ -74,6 +74,7 @@ body:
     attributes:
       label: What should happen? | Was sollte passieren?
       description: Describe the expected behavior. | Beschreiben Sie das erwartete Verhalten.
+      placeholder: "The working width should be ...“ | „Die Arbeitsbreite sollte sich ..."
     validations:
       required: true
 
