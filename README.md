@@ -14,6 +14,8 @@
 
 #### AdjustSuite lets you Adjust Vehicles and Attachments in Farming Simulator 25 so they fit the way you want to play.
 
+<img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/ab7716c0-4f5d-4a6c-8153-369d7e26bd04" />
+
 ## Adjustment Ranges
 
 | Range | - % | + % | Steps | Default |
@@ -69,17 +71,6 @@ You can Adjust:
 </details>
 
 
-## Support and Feedback
-
-Please use the GitHub templates so reports include the details needed to understand and reproduce them.
-
-- [Report a bug](https://github.com/BLU3COW/FS25_AdjustSuite/issues/new?template=bug_report.yml)
-- [Suggest a feature](https://github.com/BLU3COW/FS25_AdjustSuite/issues/new?template=feature_request.yml)
-- [Report a translation issue](https://github.com/BLU3COW/FS25_AdjustSuite/issues/new?template=localization.yml)
-- [Upload your log.txt](https://gist.github.com/)
-- [Pull Request](https://github.com/BLU3COW/FS25_AdjustSuite/pull)
-- [Questions](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
-- [Wiki](https://github.com/BLU3COW/FS25_AdjustSuite/wiki)
 
 
 ## Support the Project
@@ -87,11 +78,10 @@ Please use the GitHub templates so reports include the details needed to underst
 
 ## Screenshots
 
-<img width="1600" height="900" alt="FS25_AdjustSuite screenshot 1" src="https://github.com/user-attachments/assets/01666a6f-f046-45c3-92ba-c53c2b027f32" />
-<img width="1600" height="900" alt="FS25_AdjustSuite screenshot 2" src="https://github.com/user-attachments/assets/6ee6b37b-44ce-41f3-9953-11d53970b599" />
-<img width="1600" height="900" alt="FS25_AdjustSuite screenshot 3" src="https://github.com/user-attachments/assets/fc000484-ca70-4d23-8e98-d788a48e7b0e" />
-<img width="1600" height="900" alt="FS25_AdjustSuite screenshot 4" src="https://github.com/user-attachments/assets/113d4948-8d0d-4a6e-af93-a624dfee296d" />
-<img width="1600" height="900" alt="FS25_AdjustSuite screenshot 5" src="https://github.com/user-attachments/assets/b896198d-5765-404a-99bd-0ea191785b07" />
-<img width="1600" height="900" alt="FS25_AdjustSuite screenshot 6" src="https://github.com/user-attachments/assets/32d0f3f5-1161-46e5-86d4-482bcd4e0ed8" />
-<img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/b99989dc-11f2-4701-b411-d4e355a75a7e" />
+<img width="1600" height="900" alt="007" src="https://github.com/user-attachments/assets/df2ed527-d9c8-447a-816d-b098a8ea0f73" />
+<img width="1600" height="900" alt="006" src="https://github.com/user-attachments/assets/0b69d18e-80d6-441f-b4b6-7ee4a57ff246" />
+<img width="1600" height="900" alt="005" src="https://github.com/user-attachments/assets/85cc0b8a-5184-4996-a008-148bea03dbe8" />
+<img width="1600" height="900" alt="004" src="https://github.com/user-attachments/assets/1818e665-5bd4-424c-8fdf-e2f66125ff6e" />
+<img width="1600" height="900" alt="003" src="https://github.com/user-attachments/assets/901f1498-6d39-4cd0-8297-f85316224f09" />
+<img width="1600" height="900" alt="002" src="https://github.com/user-attachments/assets/35867225-2e8b-4dbe-b03d-4b1ecc26dfc5" />
 
