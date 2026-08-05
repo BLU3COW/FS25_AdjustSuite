@@ -1,8 +1,14 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Help page / Hilfe
+  - name: E-Mail
+    url: mailto:mail@blu3cow.com
+    about: Send us an email | Schicken Sie uns eine E-Mail
+  - name: Website
     url: https://www.blu3cow.com
-    about: Check the help page and general information before opening an issue.
-  - name: Latest release / Neueste Version
+    about: Visit our website | Besuchen sie unsere Webseite
+  - name: Wiki
+    url: https://www.blu3cow.com
+    about: Find Solutions | Finden Sie Lösungen
+  - name: Latest release | Neueste Version
     url: https://github.com/BLU3COW/FS25_AdjustSuite/releases
-    about: Please try the latest release before reporting a bug.
+    about: Latest release | Neueste Version 
