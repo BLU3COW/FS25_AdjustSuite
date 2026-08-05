@@ -18,13 +18,13 @@
 
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
-| **BASE** | 0 % | 0 % | --- | Activated |
+| **BASE** | -0 % | +0 % | --- | Activated |
 | **REAL** | -20 % | +20 % | 5 % | Activated |
 | **UNREAL** | -80 % | +200 % | 20 % | --- |
 | **EXTREME** | -80 % | +800 % | 100 % | --- |
 
 
-By default, only **Real** is enabled. The default setup keeps adjustments close to realistic values. If you want more freedom, you can enable higher ranges in “modSettings.xml”.
+By default, only **Real** is activated. The default setup keeps adjustments close to realistic values. If you want more freedom, you can enable higher ranges in “modSettings.xml”.
 
 ## Included Modules
 
@@ -38,6 +38,16 @@ By default, only **Real** is enabled. The default setup keeps adjustments close 
 | **ADS** | Adjust Driving Speed | Fahrgeschwindigkeit | Activated |
 | **ABP** | Adjust Brake Power | Bremskraft | Activated |
 | **ADR** | Adjust Discharge Rate | Entladerate | Activated |
+
+By default, all modules are **Enabled**.
+
+## Settings
+
+| Module | English | German | Default |
+| --- | --- | --- | --- |
+| **HELPMENU** | Show Modules in the Helpmenu | Zeigt Module im Hilfemenü | Activated |
+| **PRICE** | Adjust Prices | Einstellen der Preise | 100 % |
+
 
 By default, all modules are **Enabled**.
 
