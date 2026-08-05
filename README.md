@@ -75,9 +75,10 @@ You can Adjust:
 
 ## Support the Project
 
-If AdjustSuite helps you, you can support development through PayPal:
+If AdjustSuite helps you, you can support development through PayPal or Buy Me a Coffee:
 
 [![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00B6FF?style=for-the-badge&labelColor=555&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=JAB2D3DPW2794)
+[![Donate with Buy Me a Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
 
 
 ## Screenshots
