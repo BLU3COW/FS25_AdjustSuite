@@ -51,7 +51,7 @@ By default, all modules are **Enabled**.
 
 By default, all modules are **Enabled**.
 
-#### ↓ Click here to view the “modSettings.xml” file ↓
+### ↓ Click here to view the “modSettings.xml” file ↓
 <details>
 <summary>“modSettings.xml”</summary>
 
@@ -60,26 +60,13 @@ The “modSettings.xml” is created automatically when the mod is started for t
 
 You can Adjust:
 
-- Show information in the Helpmenu 
-- Price
-- Modules
 - Adjustment Ranges
+- Modules
+- Helpmenu
+- Prices
 
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
-
-
-
-
-
-
-
-Please use the “Issues” section to report problems
-Bitte nutzen Sie den Bereich „Issues“, um Probleme zu melden.
-
-
-
-
 
 
 ## Support and Feedback
@@ -89,54 +76,14 @@ Please use the GitHub templates so reports include the details needed to underst
 - [Report a bug](https://github.com/BLU3COW/FS25_AdjustSuite/issues/new?template=bug_report.yml)
 - [Suggest a feature](https://github.com/BLU3COW/FS25_AdjustSuite/issues/new?template=feature_request.yml)
 - [Report a translation issue](https://github.com/BLU3COW/FS25_AdjustSuite/issues/new?template=localization.yml)
-- [Ask a question or discuss compatibility](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
+- [Upload your log.txt](https://gist.github.com/)
+- [Pull Request](https://github.com/BLU3COW/FS25_AdjustSuite/pull)
+- [Questions](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
+- [Wiki](https://github.com/BLU3COW/FS25_AdjustSuite/wiki)
 
-When reporting a problem, please include the AdjustSuite version, Farming Simulator 25 version, affected module, reproduction steps, and relevant `log.txt` snippets.
 
 ## Support the Project
 
-
-
-
-Wenn dir FS25_AdjustSuite gefaellt und du die Entwicklung unterstuetzen moechtest, kannst du ueber PayPal spenden.
-
-## Repository Structure
-
-This repository is intentionally structured like the Farming Simulator 25 mod root:
-
-```text
-modDesc.xml
-lua/
-l10n/
-dds/
-```
-
-GitHub-only files and documentation live beside the mod files in `.github/` and root Markdown files.
-
-## Deutsch
-
-FS25_AdjustSuite ermoeglicht es dir, Fahrzeuge und Anbaugeraete in Farming Simulator 25 so anzupassen, wie du es brauchst.
-
-Standardmaessig ist nur **Real** aktiviert:
-
-- **Real:** +20% bis -20% in 5%-Schritten
-- **Unreal:** +200% bis -80% in 20%-Schritten
-- **Extreme:** bis +800% in 100%-Schritten
-
-Diese Einstellungen koennen in `modSettings` geaendert werden. Dort kannst du auch den Preis, einzelne Module und die Anzeige im Hilfemenue anpassen.
-
-Enthaltene Module:
-
-- **AFV - Fuellvolumen**
-- **AMP - Motorleistung**
-- **AWS - Arbeitsgeschwindigkeit**
-- **AWW - Arbeitsbreite**
-- **APW - Pickupbreite**
-- **ADS - Fahrgeschwindigkeit**
-- **ABP - Bremskraft**
-- **ADR - Entladerate**
-
-Fuer Fehler, Vorschlaege, Uebersetzungen und Fragen nutze bitte [Issues](https://github.com/BLU3COW/FS25_AdjustSuite/issues) oder [Discussions](https://github.com/BLU3COW/FS25_AdjustSuite/discussions).
 
 ## Screenshots
 
