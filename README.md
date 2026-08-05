@@ -32,12 +32,12 @@ By default, only **Real** is on. The default setup keeps adjustments close to re
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
-| **AFV** | Adjust Fill Volume | Füllvolumen | ON |
-| **AMP** | Adjust Motor Power | Motorleistung | ON |
-| **AWS** | Adjust Working Speed | Arbeitsgeschwindigkeit | ON |
-| **AWW** | Adjust Working Width | Arbeitsbreite | ON |
-| **APW** | Adjust Pickup Width | Pickupbreite | ON |
-| **ADS** | Adjust Driving Speed | Fahrgeschwindigkeit | ON |
+| **AFV** | Adjust Fill Volume | Füll Volumen | ON |
+| **AMP** | Adjust Motor Power | Motor Leistung | ON |
+| **AWS** | Adjust Working Speed | Arbeits Geschwindigkeit | ON |
+| **AWW** | Adjust Working Width | Arbeits Breite | ON |
+| **APW** | Adjust Pickup Width | Pickup Breite | ON |
+| **ADS** | Adjust Driving Speed | Fahr Geschwindigkeit | ON |
 | **ABP** | Adjust Brake Power | Bremskraft | ON |
 | **ADR** | Adjust Discharge Rate | Entladerate | ON |
 
