@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: E-Mail
-    url: mailto:mail@blu3cow.com
+    mail: mail@blu3cow.com
     about: Send us an email | Schicken Sie uns eine E-Mail
   - name: Website
     url: https://www.blu3cow.com
