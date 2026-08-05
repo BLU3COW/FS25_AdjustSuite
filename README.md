@@ -20,10 +20,10 @@
 
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
-| **BASE** | -0 % | +0 % | --- | ON |
-| **REAL** | -20 % | +20 % | 5 % | ON |
-| **UNREAL** | -80 % | +200 % | 20 % | OFF |
-| **EXTREME** | -80 % | +800 % | 100 % | OFF |
+| BASE | -0 % | +0 % | --- | ON |
+| REAL | -20 % | +20 % | 5 % | ON |
+| UNREAL | -80 % | +200 % | 20 % | OFF |
+| EXTREME | -80 % | +800 % | 100 % | OFF |
 
 
 By default, only **Real** is on. The default setup keeps adjustments close to realistic values. If you want more freedom, you can adjust higher ranges in “modSettings.xml”. | Standardmäßig ist nur **Real** an. Die Standardeinstellung sorgt dafür, dass die Anpassungen nahe an realistischen Werten bleiben. Wenn Sie mehr Freiheit wünschen, können Sie in der Datei „modSettings.xml“ größere Bereiche einstellen.
@@ -32,14 +32,14 @@ By default, only **Real** is on. The default setup keeps adjustments close to re
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
-| **AFV** | Fill Volume | Füllvolumen | ON |
-| **AMP** | Motor Power | Motorleistung | ON |
-| **AWS** | Working Speed | Arbeitsgeschwindigkeit | ON |
-| **AWW** | Working Width | Arbeitsbreite | ON |
-| **APW** | Pickup Width | Pickupbreite | ON |
-| **ADS** | Driving Speed | Fahrgeschwindigkeit | ON |
-| **ABP** | Brake Power | Bremskraft | ON |
-| **ADR** | Discharge Rate | Entladerate | ON |
+| AFV | Fill-Volume | Füllvolumen | ON |
+| AMP | Motor-Power | Motorleistung | ON |
+| AWS | Working-Speed | Arbeitsgeschwindigkeit | ON |
+| AWW | Working-Width | Arbeitsbreite | ON |
+| APW | Pickup-Width | Pickupbreite | ON |
+| ADS | Driving-Speed | Fahrgeschwindigkeit | ON |
+| ABP | Brake-Power | Bremskraft | ON |
+| ADR | Discharge-Rate | Entladerate | ON |
 
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
