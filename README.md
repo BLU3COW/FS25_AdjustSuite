@@ -3,6 +3,8 @@ for Farming Simulator 2025
 
 https://www.blu3cow.com
 
+[README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
+
 <img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/a741c3fc-acd6-43ea-bc52-bdff6b45592d" />
 
 -----------------------------------------------------------------------
