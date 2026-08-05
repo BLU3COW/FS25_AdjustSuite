@@ -24,14 +24,14 @@ The settings file is created automatically when the mod is started for the first
 
 ## Included Modules
 
-- **AFV - Adjust Fill Volume:** change fill volume / capacity
-- **AMP - Adjust Motor Power:** change motor power
-- **AWS - Adjust Working Speed:** change working speed
-- **AWW - Adjust Working Width:** change working width
-- **APW - Adjust Pickup Width:** change pickup width
-- **ADS - Adjust Driving Speed:** change driving speed
-- **ABP - Adjust Brake Power:** change brake power
-- **ADR - Adjust Discharge Rate:** change discharge rate
+- **AFV - Adjust Fill Volume
+- **AMP - Adjust Motor Power
+- **AWS - Adjust Working Speed
+- **AWW - Adjust Working Width
+- **APW - Adjust Pickup Width
+- **ADS - Adjust Driving Speed
+- **ABP - Adjust Brake Power
+- **ADR - Adjust Discharge Rate
 
 ## Support and Feedback
 
