@@ -1,4 +1,4 @@
-# FS25_AdjustSuite for Farming Simulator 25
+# AdjustSuite for Farming Simulator 25
 
 [![GitHub](https://img.shields.io/github/v/release/BLU3COW/FS25_AdjustSuite?style=flat-square&label=GitHub&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases/latest)
 [![ModHub](https://img.shields.io/badge/ModHub-Pending-00B6FF?style=flat-square&labelColor=555)](https://github.com/BLU3COW/FS25_AdjustSuite)
@@ -9,15 +9,28 @@
 [![Pulls](https://img.shields.io/github/issues-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen%20is%3Apr&style=flat-square&label=Pulls&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/pulls)
 [![Wiki](https://img.shields.io/website?url=https%3A%2F%2Fgithub.com%2FBLU3COW%2FFS25_AdjustSuite%2Fwiki&style=flat-square&label=Wiki&labelColor=555&up_color=00B6FF&up_message=online&down_message=offline)](https://github.com/BLU3COW/FS25_AdjustSuite/wiki)
 
-[README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
+[WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
 
-**[Releases and downloads](https://github.com/BLU3COW/FS25_AdjustSuite/releases)**
 
-**[Website and help](https://www.blu3cow.com)**
-
-FS25_AdjustSuite lets you adjust vehicles and attachments in Farming Simulator 25 so they fit the way you want to play.
-
+AdjustSuite lets you adjust vehicles and attachments in Farming Simulator 25 so they fit the way you want to play.
 The default setup keeps adjustments close to realistic values. If you want more freedom, you can enable higher ranges in `modSettings`.
+
+<details>
+
+<summary>Tips for collapsed sections</summary>
+
+### You can add a header
+
+You can add text within a collapsed section.
+
+You can add an image or a code block, too.
+
+```ruby
+   puts "Hello World"
+```
+
+</details><img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
+
 
 <img width="1600" height="900" alt="FS25_AdjustSuite preview" src="https://github.com/user-attachments/assets/a741c3fc-acd6-43ea-bc52-bdff6b45592d" />
 
@@ -106,3 +119,5 @@ Fuer Fehler, Vorschlaege, Uebersetzungen und Fragen nutze bitte [Issues](https:/
 <img width="1600" height="900" alt="FS25_AdjustSuite screenshot 4" src="https://github.com/user-attachments/assets/113d4948-8d0d-4a6e-af93-a624dfee296d" />
 <img width="1600" height="900" alt="FS25_AdjustSuite screenshot 5" src="https://github.com/user-attachments/assets/b896198d-5765-404a-99bd-0ea191785b07" />
 <img width="1600" height="900" alt="FS25_AdjustSuite screenshot 6" src="https://github.com/user-attachments/assets/32d0f3f5-1161-46e5-86d4-482bcd4e0ed8" />
+<img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/b99989dc-11f2-4701-b411-d4e355a75a7e" />
+
