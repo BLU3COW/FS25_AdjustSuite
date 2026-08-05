@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Help page / Hilfe
+    url: https://www.blu3cow.com
+    about: Check the help page and general information before opening an issue.
+  - name: Latest release / Neueste Version
+    url: https://github.com/BLU3COW/FS25_AdjustSuite/releases
+    about: Please try the latest release before reporting a bug.
