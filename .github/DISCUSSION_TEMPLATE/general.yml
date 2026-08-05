@@ -1,0 +1,67 @@
+title: "[General]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this category for community discussion, compatibility checks, mod conflicts, and topics that are not yet a bug report.
+
+        Fuer reproduzierbare Fehler bitte ein Issue erstellen. Fuer unklare Fragen, Kompatibilitaet und Mod-Konflikte ist diese Kategorie passend.
+
+  - type: dropdown
+    id: topic_type
+    attributes:
+      label: Topic type
+      description: What kind of discussion is this?
+      options:
+        - Compatibility / mod conflict
+        - General feedback
+        - Documentation note
+        - Community discussion
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: mod_version
+    attributes:
+      label: AdjustSuite version
+      description: If relevant, which AdjustSuite version are you using?
+      placeholder: "Example: 1.0.0.0"
+    validations:
+      required: false
+
+  - type: input
+    id: game_version
+    attributes:
+      label: Farming Simulator 25 version
+      description: If relevant, which FS25 game version is installed?
+      placeholder: "Example: 1.14.0.0"
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Describe the topic, compatibility question, or situation.
+      placeholder: "What are you trying to do, and what should others know?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected_mods
+    attributes:
+      label: Related mods, vehicles, maps, or server setup
+      description: List any other mods, vehicles, maps, or dedicated server details if compatibility is involved.
+      placeholder: "Example: map name, vehicle name, other script mods, dedicated server yes/no"
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs_or_links
+    attributes:
+      label: Logs, screenshots, or links
+      description: Add screenshots, links, or relevant log.txt snippets if useful.
+      render: text
+    validations:
+      required: false

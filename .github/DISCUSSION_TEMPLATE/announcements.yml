@@ -1,0 +1,48 @@
+title: "[Announcement]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this category for maintainer updates, releases, compatibility notes, and important project news.
+
+        Diese Kategorie ist fuer Maintainer-Updates, Releases, Kompatibilitaetshinweise und wichtige Projektinfos.
+
+  - type: input
+    id: release_version
+    attributes:
+      label: Version or topic
+      description: Which AdjustSuite version or topic does this announcement cover?
+      placeholder: "Example: 1.0.0.0 or FS25 patch compatibility"
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Short summary of the announcement.
+      placeholder: "What changed, and why should players care?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Add release notes, compatibility details, migration notes, or known limitations.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: action_required
+    attributes:
+      label: Player action required
+      description: Do players need to do anything?
+      options:
+        - No action required
+        - Update recommended
+        - Update required
+        - Check modSettings
+        - Read before installing
+    validations:
+      required: true

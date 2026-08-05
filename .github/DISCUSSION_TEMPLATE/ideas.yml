@@ -1,0 +1,74 @@
+title: "[Idea]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this category for early ideas, balancing thoughts, and possible new AdjustSuite modules.
+
+        Wenn daraus eine konkrete, umsetzbare Aufgabe wird, kann spaeter ein Issue daraus entstehen.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Idea summary
+      description: Give the idea a short, clear summary.
+      placeholder: "Add an option to ..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which AdjustSuite area does this affect?
+      options:
+        - AFV - Adjust Fill Volume
+        - AMP - Adjust Motor Power
+        - AWS - Adjust Working Speed
+        - AWW - Adjust Working Width
+        - APW - Adjust Pickup Width
+        - ADS - Adjust Driving Speed
+        - ABP - Adjust Brake Power
+        - ADR - Adjust Discharge Rate
+        - New module
+        - Core / settings / help menu
+        - Documentation / release notes
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: What player situation should this improve?
+      placeholder: "I want to ... because ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_behavior
+    attributes:
+      label: Proposed behavior
+      description: Describe how the feature or balancing change should work.
+    validations:
+      required: true
+
+  - type: textarea
+    id: balancing
+    attributes:
+      label: Balancing impact
+      description: If this changes values, ranges, prices, or gameplay balance, describe the expected limits.
+      placeholder: "Example: Real mode should stay within +/-20% ..."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing discussions and issues before posting this idea.
+          required: true
+        - label: This idea fits the goal of AdjustSuite.
+          required: true
