@@ -75,6 +75,10 @@ You can Adjust:
 
 ## Support the Project
 
+If AdjustSuite helps you, you can support development through PayPal:
+
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00B6FF?style=for-the-badge&labelColor=555&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=JAB2D3DPW2794)
+
 
 ## Screenshots
 
