@@ -16,7 +16,7 @@
 
 <img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/ab7716c0-4f5d-4a6c-8153-369d7e26bd04" />
 
-## Adjustment Ranges
+## Range | Bereich
 
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
@@ -28,7 +28,7 @@
 
 By default, only **Real** is activated. The default setup keeps adjustments close to realistic values. If you want more freedom, you can enable higher ranges in “modSettings.xml”.
 
-## Included Modules
+## Module | Modul 
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -43,7 +43,7 @@ By default, only **Real** is activated. The default setup keeps adjustments clos
 
 By default, all modules are **Enabled**.
 
-## Settings
+## Settings | Einstellungen 
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -53,7 +53,8 @@ By default, all modules are **Enabled**.
 
 By default, all modules are **Enabled**.
 
-### ↓ Click here to view the “modSettings.xml” file ↓
+### ↓ Click here for “modSettings.xml”  ↓
+### ↓ Hier Klicken für “modSettings.xml” ↓
 <details>
 <summary>“modSettings.xml”</summary>
 
