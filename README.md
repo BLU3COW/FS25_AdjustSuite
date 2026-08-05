@@ -49,6 +49,14 @@ Please use the GitHub templates so reports include the details needed to underst
 
 When reporting a problem, please include the AdjustSuite version, Farming Simulator 25 version, affected module, reproduction steps, and relevant `log.txt` snippets.
 
+## Support the Project
+
+If you like FS25_AdjustSuite and want to support its development, you can donate through PayPal.
+
+[![Donate with PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=JAB2D3DPW2794)
+
+Wenn dir FS25_AdjustSuite gefaellt und du die Entwicklung unterstuetzen moechtest, kannst du ueber PayPal spenden.
+
 ## Repository Structure
 
 This repository is intentionally structured like the Farming Simulator 25 mod root:
