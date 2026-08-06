@@ -1,65 +1,63 @@
-title: "[Idea]: "
+title: "[Idea]: | [Idee]:"
 body:
   - type: markdown
     attributes:
       value: |
-        Use this category for early ideas, balancing thoughts, and possible new AdjustSuite modules.
-
-        Wenn daraus eine konkrete, umsetzbare Aufgabe wird, kann spaeter ein Issue daraus entstehen.
+        Use this category for early ideas, balancing thoughts, and possible new AdjustSuite modules. | Wenn daraus eine konkrete, umsetzbare Aufgabe wird, kann später ein Issue daraus entstehen.
 
   - type: textarea
     id: summary
     attributes:
-      label: Idea summary
-      description: Give the idea a short, clear summary.
-      placeholder: "Add an option to ..."
+      label: Idea summary | Zusammenfassung der Idee
+      description: Give the idea a short, clear summary. | Fassen Sie die Idee kurz und prägnant zusammen.
+      placeholder: "Add an option to ... | Eine Option hinzufügen, um …"
     validations:
       required: true
 
   - type: dropdown
     id: area
     attributes:
-      label: Area
-      description: Which AdjustSuite area does this affect?
+      label: Area | Bereich
+      description: Which AdjustSuite area does this affect? | Welchen Bereich betrifft diese Anfrage?
       options:
-        - AFV - Adjust Fill Volume
-        - AMP - Adjust Motor Power
-        - AWS - Adjust Working Speed
-        - AWW - Adjust Working Width
-        - APW - Adjust Pickup Width
-        - ADS - Adjust Driving Speed
-        - ABP - Adjust Brake Power
-        - ADR - Adjust Discharge Rate
-        - New module
-        - Core / settings / help menu
-        - Documentation / release notes
-        - Other
+        - AFV - Adjust Fill Volume - Füllvolumen
+        - AMP - Adjust Motor Power - Motorleistung
+        - AWS - Adjust Working Speed - Arbeitsgeschwindigkeit
+        - AWW - Adjust Working Width - Arbeitsbreite
+        - APW - Adjust Pickup Width	- Pickupbreite
+        - ADS - Adjust Driving Speed - Fahrgeschwindigkeit
+        - ABP - Adjust Brake Power - Bremskraft
+        - ADR - Adjust Discharge Rate - Entladerate
+        - New module | Neues Modul
+        - Core / settings / help menu | Kern / Einstellungen / Preise / Hilfemenü
+        - Documentation / release notes | Dokumentation / Versionshinweise
+        - Other | Sonstiges
     validations:
       required: true
 
   - type: textarea
     id: use_case
     attributes:
-      label: Use case
-      description: What player situation should this improve?
-      placeholder: "I want to ... because ..."
+      label: Use case | Anwendungsfall
+      description: What player situation should this improve? | Welche Spielersituation soll dadurch verbessert werden?
+      placeholder: "I want to ... because ... | Ich möchte …, weil …"
     validations:
       required: true
 
   - type: textarea
     id: proposed_behavior
     attributes:
-      label: Proposed behavior
-      description: Describe how the feature or balancing change should work.
+      label: Proposed behavior | Gewünschtes Verhalten
+      description: Describe how the feature or balancing change should work. | Beschreiben Sie, wie die Funktion oder die Änderung am Balancing funktionieren soll.
     validations:
       required: true
 
   - type: textarea
     id: balancing
     attributes:
-      label: Balancing impact
-      description: If this changes values, ranges, prices, or gameplay balance, describe the expected limits.
-      placeholder: "Example: Real mode should stay within +/-20% ..."
+      label: Balancing impact | Balance schaffen
+      description: If this changes values, ranges, prices, or gameplay balance, describe the expected limits. | Falls sich dadurch Werte, Bereiche, Preise oder die Spielbalance ändern, beschreiben Sie bitte die zu erwartenden Grenzen.
+      placeholder: "Example: Real mode should stay within +/-20% ... | Beispiel: Der Real-Modus sollte innerhalb von +/-20 % bleiben …"
     validations:
       required: false
 
@@ -68,7 +66,7 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: I searched existing discussions and issues before posting this idea.
+        - label: I searched existing discussions and issues before posting this idea. | Bevor ich diesen Vorschlag gepostet habe, habe ich bereits nach bestehenden Diskussionen und Problemen gesucht.
           required: true
-        - label: This idea fits the goal of AdjustSuite.
+        - label: This idea fits the goal of AdjustSuite. | Diese Idee entspricht dem Ziel von AdjustSuite.
           required: true
