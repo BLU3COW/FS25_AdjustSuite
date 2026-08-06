@@ -1,4 +1,4 @@
-# ![AdjustSuite for Farming Simulator 25](https://placehold.co/430x40/00B6FF/000000?text=AdjustSuite+for+Farming+Simulator+25&font=montserrat&font_size=60)
+# <img width="860" height="80" alt="adjustsuite-title" src="https://github.com/user-attachments/assets/6d1678d2-b0bf-47af-9cb0-1e20d5348ce0" />
 
 [![GitHub](https://img.shields.io/github/v/release/BLU3COW/FS25_AdjustSuite?style=flat-square&label=GitHub&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases/latest)
 [![ModHub](https://img.shields.io/badge/ModHub-Pending-00B6FF?style=flat-square&labelColor=555)](https://github.com/BLU3COW/FS25_AdjustSuite)
@@ -11,12 +11,12 @@
 
 [WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
 
-
 #### Adjust Vehicles and Attachments in „Farming Simulator 25“ so they fit the way you want to play. | Passe Fahrzeuge und Anbaugeräte in „Farming Simulator 25“ so an, dass sie zu deinem Spielstil passen.
 
 <img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/ab7716c0-4f5d-4a6c-8153-369d7e26bd04" />
 
-## ![Range | Bereich](https://placehold.co/190x40/00B6FF/000000?text=Range+%7C+Bereich&font=montserrat&font_size=16)
+## <img width="190" height="40" alt="range" src="https://github.com/user-attachments/assets/a686b71e-4266-491d-a642-a69cb5175245" />
+
 
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
@@ -28,7 +28,7 @@
 
 By default, only **Real** is on. The default setup keeps adjustments close to realistic values. If you want more freedom, you can adjust higher ranges in “modSettings.xml”. | Standardmäßig ist nur **Real** an. Die Standardeinstellung sorgt dafür, dass die Anpassungen nahe an realistischen Werten bleiben. Wenn Sie mehr Freiheit wünschen, können Sie in der Datei „modSettings.xml“ größere Bereiche einstellen.
 
-## ![Module | Modul](https://placehold.co/185x40/00B6FF/000000?text=Module+%7C+Modul&font=montserrat&font_size=16)
+## <img width="185" height="40" alt="module" src="https://github.com/user-attachments/assets/91bd8df6-0446-41d3-a6be-e8101e1b5dba" />
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -44,7 +44,7 @@ By default, only **Real** is on. The default setup keeps adjustments close to re
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
 
-## ![Settings | Einstellungen](https://placehold.co/300x40/00B6FF/000000?text=Settings+%7C+Einstellungen&font=montserrat&font_size=16)
+## <img width="300" height="40" alt="settings" src="https://github.com/user-attachments/assets/e09a07b5-9a92-4893-8148-a687a480e223" />
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -71,7 +71,9 @@ You can Adjust:
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
 
-## ![Support the Project | Unterstützen Sie das Projekt](https://placehold.co/610x40/00B6FF/000000?text=Support+the+Project+%7C+Unterst%C3%BCtzen+Sie+das+Projekt&font=montserrat&font_size=16)
+## <img width="460" height="40" alt="planned-updates" src="https://github.com/user-attachments/assets/6545713d-d0cf-4ba3-856c-e853346283f6" />
+
+## <img width="610" height="40" alt="support-the-project" src="https://github.com/user-attachments/assets/7ae3d10e-501e-4800-94eb-5e6c80c5d6ea" />
 
 If AdjustSuite helps you, you can support development through PayPal or Buy Me a Beer. | Wenn Ihnen AdjustSuite weiterhilft, können Sie die Entwicklung über PayPal oder „Buy Me a Beer“ unterstützen.
 
@@ -79,7 +81,7 @@ If AdjustSuite helps you, you can support development through PayPal or Buy Me a
 [![Donate with Buy Me a Beer](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
 
 
-## ![Screenshots | Bilder](https://placehold.co/250x40/00B6FF/000000?text=Screenshots+%7C+Bilder&font=montserrat&font_size=16)
+## <img width="250" height="40" alt="screenshots" src="https://github.com/user-attachments/assets/e03efe4b-c4df-4066-9947-96e0396e5efc" />
 
 <img width="1600" height="900" alt="007" src="https://github.com/user-attachments/assets/df2ed527-d9c8-447a-816d-b098a8ea0f73" />
 <img width="1600" height="900" alt="006" src="https://github.com/user-attachments/assets/0b69d18e-80d6-441f-b4b6-7ee4a57ff246" />
