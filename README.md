@@ -1,4 +1,4 @@
-<div align="center"><img width="600"  alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/logos/adjustsuite.svg" /></div>
+<div align="center"><img width="500"  alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/logos/adjustsuite.svg" /></div>
 
 
 # <div align="center"><img width="860" height="80" alt="adjustsuite-title" src="https://raw.githubusercontent.com/BLU3COW/FS25_AdjustSuite/main/.github/assets/badges/adjustsuite-title.svg" /></div>
