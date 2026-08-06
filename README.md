@@ -82,7 +82,7 @@ By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 <details>
 
   <summary>
-    <div align="center"><img width="330" height="40" alt="click-to-view" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/5dba2d11740a0c6940a6e403cd93d7e6db25e052/.github/assets/badges/click-to-view.svg" /></div>
+    <img width="330" height="40" alt="click-to-view" src=".github/assets/badges/click-to-view.svg">
   </summary>
 
 
