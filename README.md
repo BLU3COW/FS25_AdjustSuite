@@ -3,6 +3,8 @@
 
 
 
+
+
 <div align="center"><img width="500"  alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/logos/adjustsuite.svg" /></div>
 
 
@@ -26,9 +28,11 @@
 [WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
 
 </div>
-
+<br>
 <div align="center">Adjust Vehicles and Attachments in „Farming Simulator 25“ so they fit the way you want to play.</div>
 <div align="center">Passe Fahrzeuge und Anbaugeräte in „Farming Simulator 25“ so an, dass sie zu deinem Spielstil passen.</div>
+<br>
+
 
 <div align="center">
 
@@ -74,13 +78,12 @@ By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 | **PRICE** | Adjust Prices | Preise | 100 % |
 
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
-
-
-  
+<br>
+<br>
 <details>
-  <summary><div align="center"><strong>‼️Click to View “modSettings.xml” | Klicken Sie hier, um „modSettings.xml“ anzuzeigen‼️</strong></div></summary>
-    <br>
-      #### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
+  <summary><div align="center"><strong>‼️Click to View “modSettings.xml” | Klicken Sie hier, um „modSettings.xml“ anzuzeigen‼️</strong></div><br></summary>
+  <br>
+#### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
 The “modSettings.xml” is created automatically when the mod is started for the first time.
 
 You can Adjust:
@@ -94,6 +97,8 @@ You can Adjust:
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
 
+<br>
+<br>
 
 ## <div align="center"><img width="460" height="40" alt="planned-updates" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/planned-updates.svg" /></div>
 
