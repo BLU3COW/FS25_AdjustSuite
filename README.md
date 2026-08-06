@@ -1,4 +1,8 @@
 
+
+
+
+
 <div align="center"><img width="500"  alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/logos/adjustsuite.svg" /></div>
 
 
@@ -76,7 +80,9 @@ By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
   
 <details>
-<summary>🔻“modSettings.xml”🔻</summary></div>
+<summary> <div align="center"><img width="330" height="40" alt="click-to-view" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/5dba2d11740a0c6940a6e403cd93d7e6db25e052/.github/assets/badges/click-to-view.svg" /></div></summary></div>
+
+
 
 #### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
 The “modSettings.xml” is created automatically when the mod is started for the first time.
