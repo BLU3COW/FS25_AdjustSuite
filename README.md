@@ -1,5 +1,6 @@
 
-# <div align="center"><img width="860" height="80" alt="adjustsuite-title" src="https://github.com/user-attachments/assets/6d1678d2-b0bf-47af-9cb0-1e20d5348ce0" /></div>
+# <div align="center"><img width="860" height="80" alt="adjustsuite-title" src="[https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/badges/adjustsuite-title.svg" /></div>
+
 
 <div align="center">
   
