@@ -55,8 +55,7 @@ By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
 
-### ↓ Click here for “modSettings.xml”  ↓
-### ↓ Hier Klicken für “modSettings.xml” ↓
+### ↓ Click here for “modSettings.xml”  ↓ | ↓ Hier Klicken für “modSettings.xml” ↓
 <details>
 <summary>“modSettings.xml”</summary>
 
