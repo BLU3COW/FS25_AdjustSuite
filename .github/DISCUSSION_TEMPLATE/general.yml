@@ -3,7 +3,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this category for community discussion, compatibility checks, mod conflicts, and topics that are not yet a bug report. | Fuer reproduzierbare Fehler bitte ein Issue erstellen. Für unklare Fragen, Kompatibilität und Mod-Konflikte ist diese Kategorie passend.
+        Use this category for community discussion, compatibility checks, mod conflicts, and topics that are not yet a bug report. | Für reproduzierbare Fehler bitte ein Issue erstellen. Für unklare Fragen, Kompatibilität und Mod-Konflikte ist diese Kategorie passend.
 
   - type: dropdown
     id: topic_type
