@@ -1,7 +1,8 @@
+
 <div align="center"><img width="500"  alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/logos/adjustsuite.svg" /></div>
 
 
-# <div align="center"><img width="860" height="80" alt="adjustsuite-title" src="https://raw.githubusercontent.com/BLU3COW/FS25_AdjustSuite/main/.github/assets/badges/adjustsuite-title.svg" /></div>
+# <div align="center"><img width="860" height="80" alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/adjustsuite-title.svg" /></div>
 
 
 <div align="center">
@@ -32,7 +33,7 @@
 
 </div>
 
-## <div align="center"><img width="190" height="40" alt="range" src="https://github.com/user-attachments/assets/a686b71e-4266-491d-a642-a69cb5175245" /></div>
+## <div align="center"><img width="190" height="40" alt="range" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/range.svg" /></div>
 
 
 | Range | - % | + % | Steps | Default |
@@ -45,7 +46,7 @@
 
 By default, only **Real** is on. The default setup keeps adjustments close to realistic values. If you want more freedom, you can adjust higher ranges in “modSettings.xml”. | Standardmäßig ist nur **Real** an. Die Standardeinstellung sorgt dafür, dass die Anpassungen nahe an realistischen Werten bleiben. Wenn Sie mehr Freiheit wünschen, können Sie in der Datei „modSettings.xml“ größere Bereiche einstellen.
 
-## <img width="185" height="40" alt="module" src="https://github.com/user-attachments/assets/91bd8df6-0446-41d3-a6be-e8101e1b5dba" />
+## <img width="185" height="40" alt="module" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/module.svg" />
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -61,7 +62,7 @@ By default, only **Real** is on. The default setup keeps adjustments close to re
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
 
-## <img width="300" height="40" alt="settings" src="https://github.com/user-attachments/assets/e09a07b5-9a92-4893-8148-a687a480e223" />
+## <img width="300" height="40" alt="settings" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/settings.svg" />
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -88,9 +89,11 @@ You can Adjust:
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
 
-## <img width="460" height="40" alt="planned-updates" src="https://github.com/user-attachments/assets/6545713d-d0cf-4ba3-856c-e853346283f6" />
+## <img width="460" height="40" alt="planned-updates" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/planned-updates.svg" />
 
-## <img width="610" height="40" alt="support-the-project" src="https://github.com/user-attachments/assets/7ae3d10e-501e-4800-94eb-5e6c80c5d6ea" />
+## <img width="160" height="40" alt="blu3cow" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/blu3cow.svg" />
+
+## <img width="610" height="40" alt="support-the-project" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/support-the-project.svg" />
 
 If AdjustSuite helps you, you can support development through PayPal or Buy Me a Beer. | Wenn Ihnen AdjustSuite weiterhilft, können Sie die Entwicklung über PayPal oder „Buy Me a Beer“ unterstützen.
 
@@ -98,7 +101,7 @@ If AdjustSuite helps you, you can support development through PayPal or Buy Me a
 [![Donate with Buy Me a Beer](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
 
 
-## <img width="250" height="40" alt="screenshots" src="https://github.com/user-attachments/assets/e03efe4b-c4df-4066-9947-96e0396e5efc" />
+## <img width="250" height="40" alt="screenshots" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/screenshots.svg" />
 
 <img width="1600" height="900" alt="007" src="https://github.com/user-attachments/assets/df2ed527-d9c8-447a-816d-b098a8ea0f73" />
 <img width="1600" height="900" alt="006" src="https://github.com/user-attachments/assets/0b69d18e-80d6-441f-b4b6-7ee4a57ff246" />
