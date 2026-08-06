@@ -76,17 +76,11 @@ By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
 
-### <div align="center">⬇️ Click here for “modSettings.xml” | Hier Klicken für “modSettings.xml” ⬇️</div>
-
   
 <details>
-
-  <summary>
-    <img width="330" height="40" alt="click-to-view" src=".github/assets/badges/click-to-view.svg">
-  </summary>
-
-
-#### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
+  <summary><div align="center"><strong>‼️Click to View “modSettings.xml” | Klicken Sie hier, um „modSettings.xml“ anzuzeigen‼️</strong></div></summary>
+    <br>
+      #### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
 The “modSettings.xml” is created automatically when the mod is started for the first time.
 
 You can Adjust:
