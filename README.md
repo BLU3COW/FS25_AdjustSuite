@@ -74,7 +74,6 @@ By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
 ### <div align="center">⬇️ Click here for “modSettings.xml” | Hier Klicken für “modSettings.xml” ⬇️</div>
 
-<div align="center">
   
 <details>
 <summary>🔻“modSettings.xml”🔻</summary></div>
@@ -93,7 +92,6 @@ You can Adjust:
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
 
-</div>
 
 ## <div align="center"><img width="460" height="40" alt="planned-updates" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/planned-updates.svg" /></div>
 
