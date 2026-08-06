@@ -49,8 +49,8 @@ body:
         - ABP - Adjust Brake Power - Bremskraft
         - ADR - Adjust Discharge Rate - Entladerate
         - New module | Neues Modul
-        - Core / settings / help menu | Kern / Einstellungen / Hilfemenü
-        - Documentation / release notes | Documentation / release notes
+        - Core / settings / help menu | Kern / Einstellungen / Preise / Hilfemenü
+        - Documentation / release notes | Dokumentation / Versionshinweise
         - Other | Sonstiges
     validations:
       required: true
