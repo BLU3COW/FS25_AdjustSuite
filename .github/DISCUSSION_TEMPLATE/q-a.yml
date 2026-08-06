@@ -1,74 +1,71 @@
-title: "[Q&A]: "
+title: "[Q&A]: | [Fragen und Antworten]:"
 body:
   - type: markdown
     attributes:
       value: |
-        Ask setup, installation, configuration, and gameplay questions here.
-
-        Fuer reproduzierbare Fehler bitte ein Bug-Issue erstellen. Fuer Fragen zur Nutzung ist diese Kategorie richtig.
+        Ask setup, installation, configuration, and gameplay questions here. | Für reproduzierbare Fehler bitte ein Bug-Issue erstellen. Für Fragen zur Nutzung ist diese Kategorie richtig.
 
   - type: textarea
     id: question
     attributes:
-      label: Question
-      description: What do you need help with?
-      placeholder: "How can I ..."
+      label: Question | Frage
+      description: What do you need help with? | Wobei können wir Ihnen helfen?
+      placeholder: "How can I ... | Wie kann ich …"
     validations:
       required: true
 
   - type: dropdown
     id: area
     attributes:
-      label: Area
-      description: Which area is your question about?
+      label: Area | Bereich
+      description: Which area does this request affect? | Welchen Bereich betrifft diese Anfrage?
       options:
-        - Installation / update
-        - modSettings
-        - Help menu display
-        - AFV - Adjust Fill Volume
-        - AMP - Adjust Motor Power
-        - AWS - Adjust Working Speed
-        - AWW - Adjust Working Width
-        - APW - Adjust Pickup Width
-        - ADS - Adjust Driving Speed
-        - ABP - Adjust Brake Power
-        - ADR - Adjust Discharge Rate
-        - Dedicated server
-        - Other
+        - AFV - Adjust Fill Volume - Füllvolumen
+        - AMP - Adjust Motor Power - Motorleistung
+        - AWS - Adjust Working Speed - Arbeitsgeschwindigkeit
+        - AWW - Adjust Working Width - Arbeitsbreite
+        - APW - Adjust Pickup Width	- Pickupbreite
+        - ADS - Adjust Driving Speed - Fahrgeschwindigkeit
+        - ABP - Adjust Brake Power - Bremskraft
+        - ADR - Adjust Discharge Rate - Entladerate
+        - New module | Neues Modul
+        - Core / settings / help menu | Kern / Einstellungen / Preise / Hilfemenü
+        - Documentation / release notes | Dokumentation / Versionshinweise
+        - Other | Sonstiges
     validations:
-      required: true
+      required: false
 
   - type: input
     id: mod_version
     attributes:
-      label: AdjustSuite version
-      description: Which AdjustSuite version are you using?
-      placeholder: "Example: 1.0.0.0"
+      label: AdjustSuite - Version
+      description: Which version of the mod are you using? | Welche Version des Mods verwendest du?
+      placeholder: "Example: | Beispiel: 1.0.0.0"
     validations:
       required: false
 
   - type: input
     id: game_version
     attributes:
-      label: Farming Simulator 25 version
-      description: Which FS25 game version is installed?
-      placeholder: "Example: 1.14.0.0"
+      label: Farming Simulator 25 - Version
+      description: Which FS25 game version is installed? |Welche FS25 Spielversion ist installiert?
+      placeholder: "Example: | Beispiel: 1.14.0.0"
     validations:
       required: false
-
+      
   - type: textarea
     id: tried
     attributes:
-      label: What have you tried?
-      description: Mention settings, vehicles, modules, or docs you already checked.
+      label: What have you tried? | Was hast du schon versucht?
+      description: Mention settings, vehicles, modules, or docs you already checked. | Geben Sie Einstellungen, Fahrzeuge, Module oder Dokumente an, die Sie bereits geprüft haben.
     validations:
       required: false
 
   - type: textarea
     id: extra_context
     attributes:
-      label: Extra context
-      description: Add screenshots, log snippets, or related information if useful.
+      label: Extra context | Weitere Informationen
+      description: Add screenshots, log snippets, or related information if useful. | Fügen Sie gegebenenfalls Screenshots, Protokollausschnitte oder weitere relevante Informationen hinzu.
       render: text
     validations:
       required: false
