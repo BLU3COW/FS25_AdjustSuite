@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         
-        Thanks for reporting a problem with AdjustSuite. | Danke fuer deine Fehlermeldung zu AdjustSuite. 
+        Thanks for reporting a problem with AdjustSuite. | Danke für deine Fehlermeldung zu AdjustSuite. 
 
   - type: input
     id: mod_version
