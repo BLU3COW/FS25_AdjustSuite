@@ -32,14 +32,14 @@ By default, only **Real** is on. The default setup keeps adjustments close to re
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
-| AFV | Fill-Volume | Füllvolumen | ON |
-| AMP | Motor-Power | Motorleistung | ON |
-| AWS | Working-Speed | Arbeitsgeschwindigkeit | ON |
-| AWW | Working-Width | Arbeitsbreite | ON |
-| APW | Pickup-Width | Pickupbreite | ON |
-| ADS | Driving-Speed | Fahrgeschwindigkeit | ON |
-| ABP | Brake-Power | Bremskraft | ON |
-| ADR | Discharge-Rate | Entladerate | ON |
+| AFV | Fill Volume | Füllvolumen | ON |
+| AMP | Motor Power | Motorleistung | ON |
+| AWS | Working Speed | Arbeitsgeschwindigkeit | ON |
+| AWW | Working Width | Arbeitsbreite | ON |
+| APW | Pickup Width | Pickupbreite | ON |
+| ADS | Driving Speed | Fahrgeschwindigkeit | ON |
+| ABP | Brake Power | Bremskraft | ON |
+| ADR | Discharge Rate | Entladerate | ON |
 
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
@@ -72,15 +72,17 @@ You can Adjust:
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
 
-
-
-
 ## Support the Project
 
 If AdjustSuite helps you, you can support development through PayPal or Buy Me a Coffee:
 
+
+## Support the Project | Unterstützen Sie das Projekt
+
+If AdjustSuite helps you, you can support development through PayPal or Buy Me a Beer. | Wenn Ihnen AdjustSuite weiterhilft, können Sie die Entwicklung über PayPal oder „Buy Me a Beer“ unterstützen.
+
 [![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00B6FF?style=for-the-badge&labelColor=555&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=JAB2D3DPW2794)
-[![Donate with Buy Me a Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
+[![Donate with Buy Me a Beer](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
 
 
 ## Screenshots
