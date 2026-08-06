@@ -1,6 +1,7 @@
 title: "[Announcement]: | [Bekanntmachung]:"
 body:
   - type: markdown
+    id: announcement
     attributes:
       value: |
         Use this category for maintainer updates, releases, compatibility notes, and important project news. | Diese Kategorie ist fuer Maintainer-Updates, Releases, Kompatibilitaetshinweise und wichtige Projektinfos.
