@@ -1,6 +1,7 @@
 title: "[General]: | [Allgemeines]:"
 body:
   - type: markdown
+    id: general
     attributes:
       value: |
         Use this category for community discussion, compatibility checks, mod conflicts, and topics that are not yet a bug report. | Für reproduzierbare Fehler bitte ein Issue erstellen. Für unklare Fragen, Kompatibilität und Mod-Konflikte ist diese Kategorie passend.
