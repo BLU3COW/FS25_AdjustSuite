@@ -1,4 +1,4 @@
-# AdjustSuite for Farming Simulator 25
+# ![AdjustSuite for Farming Simulator 25](https://placehold.co/490x40/00B6FF/000000?text=AdjustSuite+for+Farming+Simulator+25&font=roboto)
 
 [![GitHub](https://img.shields.io/github/v/release/BLU3COW/FS25_AdjustSuite?style=flat-square&label=GitHub&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/releases/latest)
 [![ModHub](https://img.shields.io/badge/ModHub-Pending-00B6FF?style=flat-square&labelColor=555)](https://github.com/BLU3COW/FS25_AdjustSuite)
@@ -16,7 +16,7 @@
 
 <img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/ab7716c0-4f5d-4a6c-8153-369d7e26bd04" />
 
-## Range | Bereich
+## ![Range](https://placehold.co/110x40/00B6FF/000000?text=Range&font=roboto)![Bereich](https://placehold.co/130x40/00B6FF/000000?text=Bereich&font=roboto)
 
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
@@ -28,7 +28,7 @@
 
 By default, only **Real** is on. The default setup keeps adjustments close to realistic values. If you want more freedom, you can adjust higher ranges in “modSettings.xml”. | Standardmäßig ist nur **Real** an. Die Standardeinstellung sorgt dafür, dass die Anpassungen nahe an realistischen Werten bleiben. Wenn Sie mehr Freiheit wünschen, können Sie in der Datei „modSettings.xml“ größere Bereiche einstellen.
 
-## Module | Modul 
+## ![Module](https://placehold.co/130x40/00B6FF/000000?text=Module&font=roboto)![Modul](https://placehold.co/130x40/00B6FF/000000?text=Modul&font=roboto)
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -44,7 +44,7 @@ By default, only **Real** is on. The default setup keeps adjustments close to re
 By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
 
 
-## Settings | Einstellungen 
+## ![Settings](https://placehold.co/140x40/00B6FF/000000?text=Settings&font=roboto)![Einstellungen](https://placehold.co/210x40/00B6FF/000000?text=Einstellungen&font=roboto)
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -72,15 +72,7 @@ You can Adjust:
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
 
-## Support the Project [![Support the Project](https://placehold.co/250x40/00B6FF/000000?text=Support+the+Project&font=roboto)]
-
-If AdjustSuite helps you, you can support development through PayPal or Buy Me a Coffee:
-
-[![Buy Me a Coffee](https://placehold.co/200x40/00B6FF/000000?text=Buy+Me+a+Coffee&font=montserrat)](https://buymeacoffee.com/blu3cow)
-[![Buy Me a Coffee](https://placehold.co/00B6FF/000000?text=Buy+Me+a+Coffee&font=montserrat)](https://buymeacoffee.com/blu3cow)
-
-
-## Support the Project | Unterstützen Sie das Projekt
+## ![Support the Project](https://placehold.co/270x40/00B6FF/000000?text=Support+the+Project&font=roboto)![Unterstützen Sie das Projekt](https://placehold.co/410x40/00B6FF/000000?text=Unterst%C3%BCtzen+Sie+das+Projekt&font=roboto)
 
 If AdjustSuite helps you, you can support development through PayPal or Buy Me a Beer. | Wenn Ihnen AdjustSuite weiterhilft, können Sie die Entwicklung über PayPal oder „Buy Me a Beer“ unterstützen.
 
@@ -88,7 +80,7 @@ If AdjustSuite helps you, you can support development through PayPal or Buy Me a
 [![Donate with Buy Me a Beer](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
 
 
-## Screenshots
+## ![Screenshots](https://placehold.co/190x40/00B6FF/000000?text=Screenshots&font=roboto)![Bilder](https://placehold.co/110x40/00B6FF/000000?text=Bilder&font=roboto)
 
 <img width="1600" height="900" alt="007" src="https://github.com/user-attachments/assets/df2ed527-d9c8-447a-816d-b098a8ea0f73" />
 <img width="1600" height="900" alt="006" src="https://github.com/user-attachments/assets/0b69d18e-80d6-441f-b4b6-7ee4a57ff246" />
