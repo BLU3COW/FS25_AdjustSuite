@@ -1,5 +1,5 @@
 <svg width="860" height="80" viewBox="0 0 860 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AdjustSuite for Farming Simulator 25">
   <title>AdjustSuite for Farming Simulator 25</title>
-  <rect width="860" height="80" fill="#00B6FF"/>
+  <rect width="860" height="80" rx="6" ry="6" fill="#00B6FF"/>
   <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" fill="#000000" font-family="'Exo 2', Exo2, Arial, sans-serif" font-size="32" font-weight="700">AdjustSuite for Farming Simulator 25</text>
 </svg>
