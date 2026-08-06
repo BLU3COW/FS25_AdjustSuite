@@ -1,64 +1,62 @@
-name: Translation / Uebersetzung
-description: Report a translation issue or suggest improved localization text.
+name: Translation / Übersetzung
+description: Report a translation issue or suggest improved localization text. | Melden Sie ein Übersetzungsproblem oder schlagen Sie eine Verbesserung des Textes vor.
 title: "[l10n]: "
-labels: ["localization"]
+labels: ["localization | Lokalisierung"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for helping improve FS25_AdjustSuite translations.
-
-        Danke, dass du bei den Uebersetzungen von FS25_AdjustSuite hilfst.
+        Thanks for helping improve AdjustSuite translation. | Danke, dass du bei den Übersetzungen von AdjustSuite hilfst.
 
   - type: dropdown
     id: request_type
     attributes:
-      label: Translation type
-      description: What kind of localization change is this?
+      label: Translation type | Übersetzungsart
+      description: What kind of translation change is this? | Um welche Art von Übersetzungsänderung handelt es sich hier?
       options:
-        - Wrong translation
-        - Missing translation
-        - Better wording
-        - Text is too long in-game
-        - New language request
-        - Typo / spelling
-        - Other
+        - Wrong translation | Falsche Übersetzung
+        - Missing translation | Fehlende Übersetzung
+        - Better wording | Bessere Formulierung
+        - Text is too long in-game | Der Text ist im Spiel zu lang
+        - New language request | Anfrage für eine neue Sprache
+        - Typo / spelling | Tippfehler / Rechtschreibfehler
+        - Other | Sonstiges
     validations:
       required: true
 
   - type: dropdown
     id: language
     attributes:
-      label: Language
-      description: Which language file or language is affected?
+      label: Language | Sprache
+      description: Which language file or language is affected? | Welche Sprache oder Sprachdatei ist davon betroffen?
       options:
-        - de - German
-        - en - English
-        - es - Spanish
-        - fr - French
-        - it - Italian
-        - nl - Dutch
-        - pl - Polish
-        - New language
-        - Multiple languages
-        - Not sure
+        - de | German | Deustch
+        - en | English | Englisch
+        - es | Spanish | Spanisch
+        - fr | French | Französich
+        - it | Italian | Italienisch
+        - nl | Dutch | Niederländisch
+        - pl | Polish | Polnisch
+        - New language | Neue Sprache
+        - Multiple languages | Mehrere Sprachen
+        - Other | Sonstiges
     validations:
       required: true
 
   - type: input
     id: l10n_key
     attributes:
-      label: l10n key or screen
-      description: If known, name the l10n key, menu entry, help text, module, or in-game screen.
-      placeholder: "Example: AWW help text, modSettings price label, menu entry ..."
+      label: l10n key or screen | l10n-Schlüssel oder Bildschirm
+      description: If known, name the l10n key, menu entry, help text, module, or in-game screen. | Falls bekannt, geben Sie bitte den L10n-Schlüssel, den Menüeintrag, den Hilfetext, das Modul oder den Bildschirm im Spiel an.
+      placeholder: "Example: AWW help text, modSettings price label, menu entry ... | Beispiel: AWW-Hilfetext, Preisbezeichnung in „modSettings“, Menüeintrag …"
     validations:
       required: false
 
   - type: textarea
     id: current_text
     attributes:
-      label: Current text
-      description: Paste the current text as it appears in-game or in the l10n file.
+      label: Current text | Aktueller Text
+      description: Paste the current text as it appears in-game or in the l10n file. | Füge den aktuellen Text so ein, wie er im Spiel oder in der l10n-Datei erscheint.
       render: text
     validations:
       required: false
@@ -66,8 +64,8 @@ body:
   - type: textarea
     id: proposed_text
     attributes:
-      label: Proposed text
-      description: Paste the corrected or suggested translation.
+      label: Proposed text | Vorgeschlagener Text
+      description: Paste the corrected or suggested translation. | Fügen Sie die korrigierte oder vorgeschlagene Übersetzung ein.
       render: text
     validations:
       required: true
@@ -75,26 +73,26 @@ body:
   - type: textarea
     id: context
     attributes:
-      label: Context
-      description: Explain where the text appears and why the proposed wording is better.
-      placeholder: "This appears in ... and should mean ..."
+      label: Context | Kontext
+      description: Explain where the text appears and why the proposed wording is better. | Erläutern Sie, an welcher Stelle der Text erscheint und warum der vorgeschlagene Wortlaut besser ist.
+      placeholder: "This appears in ... and should mean ... | Das erscheint in … und sollte bedeuten, dass …"
     validations:
       required: true
 
   - type: textarea
     id: screenshots
     attributes:
-      label: Screenshots or references
-      description: Attach screenshots or links if they help explain layout, meaning, or text length.
+      label: Screenshots or references | Screenshots oder Quellenangaben
+      description: Attach screenshots or links if they help explain layout, meaning, or text length. | Fügen Sie Screenshots oder Links bei, wenn diese zur Verdeutlichung des Layouts, der Bedeutung oder der Textlänge beitragen.
     validations:
       required: false
 
   - type: input
     id: mod_version
     attributes:
-      label: AdjustSuite version
-      description: Which AdjustSuite version are you using?
-      placeholder: "Example: 1.0.0.0"
+      label: AdjustSuite - Version
+      description: Which version of the mod are you using? | Welche Version des Mods verwendest du?
+      placeholder: "Example: | Beispiel: 1.0.0.0"
     validations:
       required: false
 
@@ -103,7 +101,7 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: I checked that this text is still present in the latest available AdjustSuite release.
+        - label: I checked that this text is still present in the latest available AdjustSuite release. | Ich habe überprüft, ob dieser Text in der neuesten verfügbaren Version von AdjustSuite noch vorhanden ist.
           required: true
-        - label: I understand that short in-game labels may need to stay concise.
+        - label: I understand that short in-game labels may need to stay concise. | Mir ist klar, dass kurze Bezeichnungen im Spiel möglicherweise kurz und prägnant bleiben müssen.
           required: true
