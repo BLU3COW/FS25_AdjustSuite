@@ -1,42 +1,40 @@
-title: "[Show and tell]: "
+title: "[Show and tell]: | [Zeigen und erzählen]:"
 body:
   - type: markdown
     attributes:
       value: |
-        Share AdjustSuite setups, configuration examples, screenshots, tests, and player stories here.
-
-        Hier koennen Setups, Konfigurationsbeispiele, Screenshots, Tests und Erfahrungsberichte geteilt werden.
+        Share AdjustSuite setups, configuration examples, screenshots, tests, and player stories here. | Hier koennen Setups, Konfigurationsbeispiele, Screenshots, Tests und Erfahrungsberichte geteilt werden.
 
   - type: textarea
     id: showcase
     attributes:
-      label: What are you sharing?
-      description: Describe your setup, test, configuration, or result.
-      placeholder: "I configured ... and it works well for ..."
+      label: What are you sharing? | Was teilst du?
+      description: Describe your setup, test, configuration, or result. | Beschreiben Sie Ihre Umgebung, Ihren Test, Ihre Konfiguration oder Ihr Ergebnis.
+      placeholder: "I configured ... and it works well for ... | Ich habe … konfiguriert und es funktioniert gut für …"
     validations:
       required: true
 
   - type: dropdown
     id: area
     attributes:
-      label: Main area
-      description: Which area does your example relate to most?
+      label: Main area | Hauptbereich
+      description: Which area does your example relate to most? | Auf welchen Bereich bezieht sich Ihr Beispiel am ehesten?
       options:
-        - Complete AdjustSuite setup
-        - Vehicle configuration
-        - Attachment configuration
-        - Dedicated server setup
-        - Balancing example
-        - Screenshots / media
-        - Other
+        - Complete AdjustSuite setup | Komplette AdjustSuite-Einrichtung
+        - Vehicle configuration | Fahrzeugkonfiguration
+        - Attachment configuration | Anbaugerätekonfiguration
+        - Dedicated server setup | Einrichtung eines dedizierten Servers
+        - Balancing example | Beispiel zur Ausbalancierung
+        - Screenshots / media | Screenshots / Medien
+        - Other | Sonstiges
     validations:
       required: true
 
   - type: textarea
     id: settings
     attributes:
-      label: Relevant settings or values
-      description: Paste useful modSettings values or describe the configuration.
+      label: Relevant settings or values | Relevante Einstellungen oder Werte
+      description: Paste useful „modSettings.xml“ values or describe the configuration. | Fügen Sie hier nützliche „modSettings.xml“-Werte ein oder beschreiben Sie die Konfiguration.
       render: text
     validations:
       required: false
@@ -44,7 +42,7 @@ body:
   - type: textarea
     id: media
     attributes:
-      label: Screenshots, links, or notes
-      description: Add screenshots, videos, links, or extra notes if useful.
+      label: Screenshots, links, or notes | Screenshots, Links oder Notizen
+      description: Add screenshots, videos, links, or extra notes if useful. | Fügen Sie gegebenenfalls Screenshots, Videos, Links oder zusätzliche Anmerkungen hinzu.
     validations:
       required: false
