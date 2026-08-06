@@ -23,15 +23,6 @@ body:
   - type: input
     id: mod_version
     attributes:
-      label: AdjustSuite version
-      description: If relevant, which AdjustSuite version are you using?
-      placeholder: "Example: 1.0.0.0"
-    validations:
-      required: false
-
-  - type: input
-    id: mod_version
-    attributes:
       label: AdjustSuite - Version
       description: Which version of the mod are you using? | Welche Version des Mods verwendest du?
       placeholder: "Example: | Beispiel: 1.0.0.0"
