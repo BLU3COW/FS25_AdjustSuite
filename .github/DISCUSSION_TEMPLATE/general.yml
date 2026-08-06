@@ -1,23 +1,21 @@
-title: "[General]: "
+title: "[General]: | [Allgemeines]:"
 body:
   - type: markdown
     attributes:
       value: |
-        Use this category for community discussion, compatibility checks, mod conflicts, and topics that are not yet a bug report.
-
-        Fuer reproduzierbare Fehler bitte ein Issue erstellen. Fuer unklare Fragen, Kompatibilitaet und Mod-Konflikte ist diese Kategorie passend.
+        Use this category for community discussion, compatibility checks, mod conflicts, and topics that are not yet a bug report. | Fuer reproduzierbare Fehler bitte ein Issue erstellen. Für unklare Fragen, Kompatibilität und Mod-Konflikte ist diese Kategorie passend.
 
   - type: dropdown
     id: topic_type
     attributes:
-      label: Topic type
-      description: What kind of discussion is this?
+      label: Topic type | Thementyp
+      description: What kind of discussion is this? | Was ist das denn für eine Diskussion?
       options:
-        - Compatibility / mod conflict
-        - General feedback
-        - Documentation note
-        - Community discussion
-        - Other
+        - Compatibility / mod conflict | Kompatibilität / Mod-Konflikt
+        - General feedback | Allgemeines Feedback
+        - Documentation note | Hinweis zur Dokumentation
+        - Community discussion | Diskussion in der Community
+        - Other | Sonstiges
     validations:
       required: true
 
@@ -31,37 +29,37 @@ body:
       required: false
 
   - type: input
-    id: game_version
+    id: mod_version
     attributes:
-      label: Farming Simulator 25 version
-      description: If relevant, which FS25 game version is installed?
-      placeholder: "Example: 1.14.0.0"
+      label: AdjustSuite - Version
+      description: Which version of the mod are you using? | Welche Version des Mods verwendest du?
+      placeholder: "Example: | Beispiel: 1.0.0.0"
     validations:
-      required: false
+      required: true
 
   - type: textarea
     id: context
     attributes:
-      label: Context
-      description: Describe the topic, compatibility question, or situation.
-      placeholder: "What are you trying to do, and what should others know?"
+      label: Context | Kontext
+      description: Describe the topic, compatibility question, or situation. | Beschreiben Sie das Thema, die Kompatibilitätsfrage oder die Situation.
+      placeholder: "What are you trying to do, and what should others know? | Was möchtest du erreichen, und was sollten andere wissen?"
     validations:
       required: true
 
   - type: textarea
     id: affected_mods
     attributes:
-      label: Related mods, vehicles, maps, or server setup
-      description: List any other mods, vehicles, maps, or dedicated server details if compatibility is involved.
-      placeholder: "Example: map name, vehicle name, other script mods, dedicated server yes/no"
+      label: Related mods, vehicles, maps, or server setup | Zugehörige Mods, Fahrzeuge, Karten oder Serverkonfigurationen
+      description: List any other mods, vehicles, maps, or dedicated server details if compatibility is involved. | Führen Sie alle weiteren Mods, Fahrzeuge, Karten oder Angaben zu dedizierten Servern auf, sofern dies für die Kompatibilität relevant ist.
+      placeholder: "Example: map name, vehicle name, other script mods, dedicated server yes/no | Beispiel: Name der Karte, Name des Fahrzeugs, sonstige Skript-Modifikationen, dedizierter Server ja/nein"
     validations:
       required: false
 
   - type: textarea
     id: logs_or_links
     attributes:
-      label: Logs, screenshots, or links
-      description: Add screenshots, links, or relevant log.txt snippets if useful.
+      label: Logs, screenshots, or links | Protokolle, Screenshots oder Links
+      description: Add screenshots, links, or relevant „log.txt“ snippets if useful. | Fügen Sie gegebenenfalls Screenshots, Links oder relevante Ausschnitte aus der Datei „log.txt“ hinzu.
       render: text
     validations:
       required: false
