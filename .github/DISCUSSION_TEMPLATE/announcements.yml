@@ -1,27 +1,25 @@
-title: "[Announcement]: "
+title: "[Announcement]: | [Bekanntmachung]:"
 body:
   - type: markdown
     attributes:
       value: |
-        Use this category for maintainer updates, releases, compatibility notes, and important project news.
-
-        Diese Kategorie ist fuer Maintainer-Updates, Releases, Kompatibilitaetshinweise und wichtige Projektinfos.
+        Use this category for maintainer updates, releases, compatibility notes, and important project news. | Diese Kategorie ist fuer Maintainer-Updates, Releases, Kompatibilitaetshinweise und wichtige Projektinfos.
 
   - type: input
     id: release_version
     attributes:
-      label: Version or topic
-      description: Which AdjustSuite version or topic does this announcement cover?
-      placeholder: "Example: 1.0.0.0 or FS25 patch compatibility"
+      label: Version or topic | Version oder Thema
+      description: Which AdjustSuite version or topic does this announcement cover? | Auf welche AdjustSuite-Version oder welches Thema bezieht sich diese Ankündigung?
+      placeholder: "Example: 1.0.0.0 or FS25 patch compatibility | Beispiel: Kompatibilität mit 1.0.0.0 oder dem FS25-Patch"
     validations:
       required: true
 
   - type: textarea
     id: summary
     attributes:
-      label: Summary
-      description: Short summary of the announcement.
-      placeholder: "What changed, and why should players care?"
+      label: Summary | Zusammenfassung
+      description: Short summary of the announcement. | Kurze Zusammenfassung der Ankündigung.
+      placeholder: "What changed, and why should players care? | Was hat sich geändert, und warum sollte das die Spieler interessieren?"
     validations:
       required: true
 
@@ -29,20 +27,20 @@ body:
     id: details
     attributes:
       label: Details
-      description: Add release notes, compatibility details, migration notes, or known limitations.
+      description: Add release notes, compatibility details, migration notes, or known limitations. | Fügen Sie Versionshinweise, Angaben zur Kompatibilität, Hinweise zur Migration oder bekannte Einschränkungen hinzu.
     validations:
       required: false
 
   - type: dropdown
     id: action_required
     attributes:
-      label: Player action required
-      description: Do players need to do anything?
+      label: Player action required | Aktion des Spielers erforderlich
+      description: Do players need to do anything? | Müssen die Spieler etwas tun?
       options:
-        - No action required
-        - Update recommended
-        - Update required
-        - Check modSettings
-        - Read before installing
+        - No action required | Keine Maßnahme erforderlich
+        - Update recommended | Update empfohlen
+        - Update required | Update erforderlich
+        - Check „modSettings.xml“ | „modSettings.xml“ überprüfen
+        - Read before installing | Vor der Installation lesen
     validations:
       required: true
