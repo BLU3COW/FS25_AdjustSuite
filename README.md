@@ -30,6 +30,7 @@
 </div>
 <br>
 <div align="center">Adjust Vehicles and Attachments in „Farming Simulator 25“ so they fit the way you want to play.</div>
+<br>
 <div align="center">Passe Fahrzeuge und Anbaugeräte in „Farming Simulator 25“ so an, dass sie zu deinem Spielstil passen.</div>
 <br>
 
