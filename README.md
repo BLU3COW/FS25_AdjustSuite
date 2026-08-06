@@ -1,3 +1,4 @@
+<div align="center"><img width="8534" height="8534" alt="AJ_visual_AdjustSuite-02_AdjustSuite-01" src="https://github.com/user-attachments/assets/dd1525c4-a388-45c2-b808-57b736ca316c" /></div>
 # <div align="center"><img width="860" height="80" alt="adjustsuite-title" src="https://github.com/user-attachments/assets/6d1678d2-b0bf-47af-9cb0-1e20d5348ce0" /></div>
 
 <div align="center">
