@@ -72,9 +72,12 @@ You can Adjust:
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
 
-## Support the Project
+## Support the Project [![Support the Project](https://placehold.co/250x40/00B6FF/000000?text=Support+the+Project&font=roboto)]
 
 If AdjustSuite helps you, you can support development through PayPal or Buy Me a Coffee:
+
+[![Buy Me a Coffee](https://placehold.co/200x40/00B6FF/000000?text=Buy+Me+a+Coffee&font=montserrat)](https://buymeacoffee.com/blu3cow)
+[![Buy Me a Coffee](https://placehold.co/00B6FF/000000?text=Buy+Me+a+Coffee&font=montserrat)](https://buymeacoffee.com/blu3cow)
 
 
 ## Support the Project | Unterstützen Sie das Projekt
