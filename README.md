@@ -153,7 +153,14 @@ You can Adjust:
 
 ## <div align="center"><img width="610" height="40" alt="support-the-project" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/support-the-project.svg" /></div>
 
-If AdjustSuite helps you, you can support development through PayPal or Buy Me a Beer. | Wenn Ihnen AdjustSuite weiterhilft, können Sie die Entwicklung über PayPal oder „Buy Me a Beer“ unterstützen.
+<div align="center">If you like AdjustSuite and find it helpful in the game, you’re welcome to support its continued development via PayPal or with a virtual “Buy Me a Beer.” Every contribution helps us continue to develop new features, improvements, and modules. You can also actively support the project by sharing your requests, ideas, suggestions for improvement, or bug reports. Any form of participation helps make AdjustSuite better and more versatile.</div>
+
+<details>
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
+  <br>
+<div align="center">Wenn dir AdjustSuite gefällt und dich im Spiel unterstützt, kannst du die Weiterentwicklung gerne über PayPal oder mit einem virtuellen Buy Me a Beer unterstützen. Jede Unterstützung hilft dabei, neue Funktionen, Verbesserungen und Module weiter voranzubringen. Du kannst das Projekt aber auch aktiv unterstützen, indem du Wünsche, Ideen, Verbesserungsvorschläge oder Fehlermeldungen einbringst. Jede Form der Mitarbeit hilft dabei, AdjustSuite besser und vielseitiger zu machen.</div>
+</details>
+
 
 <div align="center">
   
