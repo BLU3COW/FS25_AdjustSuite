@@ -190,6 +190,7 @@ Eine eigene grafische Benutzeroberfläche ist geplant, um die Verwaltung der Ein
   <br>
 <div align="center">BLU3COW ist seit vielen Jahren im Bereich Modding aktiv. Bislang wurden zahlreiche Mods und Anpassungen vor allem für den persönlichen Gebrauch erstellt. Nun werden einige dieser Projekte nach und nach mit der Community geteilt. Bei BLU3COW geht es nicht nur um Skript-Mods – das Angebot umfasst auch Prefabs, Objekte, Modelle und praktische Anpassungen für den Landwirtschafts Simulator. Da sich viele Projekte noch in der Entwicklung befinden, sind Feedback, Ideen und Verbesserungsvorschläge jederzeit willkommen. Alle Interessierten sind herzlich eingeladen, sich aktiv am Projekt zu beteiligen, bei der Entwicklung von Inhalten mitzuhelfen, Fehler zu finden oder neue Ideen einzubringen. So können die Mods weiter verfeinert und besser auf die Bedürfnisse der Community zugeschnitten werden.</div>
 </details>
+<br>
 
 ## <div align="center"><img width="610" height="40" alt="support-the-project" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/support-the-project.svg" /></div>
 
