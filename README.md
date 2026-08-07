@@ -7,9 +7,7 @@
 
 <div align="center"><img width="500"  alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/logos/adjustsuite.svg" /></div>
 
-
 # <div align="center"><img width="860" height="80" alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/adjustsuite-title.svg" /></div>
-
 
 <div align="center">
   
@@ -21,21 +19,23 @@
 [![Discussions](https://img.shields.io/github/discussions-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen&style=flat-square&label=Discussions&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
 [![Pulls](https://img.shields.io/github/issues-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen%20is%3Apr&style=flat-square&label=Pulls&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/pulls)
 [![Wiki](https://img.shields.io/website?url=https%3A%2F%2Fgithub.com%2FBLU3COW%2FFS25_AdjustSuite%2Fwiki&style=flat-square&label=Wiki&labelColor=555&up_color=00B6FF&up_message=online&down_message=offline)](https://github.com/BLU3COW/FS25_AdjustSuite/wiki)
-
 </div>
+
 <div align="center">
   
 [WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
-
 </div>
+
 <div align="center">
   
 [![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00B6FF?style=for-the-badge&labelColor=555&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=JAB2D3DPW2794)
 [![Donate with Buy Me a Beer](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
-
 </div>
 <br>
-<div align="center">With AdjustSuite, you can reduce the need for multiple separate mods when your goal is mainly to adjust and personalize your gameplay experience. Customize vehicles and attachments in FS25 to suit your personal playstyle. Optimize performance, working width, capacity, handling, and much more so that every machine is better suited to your farm, your fields, and your workflows.
+
+
+
+<div align="center">With <strong>AdjustSuite</strong>, you can reduce the need for multiple separate mods when your goal is mainly to adjust and personalize your gameplay experience. Customize vehicles and attachments in <strong>FS25</strong> to suit your personal playstyle. Optimize performance, working width, capacity, handling, and much more so that every machine is better suited to your farm, your fields, and your workflows.
 <br>
 <br>
 Whether you want to play in Real, Unreal, or Extreme mode, you decide how your game behaves. Further improvements and new modules are already in development.
@@ -43,9 +43,9 @@ Whether you want to play in Real, Unreal, or Extreme mode, you decide how your g
 <br>
 Want to help shape the project? Feel free to get involved and share your requests, suggestions, or ideas for improvement.</div>
 <details>
-  <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
-  <br>
-<div align="center">Mit AdjustSuite kannst du die Anzahl zusätzlicher Einzelmods reduzieren, wenn es dir vor allem darum geht, dein Spielerlebnis gezielt anzupassen. Fahrzeuge und Anbaugeräte in LS25 lassen sich damit ganz nach deinem persönlichen Spielstil verändern. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Fahrverhalten und vieles mehr, damit jede Maschine besser zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt.
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
+<br>
+<div align="center">Mit <strong>AdjustSuite</strong> kannst du die Anzahl zusätzlicher Einzelmods reduzieren, wenn es dir vor allem darum geht, dein Spielerlebnis gezielt anzupassen. Fahrzeuge und Anbaugeräte in <strong>LS25</strong> lassen sich damit ganz nach deinem persönlichen Spielstil verändern. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Fahrverhalten und vieles mehr, damit jede Maschine besser zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt.
   <br>
    <br>
 Egal ob du im Modus Real, Unreal oder Extreme spielen möchtest: Du entscheidest, wie sich dein Spiel anfühlt und verhält. Weitere Verbesserungen und neue Module sind bereits in Entwicklung.
