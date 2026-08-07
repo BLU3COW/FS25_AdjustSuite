@@ -151,11 +151,45 @@ You can Adjust:
 </details>
 
 <br>
-<br>
 
 ## <div align="center"><img width="460" height="40" alt="planned-updates" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/planned-updates.svg" /></div>
 
+<div align="center">
+  
+### Placeables
+Expanding customization options to include placeable objects. We plan to introduce options that allow players to better tailor selected placeables to their own farm, playstyle, and economic needs.
+
+### New Modules
+Additional modules are already in the works to allow for the customization of further properties of vehicles, equipment, and other in-game objects. This will gradually make AdjustSuite more versatile and flexible.
+
+### GUI Interface
+A dedicated graphical user interface is planned to make it more convenient to manage settings directly within the game. The goal is to provide a clear and intuitive user experience where customization options are more accessible and presented in a more understandable way.</div>
+
+<details>
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
+  <br>
+<div align="center">
+  
+### Platzierbare Objekte
+Erweiterung der Anpassungsmöglichkeiten um platzierbare Objekte. Wir planen die Einführung von Optionen, mit denen Spieler ausgewählte platzierbare Objekte besser an ihre eigene Farm, ihren Spielstil und ihre wirtschaftlichen Bedürfnisse anpassen können.
+
+### Neue Module
+Weitere Module sind bereits in Arbeit, um die Anpassung weiterer Eigenschaften von Fahrzeugen, Ausrüstung und anderen Objekten im Spiel zu ermöglichen. Dadurch wird AdjustSuite nach und nach vielseitiger und flexibler.
+
+### GUI-Oberfläche
+Eine eigene grafische Benutzeroberfläche ist geplant, um die Verwaltung der Einstellungen direkt im Spiel zu vereinfachen. Das Ziel ist es, eine übersichtliche und intuitive Benutzererfahrung zu bieten, bei der die Anpassungsoptionen leichter zugänglich sind und auf verständlichere Weise dargestellt werden.</div>
+</details>
+  <br>
+  
 ## <div align="center"><img width="160" height="40" alt="blu3cow" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/blu3cow.svg" /></div>
+
+<div align="center">BLU3COW has been involved in modding for many years. So far, many mods and customizations have been created primarily for personal use. Now, some of these projects will gradually be shared with the community. BLU3COW isn’t just about script mods—it also includes prefabs, objects, models, and practical customizations for Farming Simulator. Since many projects are still in development, feedback, ideas, and suggestions for improvement are always welcome. Anyone interested is cordially invited to actively participate in the project, help develop content, find bugs, or contribute new ideas. This will allow the mods to be further refined and better tailored to the community’s needs.</div>
+
+<details>
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
+  <br>
+<div align="center">BLU3COW ist seit vielen Jahren im Bereich Modding aktiv. Bislang wurden zahlreiche Mods und Anpassungen vor allem für den persönlichen Gebrauch erstellt. Nun werden einige dieser Projekte nach und nach mit der Community geteilt. Bei BLU3COW geht es nicht nur um Skript-Mods – das Angebot umfasst auch Prefabs, Objekte, Modelle und praktische Anpassungen für den Landwirtschafts Simulator. Da sich viele Projekte noch in der Entwicklung befinden, sind Feedback, Ideen und Verbesserungsvorschläge jederzeit willkommen. Alle Interessierten sind herzlich eingeladen, sich aktiv am Projekt zu beteiligen, bei der Entwicklung von Inhalten mitzuhelfen, Fehler zu finden oder neue Ideen einzubringen. So können die Mods weiter verfeinert und besser auf die Bedürfnisse der Community zugeschnitten werden.</div>
+</details>
 
 ## <div align="center"><img width="610" height="40" alt="support-the-project" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/support-the-project.svg" /></div>
 
