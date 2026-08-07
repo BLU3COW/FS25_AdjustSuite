@@ -29,7 +29,7 @@
 
 </div>
 <br>
-<div align="center">Customize vehicles and attachments in “LS25” to suit your personal playstyle. Optimize performance, working width, capacity, weight, handling, and much more so that every machine is perfectly suited to your farm, your fields, and your workflows. Whether you want to play in Real, Unreal, or Extreme mode, you decide how your game behaves! Further improvements and new modules are in development. Want to help shape the project? Then feel free to get involved and share your requests, suggestions, or ideas for improvement.</div>
+<div align="center">Customize vehicles and attachments in “FS25” to suit your personal playstyle. Optimize performance, working width, capacity, weight, handling, and much more so that every machine is perfectly suited to your farm, your fields, and your workflows. Whether you want to play in Real, Unreal, or Extreme mode, you decide how your game behaves! Further improvements and new modules are in development. Want to help shape the project? Then feel free to get involved and share your requests, suggestions, or ideas for improvement.</div>
 <details>
   <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
   <br>
@@ -42,12 +42,14 @@
 <div align="center">
 
   
-<img width="1600" height="900" alt="008" src="https://github.com/user-attachments/assets/ab7716c0-4f5d-4a6c-8153-369d7e26bd04" />
+<img width="1600" height="900" alt="008" src=".github/assets/screenshots/adjustsuite-gif.gif" />
 
 </div>
+<br>
 
 ## <div align="center"><img width="190" height="40" alt="range" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/range.svg" /></div>
 
+<div align="center">
 
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
@@ -56,10 +58,25 @@
 | UNREAL | -80 % | +200 % | 20 % | OFF |
 | EXTREME | -80 % | +800 % | 100 % | OFF |
 
+</div>
+<br>
 
-By default, only **Real** is on. The default setup keeps adjustments close to realistic values. If you want more freedom, you can adjust higher ranges in “modSettings.xml”. | Standardmäßig ist nur **Real** an. Die Standardeinstellung sorgt dafür, dass die Anpassungen nahe an realistischen Werten bleiben. Wenn Sie mehr Freiheit wünschen, können Sie in der Datei „modSettings.xml“ größere Bereiche einstellen.
+<div align="center">By default, only Real Range is enabled. This default setting ensures that all adjustments remain as close as possible to realistic values. If you want more freedom with the settings, you can specify a wider range of adjustments in the “modSettings.xml” file and tailor the mod more precisely to your playstyle.​</div>
+
+<details>
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
+  <br>
+<div align="center">Standardmäßig ist nur der Real Bereich aktiviert. Diese Standardeinstellung sorgt dafür, dass alle Anpassungen so nah wie möglich an realistischen Werten bleiben. Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei „modSettings.xml“ einen größeren Anpassungsbereich festlegen und den Mod genauer auf deinen Spielstil zuschneiden.</div>
+</details>
+
+<br>
+
+
+
 
 ## <div align="center"><img width="185" height="40" alt="module" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/module.svg" /></div>
+
+<div align="center">
 
 | Module | English | German | Default |
 | --- | --- | --- | --- |
@@ -72,7 +89,18 @@ By default, only **Real** is on. The default setup keeps adjustments close to re
 | ABP | Brake Power | Bremskraft | ON |
 | ADR | Discharge Rate | Entladerate | ON |
 
-By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
+</div>
+<br>
+
+<div align="center">By default, all modules are enabled. Each module controls a specific customization area and can be turned on or off individually as needed. This allows you to decide for yourself which characteristics of your vehicles and attachments should be modified and which areas should remain unchanged. With AFV, you can adjust the fill volume, for example, for trailers, tanks, seeders, spreaders, or other equipment with a capacity. AMP controls engine power and allows you to make vehicles more powerful, less powerful, or better suited to specific tasks. AWS lets you adjust the working speed of implements, such as when seeding, fertilizing, harvesting, or tilling. AWW changes the working width of implements so that fields can be worked more quickly, more comfortably, or more realistically. With APW, you can adjust the pickup width, for example, on load wagons, balers, or other implements with a pickup function. ADS controls the travel speed of vehicles, while ABP influences braking force, thereby ensuring more appropriate handling. ADR also allows you to adjust the unloading rate, that is, the speed at which trailers, tanks, or implements discharge their load.</div>
+
+<details>
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
+  <br>
+<div align="center">Standardmäßig sind alle Module aktiviert. Jedes Modul steuert einen bestimmten Anpassungsbereich und kann bei Bedarf einzeln ein- oder ausgeschaltet werden. So kannst du selbst entscheiden, welche Eigenschaften deiner Fahrzeuge und Anbaugeräte verändert werden sollen und welche Bereiche unverändert bleiben. Mit AFV passt du das Füllvolumen an, zum Beispiel bei Anhängern, Tanks, Sämaschinen, Streuern oder anderen Geräten mit Kapazität. AMP steuert die Motorleistung und ermöglicht es, Fahrzeuge stärker, schwächer oder besser auf bestimmte Aufgaben abzustimmen. Über AWS lässt sich die Arbeitsgeschwindigkeit von Geräten anpassen, etwa beim Säen, Düngen, Ernten oder bei der Bodenbearbeitung. AWW verändert die Arbeitsbreite von Geräten, damit Flächen schneller, komfortabler oder realistischer bearbeitet werden können. Mit APW passt du die Pickupbreite an, zum Beispiel bei Ladewagen, Ballenpressen oder anderen Geräten mit Aufnahmefunktion. ADS steuert die Fahrgeschwindigkeit von Fahrzeugen, während ABP die Bremskraft beeinflusst und so für ein passenderes Fahrverhalten sorgen kann. Über ADR lässt sich außerdem die Entladerate anpassen, also die Geschwindigkeit, mit der Anhänger, Tanks oder Geräte ihre Ladung abgeben.</div>
+</details>
+
+<br>
 
 
 ## <div align="center"><img width="300" height="40" alt="settings" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/settings.svg" /></div>
