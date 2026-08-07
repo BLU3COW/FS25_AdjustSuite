@@ -136,7 +136,9 @@
 <details>
   <summary><div align="center"><strong>‼️Click to View “modSettings.xml” | Hier Klicken um „modSettings.xml“ anzuzeigen‼️</strong></div><br></summary>
   <br>
+  
 #### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
+<br>
 The “modSettings.xml” is created automatically when the mod is started for the first time.
 
 You can Adjust:
