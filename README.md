@@ -30,9 +30,8 @@
 </div>
 <br>
 <div align="center">Customize vehicles and attachments in “LS25” to suit your personal playstyle. Optimize performance, working width, capacity, weight, handling, and much more so that every machine is perfectly suited to your farm, your fields, and your workflows. Whether you want to play in Real, Unreal, or Extreme mode, you decide how your game behaves! Further improvements and new modules are in development. Want to help shape the project? Then feel free to get involved and share your requests, suggestions, or ideas for improvement.</div>
-<br>
 <details>
-  <summary><div align="center"><strong>🇩🇪​ Deutsch 🇩🇪​</strong></div><br></summary>
+  <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
   <br>
 <div align="center">Passe Fahrzeuge und Anbaugeräte im „LS25“ ganz nach deinem persönlichen Spielstil an. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Gewicht, Fahrverhalten und vieles mehr damit jede Maschine perfekt zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt. Egal ob du Real, Unreal oder Extreme spielen möchtest, du entscheidest wie sich dein Spiel verhält! Weitere Verbesserungen und neue Module sind in der Entwicklung. Du möchtest das Projekt mitgestalten? Dann bring dich gerne ein und teile deine Wünsche, Vorschläge oder Ideen zur Verbesserung.</div>
 </details>
