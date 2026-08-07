@@ -161,13 +161,14 @@ You can Adjust:
 <div align="center">Wenn dir AdjustSuite gefällt und dich im Spiel unterstützt, kannst du die Weiterentwicklung gerne über PayPal oder mit einem virtuellen Buy Me a Beer unterstützen. Jede Unterstützung hilft dabei, neue Funktionen, Verbesserungen und Module weiter voranzubringen. Du kannst das Projekt aber auch aktiv unterstützen, indem du Wünsche, Ideen, Verbesserungsvorschläge oder Fehlermeldungen einbringst. Jede Form der Mitarbeit hilft dabei, AdjustSuite besser und vielseitiger zu machen.</div>
 </details>
 
-
+<br>
 <div align="center">
   
 [![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00B6FF?style=for-the-badge&labelColor=555&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=JAB2D3DPW2794)
 [![Donate with Buy Me a Beer](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
 
 </div>
+<br>
 
 ## <div align="center"><img width="250" height="40" alt="screenshots" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/screenshots.svg" /></div>
 
