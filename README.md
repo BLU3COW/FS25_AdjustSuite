@@ -35,11 +35,23 @@
 
 </div>
 <br>
-<div align="center">Customize vehicles and attachments in “FS25” to suit your personal playstyle. Optimize performance, working width, capacity, weight, handling, and much more so that every machine is perfectly suited to your farm, your fields, and your workflows. Whether you want to play in Real, Unreal, or Extreme mode, you decide how your game behaves! Further improvements and new modules are in development. Want to help shape the project? Then feel free to get involved and share your requests, suggestions, or ideas for improvement.</div>
+<div align="center">With AdjustSuite, you can reduce the need for multiple separate mods when your goal is mainly to adjust and personalize your gameplay experience. Customize vehicles and attachments in FS25 to suit your personal playstyle. Optimize performance, working width, capacity, handling, and much more so that every machine is better suited to your farm, your fields, and your workflows.
+<br>
+<br>
+Whether you want to play in Real, Unreal, or Extreme mode, you decide how your game behaves. Further improvements and new modules are already in development.
+<br>
+<br>
+Want to help shape the project? Feel free to get involved and share your requests, suggestions, or ideas for improvement.</div>
 <details>
   <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
   <br>
-<div align="center">Passe Fahrzeuge und Anbaugeräte im „LS25“ ganz nach deinem persönlichen Spielstil an. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Gewicht, Fahrverhalten und vieles mehr damit jede Maschine perfekt zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt. Egal ob du Real, Unreal oder Extreme spielen möchtest, du entscheidest wie sich dein Spiel verhält! Weitere Verbesserungen und neue Module sind in der Entwicklung. Du möchtest das Projekt mitgestalten? Dann bring dich gerne ein und teile deine Wünsche, Vorschläge oder Ideen zur Verbesserung.</div>
+<div align="center">Mit AdjustSuite kannst du die Anzahl zusätzlicher Einzelmods reduzieren, wenn es dir vor allem darum geht, dein Spielerlebnis gezielt anzupassen. Fahrzeuge und Anbaugeräte in LS25 lassen sich damit ganz nach deinem persönlichen Spielstil verändern. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Fahrverhalten und vieles mehr, damit jede Maschine besser zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt.
+  <br>
+   <br>
+Egal ob du im Modus Real, Unreal oder Extreme spielen möchtest: Du entscheidest, wie sich dein Spiel anfühlt und verhält. Weitere Verbesserungen und neue Module sind bereits in Entwicklung.
+  <br>
+   <br>
+Du möchtest das Projekt mitgestalten? Dann bring dich gerne ein und teile deine Wünsche, Vorschläge oder Ideen zur Verbesserung.</div>
 </details>
 
 <br>
@@ -53,28 +65,46 @@
 </div>
 <br>
 
+
+
+
+
+
 ## <div align="center"><img width="190" height="40" alt="range" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/range.svg" /></div>
-
 <div align="center">
-
+  
 | Range | - % | + % | Steps | Default |
 | --- | --- | --- | --- | --- |
 | BASE | -0 % | +0 % | --- | ON |
 | REAL | -20 % | +20 % | 5 % | ON |
 | UNREAL | -80 % | +200 % | 20 % | OFF |
 | EXTREME | -80 % | +800 % | 100 % | OFF |
-
 </div>
 <br>
 
-<div align="center">By default, only the REAL range is enabled. This keeps all adjustments within a balanced range and aligns them as closely as possible with realistic values. The BASE range serves as an unmodified baseline without any percentage adjustments. With REAL, you can make minor changes without significantly altering the gameplay experience. UNREAL offers significantly more leeway for freer adjustments, while EXTREME is intended for maximum customization if you deliberately want to go well beyond realistic limits. If you want more freedom with the settings, you can define wider adjustment ranges in the modSettings.xml file and tailor the mod even more precisely to your personal playstyle. However, always keep in mind the game’s logical and physical limits, as values that are too extreme can affect handling, the functionality of individual devices, or the game’s balance.​</div>
+
+
+<div align="center">By default, only the <strong>REAL</strong> range is enabled. This keeps all adjustments within a balanced range and aligns them as closely as possible with realistic values.
+<br>
+<br>
+The <strong>BASE</strong> range serves as an unmodified baseline without any percentage adjustments. With <strong>REAL</strong>, you can make minor changes without significantly altering the gameplay experience. <strong>UNREAL</strong> offers significantly more freedom for freer adjustments, while <strong>EXTREME</strong> is intended for maximum customization if you deliberately want to go well beyond realistic limits.
+<br>
+<br>
+If you want more freedom with the settings, you can define wider adjustment ranges in the <strong>“modSettings.xml”</strong> file and tailor the mod even more precisely to your personal playstyle. However, always keep in mind the game’s logical and physical limits, as values that are too extreme can affect handling, the functionality of individual tools, or the game’s balance.</div>
+
+
 
 <details>
 <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
-  <br>
-<div align="center">Standardmäßig ist nur der Bereich REAL aktiviert. Dadurch bleiben alle Anpassungen in einem ausgewogenen Rahmen und orientieren sich möglichst nah an realistischen Werten. Der Bereich BASE dient als unveränderte Grundlage ohne prozentuale Anpassung. Mit REAL kannst du kleinere Änderungen vornehmen, ohne das Spielgefühl stark zu verändern. UNREAL bietet deutlich mehr Spielraum für freiere Einstellungen, während EXTREME für maximale Anpassungen gedacht ist, wenn du bewusst deutlich über realistische Grenzen hinausgehen möchtest. Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei modSettings.xml größere Anpassungsbereiche festlegen und den Mod noch genauer auf deinen persönlichen Spielstil abstimmen. Beachte dabei jedoch immer die logischen und physikalischen Grenzen des Spiels, da zu extreme Werte das Fahrverhalten, die Funktion einzelner Geräte oder die Spielbalance beeinflussen können.</div>
+<br>
+<div align="center">Standardmäßig ist nur der Bereich <strong>REAL</strong> aktiviert. Dadurch bleiben alle Anpassungen in einem ausgewogenen Rahmen und orientieren sich möglichst nah an realistischen Werten.
+<br>
+<br>
+Der Bereich <strong>BASE</strong> dient als unveränderte Grundlage ohne prozentuale Anpassung. Mit <strong>REAL</strong> kannst du kleinere Änderungen vornehmen, ohne das Spielgefühl stark zu verändern. <strong>UNREAL</strong> bietet deutlich mehr Freiraum für freiere Einstellungen, während <strong>EXTREME</strong> für maximale Anpassungen gedacht ist, wenn du bewusst weit über realistische Grenzen hinausgehen möchtest.
+<br>
+<br>
+Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei <strong>„modSettings.xml“</strong> größere Anpassungsbereiche festlegen und den Mod noch genauer auf deinen persönlichen Spielstil abstimmen. Beachte dabei jedoch immer die logischen und physikalischen Grenzen des Spiels, da zu extreme Werte das Fahrverhalten, die Funktion einzelner Geräte oder die Spielbalance beeinflussen können.</div>
 </details>
-
 <br>
 
 
@@ -134,10 +164,9 @@
 
 <br>
 <details>
-  <summary><div align="center"><strong>‼️Click to View “modSettings.xml” | Hier Klicken um „modSettings.xml“ anzuzeigen‼️</strong></div><br></summary>
-  <br>
+  <summary><div align="center"><strong>‼️Click to View “modSettings.xml” | Hier Klicken um „modSettings.xml“ anzuzeigen‼️</strong></div></summary>
   
-#### C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml
+### <div align="center"><strong><code>C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml</code></strong></div>
 <br>
 The “modSettings.xml” is created automatically when the mod is started for the first time.
 
