@@ -128,12 +128,42 @@ Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei <s
 </div>
 <br>
 
-<div align="center">By default, all modules are enabled. Each module controls a specific customization area and can be turned on or off individually as needed. This allows you to decide for yourself which characteristics of your vehicles and attachments should be modified and which areas should remain unchanged. With AFV, you can adjust the fill volume, for example, for trailers, tanks, seeders, spreaders, or other equipment with a capacity. AMP controls engine power and allows you to make vehicles more powerful, less powerful, or better suited to specific tasks. AWS lets you adjust the working speed of implements, such as when seeding, fertilizing, harvesting, or tilling. AWW changes the working width of implements so that fields can be worked more quickly, more comfortably, or more realistically. With APW, you can adjust the pickup width, for example, on load wagons, balers, or other implements with a pickup function. ADS controls the travel speed of vehicles, while ABP influences braking force, thereby ensuring more appropriate handling. ADR also allows you to adjust the unloading rate, that is, the speed at which trailers, tanks, or implements discharge their load.</div>
+<div align="center">By default, all modules are enabled. Each module controls a specific customization area and can be turned on or off individually as needed.
+<br>
+<br>
+This allows you to decide which characteristics of your vehicles and attachments should be modified and which areas should remain unchanged.
+<br>
+<br>
+With <strong>AFV</strong>, you can adjust the fill volume, for example for trailers, tanks, seeders, spreaders, or other equipment with capacity. <strong>AMP</strong> controls engine power and allows vehicles to be made more powerful, less powerful, or better suited to specific tasks.
+<br>
+<br>
+<strong>AWS</strong> lets you adjust the working speed of implements, such as when seeding, fertilizing, harvesting, or tilling. <strong>AWW</strong> changes the working width of implements so fields can be worked more quickly, more comfortably, or more realistically.
+<br>
+<br>
+With <strong>APW</strong>, you can adjust the pickup width, for example on loading wagons, balers, or other implements with a pickup function. <strong>ADS</strong> controls the travel speed of vehicles, while <strong>ABP</strong> influences braking force for more suitable handling.
+<br>
+<br>
+<strong>ADR</strong> allows you to adjust the unloading rate, meaning the speed at which trailers, tanks, or implements discharge their load.</div>
 
 <details>
 <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
   <br>
-<div align="center">Standardmäßig sind alle Module aktiviert. Jedes Modul steuert einen bestimmten Anpassungsbereich und kann bei Bedarf einzeln ein- oder ausgeschaltet werden. So kannst du selbst entscheiden, welche Eigenschaften deiner Fahrzeuge und Anbaugeräte verändert werden sollen und welche Bereiche unverändert bleiben. Mit AFV passt du das Füllvolumen an, zum Beispiel bei Anhängern, Tanks, Sämaschinen, Streuern oder anderen Geräten mit Kapazität. AMP steuert die Motorleistung und ermöglicht es, Fahrzeuge stärker, schwächer oder besser auf bestimmte Aufgaben abzustimmen. Über AWS lässt sich die Arbeitsgeschwindigkeit von Geräten anpassen, etwa beim Säen, Düngen, Ernten oder bei der Bodenbearbeitung. AWW verändert die Arbeitsbreite von Geräten, damit Flächen schneller, komfortabler oder realistischer bearbeitet werden können. Mit APW passt du die Pickupbreite an, zum Beispiel bei Ladewagen, Ballenpressen oder anderen Geräten mit Aufnahmefunktion. ADS steuert die Fahrgeschwindigkeit von Fahrzeugen, während ABP die Bremskraft beeinflusst und so für ein passenderes Fahrverhalten sorgen kann. Über ADR lässt sich außerdem die Entladerate anpassen, also die Geschwindigkeit, mit der Anhänger, Tanks oder Geräte ihre Ladung abgeben.</div>
+<div align="center">Standardmäßig sind alle Module aktiviert. Jedes Modul steuert einen bestimmten Anpassungsbereich und kann bei Bedarf einzeln ein- oder ausgeschaltet werden.
+<br>
+<br>
+So kannst du selbst entscheiden, welche Eigenschaften deiner Fahrzeuge und Anbaugeräte verändert werden sollen und welche Bereiche unverändert bleiben.
+<br>
+<br>
+Mit <strong>AFV</strong> passt du das Füllvolumen an, zum Beispiel bei Anhängern, Tanks, Sämaschinen, Streuern oder anderen Geräten mit Kapazität. <strong>AMP</strong> steuert die Motorleistung und ermöglicht es, Fahrzeuge stärker, schwächer oder besser auf bestimmte Aufgaben abzustimmen.
+<br>
+<br>
+Über <strong>AWS</strong> lässt sich die Arbeitsgeschwindigkeit von Geräten anpassen, etwa beim Säen, Düngen, Ernten oder bei der Bodenbearbeitung. <strong>AWW</strong> verändert die Arbeitsbreite von Geräten, damit Flächen schneller, komfortabler oder realistischer bearbeitet werden können.
+<br>
+<br>
+Mit <strong>APW</strong> passt du die Pickupbreite an, zum Beispiel bei Ladewagen, Ballenpressen oder anderen Geräten mit Aufnahmefunktion. <strong>ADS</strong> steuert die Fahrgeschwindigkeit von Fahrzeugen, während <strong>ABP</strong> die Bremskraft beeinflusst und so für ein passenderes Fahrverhalten sorgen kann.
+<br>
+<br>
+Über <strong>ADR</strong> lässt sich außerdem die Entladerate anpassen, also die Geschwindigkeit, mit der Anhänger, Tanks oder Geräte ihre Ladung abgeben.</div>
 </details>
 
 <br>
@@ -151,12 +181,30 @@ Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei <s
 </div>
 <br>
 
-<div align="center">By default, these options are enabled or set to their default values. They complement the actual customization modules and affect how the mod is displayed in the game and how changes impact the game’s economy. HELPMENU controls whether the mod’s functions and hints are displayed in the help menu. If this option is enabled, you’ll receive relevant in-game information directly through the help menu, making it easier to understand which features are available. Using PRICE, you can specify how much adjustments affect prices. The default value is 100%, which corresponds to the normal price calculation. Depending on your settings, vehicles and attachments can be made cheaper, more expensive, or better suited to your preferred playstyle.</div>
+<div align="center">By default, these options are enabled or set to their default values. They complement the actual customization modules and affect how the mod is displayed in the game and how changes impact the game’s economy.
+<br>
+<br>
+<strong>HELPMENU</strong> controls whether the mod’s functions and hints are displayed in the help menu. When this option is enabled, relevant in-game information is shown directly through the help menu, making it easier to see which features are available.
+<br>
+<br>
+With <strong>PRICE</strong>, you can define how strongly adjustments affect prices. The default value is <strong>100%</strong>, which corresponds to the normal price calculation.
+<br>
+<br>
+Depending on your settings, vehicles and attachments can become cheaper, more expensive, or better suited to your preferred playstyle.</div>
 
 <details>
 <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
   <br>
-<div align="center">Standardmäßig sind diese Optionen aktiviert beziehungsweise auf ihren Grundwert eingestellt. Sie ergänzen die eigentlichen Anpassungsmodule und beeinflussen, wie der Mod im Spiel dargestellt wird und wie sich Änderungen auf die Wirtschaftlichkeit auswirken. Mit HELPMENU wird gesteuert, ob die Funktionen und Hinweise des Mods im Hilfemenü angezeigt werden. Ist diese Option aktiviert, erhältst du im Spiel passende Informationen direkt über das Hilfemenü und kannst leichter nachvollziehen, welche Funktionen verfügbar sind. Über PRICE kannst du festlegen, wie stark sich Anpassungen auf die Preise auswirken. Der Standardwert liegt bei 100 % und entspricht damit der normalen Preisberechnung. Je nach Einstellung können Fahrzeuge und Anbaugeräte günstiger, teurer oder besser an deinen gewünschten Spielstil angepasst werden.</div>
+<div align="center">Standardmäßig sind diese Optionen aktiviert beziehungsweise auf ihren Standardwert eingestellt. Sie ergänzen die eigentlichen Anpassungsmodule und beeinflussen, wie der Mod im Spiel angezeigt wird und wie sich Änderungen auf die Wirtschaftlichkeit auswirken.
+<br>
+<br>
+<strong>HELPMENU</strong> steuert, ob die Funktionen und Hinweise des Mods im Hilfemenü angezeigt werden. Ist diese Option aktiviert, werden passende Informationen direkt im Hilfemenü eingeblendet, sodass leichter erkennbar ist, welche Funktionen verfügbar sind.
+<br>
+<br>
+Mit <strong>PRICE</strong> kannst du festlegen, wie stark sich Anpassungen auf die Preise auswirken. Der Standardwert liegt bei <strong>100%</strong> und entspricht damit der normalen Preisberechnung.
+<br>
+<br>
+Je nach Einstellung können Fahrzeuge und Anbaugeräte günstiger, teurer oder besser an deinen gewünschten Spielstil angepasst werden.</div>
 </details>
 
 <br>
@@ -168,16 +216,23 @@ Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei <s
   
 ### <div align="center"><strong><code>C:\Users\YourPC\Documents\My Games\FarmingSimulator2025\modSettings\modSettings.xml</code></strong></div>
 <br>
-The “modSettings.xml” is created automatically when the mod is started for the first time.
-
-You can Adjust:
-
-- Adjustment Ranges
-- Modules
-- Helpmenu
-- Prices
+<div align="center">
+  
+The <strong>“modSettings.xml”</strong> file is created automatically when the mod is started for the first time.
+<br>
 
 
+</div>
+<details>
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
+  <br>
+<div align="center">Die Datei <strong>„modSettings.xml“</strong> wird automatisch erstellt, sobald der Mod zum ersten Mal gestartet wird.
+<br>
+
+
+</details>
+
+<br>
 <img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
 </details>
 
@@ -214,23 +269,59 @@ Eine eigene grafische Benutzeroberfläche ist geplant, um die Verwaltung der Ein
   
 ## <div align="center"><img width="160" height="40" alt="blu3cow" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/blu3cow.svg" /></div>
 
-<div align="center">So far, many mods and customizations have been created primarily for personal use. Now, some of these projects will gradually be shared with the community. BLU3COW isn’t just about script mods—it also includes prefabs, objects, models, and practical customizations for Farming Simulator. Since many projects are still in development, feedback, ideas, and suggestions for improvement are always welcome. Anyone interested is cordially invited to actively participate in the project, help develop content, find bugs, or contribute new ideas. This will allow the mods to be further refined and better tailored to the community’s needs.</div>
+<div align="center">So far, many mods and customizations have been created primarily for personal use. Now, some of these projects will gradually be shared with the community.
+<br>
+<br>
+<strong>BLU3COW</strong> isn’t just about script mods. It also includes prefabs, objects, models, and practical customizations for <strong>Farming Simulator</strong>.
+<br>
+<br>
+Since many projects are still in development, feedback, ideas, and suggestions for improvement are always welcome. Anyone interested is warmly invited to actively participate in the project, help develop content, find bugs, or contribute new ideas.
+<br>
+<br>
+This helps refine the mods further and tailor them more closely to the needs of the community.</div>
 
 <details>
 <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
   <br>
-<div align="center">Bislang wurden zahlreiche Mods und Anpassungen vor allem für den persönlichen Gebrauch erstellt. Nun werden einige dieser Projekte nach und nach mit der Community geteilt. Bei BLU3COW geht es nicht nur um Skript-Mods – das Angebot umfasst auch Prefabs, Objekte, Modelle und praktische Anpassungen für den Landwirtschafts Simulator. Da sich viele Projekte noch in der Entwicklung befinden, sind Feedback, Ideen und Verbesserungsvorschläge jederzeit willkommen. Alle Interessierten sind herzlich eingeladen, sich aktiv am Projekt zu beteiligen, bei der Entwicklung von Inhalten mitzuhelfen, Fehler zu finden oder neue Ideen einzubringen. So können die Mods weiter verfeinert und besser auf die Bedürfnisse der Community zugeschnitten werden.</div>
+<div align="center">Bisher sind viele Mods und Anpassungen hauptsächlich für den eigenen Gebrauch entstanden. Nun sollen einige dieser Projekte nach und nach mit der Community geteilt werden.
+<br>
+<br>
+Bei <strong>BLU3COW</strong> geht es nicht nur um Skript-Mods. Dazu gehören auch Prefabs, Objekte, Modelle und praktische Anpassungen für den <strong>Landwitschafts Simulator</strong>.
+<br>
+<br>
+Da sich viele Projekte noch in der Entwicklung befinden, sind Feedback, Ideen und Verbesserungsvorschläge jederzeit willkommen. Jeder, der Lust hat, ist herzlich eingeladen, sich aktiv am Projekt zu beteiligen, Inhalte weiterzuentwickeln, Fehler zu finden oder neue Ideen einzubringen.
+<br>
+<br>
+So können die Mods weiter verfeinert und besser auf die Bedürfnisse der Community abgestimmt werden.</div>
 </details>
 <br>
 
 ## <div align="center"><img width="610" height="40" alt="support-the-project" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/support-the-project.svg" /></div>
 
-<div align="center">If you like AdjustSuite and find it helpful in the game, you’re welcome to support its continued development via PayPal or with a virtual “Buy Me a Beer.” Every contribution helps us continue to develop new features, improvements, and modules. You can also actively support the project by sharing your requests, ideas, suggestions for improvement, or bug reports. Any form of participation helps make AdjustSuite better and more versatile.</div>
+<div align="center">If you like AdjustSuite and find it helpful in the game, you’re welcome to support its continued development via PayPal or with a virtual “Buy Me a Beer.”
+<br>
+<br>
+Every contribution helps us continue to develop new features, improvements, and modules.
+<br>
+<br>
+You can also actively support the project by sharing your requests, ideas, suggestions for improvement, or bug reports.
+<br>
+<br>
+Any form of participation helps make AdjustSuite better and more versatile.</div>
 
 <details>
-<summary><div align="center">🇩🇪 ➡️​ <strong>Deutsch</strong> ⬅️ 🇩🇪</div></summary>
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
   <br>
-<div align="center">Wenn dir AdjustSuite gefällt und dich im Spiel unterstützt, kannst du die Weiterentwicklung gerne über PayPal oder mit einem virtuellen Buy Me a Beer unterstützen. Jede Unterstützung hilft dabei, neue Funktionen, Verbesserungen und Module weiter voranzubringen. Du kannst das Projekt aber auch aktiv unterstützen, indem du Wünsche, Ideen, Verbesserungsvorschläge oder Fehlermeldungen einbringst. Jede Form der Mitarbeit hilft dabei, AdjustSuite besser und vielseitiger zu machen.</div>
+<div align="center">Wenn dir AdjustSuite gefällt und dich im Spiel unterstützt, kannst du die Weiterentwicklung gerne über PayPal oder mit einem virtuellen „Buy Me a Beer“ unterstützen.
+<br>
+<br>
+Jede Unterstützung hilft dabei, neue Funktionen, Verbesserungen und Module weiterzuentwickeln.
+<br>
+<br>
+Du kannst das Projekt auch aktiv unterstützen, indem du Wünsche, Ideen, Verbesserungsvorschläge oder Fehlermeldungen einbringst.
+<br>
+<br>
+Jede Form der Beteiligung hilft dabei, AdjustSuite besser und vielseitiger zu machen.</div>
 </details>
 
 <br>
