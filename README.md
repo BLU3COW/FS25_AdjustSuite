@@ -19,9 +19,9 @@
 [![Discussions](https://img.shields.io/github/discussions-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen&style=flat-square&label=Discussions&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
 [![Pulls](https://img.shields.io/github/issues-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen%20is%3Apr&style=flat-square&label=Pulls&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/pulls)
 [![Wiki](https://img.shields.io/website?url=https%3A%2F%2Fgithub.com%2FBLU3COW%2FFS25_AdjustSuite%2Fwiki&style=flat-square&label=Wiki&labelColor=555&up_color=00B6FF&up_message=online&down_message=offline)](https://github.com/BLU3COW/FS25_AdjustSuite/wiki)
-[![Discord](https://img.shields.io/badge/Discord-Join-00B6FF?style=flat-square&labelColor=555&logo=discord&logoColor=white)](https://discord.gg/JdKvhdheU)
+[![Discord](https://img.shields.io/badge/Discord-Join-00B6FF?style=flat-square&labelColor=555)](https://discord.gg/JdKvhdheU)
 [![License](https://img.shields.io/badge/License-BLU3COW-00B6FF?style=flat-square&labelColor=555)](LICENSE)
-[![Email](https://img.shields.io/badge/Email-Contact-00B6FF?style=flat-square&labelColor=555&logo=gmail&logoColor=white)](mailto:mail@blu3cow.com)
+[![Email](https://img.shields.io/badge/Email-mail%40blu3cow.com-00B6FF?style=flat-square&labelColor=555)](mailto:mail@blu3cow.com)
 </div>
 
 <div align="center">
