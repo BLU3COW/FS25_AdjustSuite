@@ -19,11 +19,12 @@
 [![Discussions](https://img.shields.io/github/discussions-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen&style=flat-square&label=Discussions&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/discussions)
 [![Pulls](https://img.shields.io/github/issues-search/BLU3COW/FS25_AdjustSuite?query=is%3Aopen%20is%3Apr&style=flat-square&label=Pulls&labelColor=555&color=00B6FF)](https://github.com/BLU3COW/FS25_AdjustSuite/pulls)
 [![Wiki](https://img.shields.io/website?url=https%3A%2F%2Fgithub.com%2FBLU3COW%2FFS25_AdjustSuite%2Fwiki&style=flat-square&label=Wiki&labelColor=555&up_color=00B6FF&up_message=online&down_message=offline)](https://github.com/BLU3COW/FS25_AdjustSuite/wiki)
+[![License](https://img.shields.io/badge/License-BLU3COW-00B6FF?style=flat-square&labelColor=555)](LICENSE.md)
 </div>
 
 <div align="center">
   
-[WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
+[WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) |  [LICENSE](LICENSE.md) |[CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
 </div>
 
 <div align="center">
