@@ -28,6 +28,12 @@
 [WEBSITE](https://blu3cow.com) | [DOWNLOAD](https://github.com/BLU3COW/FS25_AdjustSuite/releases) | [README](README.md) | [CONTRIBUTING](CONTRIBUTING.md) | [CHANGELOG](CHANGELOG.md) | [ISSUES](https://github.com/BLU3COW/FS25_AdjustSuite/issues) | [DISCUSSIONS](https://github.com/BLU3COW/FS25_AdjustSuite/discussions) | [PULLS](https://github.com/BLU3COW/FS25_AdjustSuite/pulls) | [WIKI](https://github.com/BLU3COW/FS25_AdjustSuite/wiki) 
 
 </div>
+<div align="center">
+  
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00B6FF?style=for-the-badge&labelColor=555&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=JAB2D3DPW2794)
+[![Donate with Buy Me a Beer](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Beer-00B6FF?style=for-the-badge&labelColor=555&logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/blu3cow)
+
+</div>
 <br>
 <div align="center">Customize vehicles and attachments in “FS25” to suit your personal playstyle. Optimize performance, working width, capacity, weight, handling, and much more so that every machine is perfectly suited to your farm, your fields, and your workflows. Whether you want to play in Real, Unreal, or Extreme mode, you decide how your game behaves! Further improvements and new modules are in development. Want to help shape the project? Then feel free to get involved and share your requests, suggestions, or ideas for improvement.</div>
 <details>
