@@ -61,12 +61,12 @@
 </div>
 <br>
 
-<div align="center">By default, only Real Range is enabled. This default setting ensures that all adjustments remain as close as possible to realistic values. If you want more freedom with the settings, you can specify a wider range of adjustments in the “modSettings.xml” file and tailor the mod more precisely to your playstyle.​</div>
+<div align="center">By default, only the REAL range is enabled. This keeps all adjustments within a balanced range and aligns them as closely as possible with realistic values. The BASE range serves as an unmodified baseline without any percentage adjustments. With REAL, you can make minor changes without significantly altering the gameplay experience. UNREAL offers significantly more leeway for freer adjustments, while EXTREME is intended for maximum customization if you deliberately want to go well beyond realistic limits. If you want more freedom with the settings, you can define wider adjustment ranges in the modSettings.xml file and tailor the mod even more precisely to your personal playstyle. However, always keep in mind the game’s logical and physical limits, as values that are too extreme can affect handling, the functionality of individual devices, or the game’s balance.​</div>
 
 <details>
 <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
   <br>
-<div align="center">Standardmäßig ist nur der Real Bereich aktiviert. Diese Standardeinstellung sorgt dafür, dass alle Anpassungen so nah wie möglich an realistischen Werten bleiben. Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei „modSettings.xml“ einen größeren Anpassungsbereich festlegen und den Mod genauer auf deinen Spielstil zuschneiden.</div>
+<div align="center">Standardmäßig ist nur der Bereich REAL aktiviert. Dadurch bleiben alle Anpassungen in einem ausgewogenen Rahmen und orientieren sich möglichst nah an realistischen Werten. Der Bereich BASE dient als unveränderte Grundlage ohne prozentuale Anpassung. Mit REAL kannst du kleinere Änderungen vornehmen, ohne das Spielgefühl stark zu verändern. UNREAL bietet deutlich mehr Spielraum für freiere Einstellungen, während EXTREME für maximale Anpassungen gedacht ist, wenn du bewusst deutlich über realistische Grenzen hinausgehen möchtest. Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei modSettings.xml größere Anpassungsbereiche festlegen und den Mod noch genauer auf deinen persönlichen Spielstil abstimmen. Beachte dabei jedoch immer die logischen und physikalischen Grenzen des Spiels, da zu extreme Werte das Fahrverhalten, die Funktion einzelner Geräte oder die Spielbalance beeinflussen können.</div>
 </details>
 
 <br>
@@ -105,13 +105,27 @@
 
 ## <div align="center"><img width="300" height="40" alt="settings" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/settings.svg" /></div>
 
+<div align="center">
+
 | Module | English | German | Default |
 | --- | --- | --- | --- |
 | **HELPMENU** | Show in Helpmenu | Anzeige im Hilfemenü | Activ |
 | **PRICE** | Adjust Prices | Preise | 100 % |
 
-By default, all modules are **ON**. | Standardmäßig sind alle Module **EIN**.
+</div>
 <br>
+
+<div align="center">By default, these options are enabled or set to their default values. They complement the actual customization modules and affect how the mod is displayed in the game and how changes impact the game’s economy. HELPMENU controls whether the mod’s functions and hints are displayed in the help menu. If this option is enabled, you’ll receive relevant in-game information directly through the help menu, making it easier to understand which features are available. Using PRICE, you can specify how much adjustments affect prices. The default value is 100%, which corresponds to the normal price calculation. Depending on your settings, vehicles and attachments can be made cheaper, more expensive, or better suited to your preferred playstyle.</div>
+
+<details>
+<summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
+  <br>
+<div align="center">Standardmäßig sind diese Optionen aktiviert beziehungsweise auf ihren Grundwert eingestellt. Sie ergänzen die eigentlichen Anpassungsmodule und beeinflussen, wie der Mod im Spiel dargestellt wird und wie sich Änderungen auf die Wirtschaftlichkeit auswirken. Mit HELPMENU wird gesteuert, ob die Funktionen und Hinweise des Mods im Hilfemenü angezeigt werden. Ist diese Option aktiviert, erhältst du im Spiel passende Informationen direkt über das Hilfemenü und kannst leichter nachvollziehen, welche Funktionen verfügbar sind. Über PRICE kannst du festlegen, wie stark sich Anpassungen auf die Preise auswirken. Der Standardwert liegt bei 100 % und entspricht damit der normalen Preisberechnung. Je nach Einstellung können Fahrzeuge und Anbaugeräte günstiger, teurer oder besser an deinen gewünschten Spielstil angepasst werden.</div>
+</details>
+
+<br>
+
+
 <br>
 <details>
   <summary><div align="center"><strong>‼️Click to View “modSettings.xml” | Hier Klicken um „modSettings.xml“ anzuzeigen‼️</strong></div><br></summary>
