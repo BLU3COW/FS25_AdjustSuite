@@ -278,7 +278,7 @@ The <strong>“modSettings.xml”</strong> file is created automatically when th
 </div>
 
 <br>
-<img width="1600" height="900" alt="adjustsuite_modsettings" src="https://github.com/user-attachments/assets/cc095ec9-a49e-4c43-b3a3-fb629af5192c" />
+<img width="1600" height="900" alt="modsettings" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_modsettings.png" />
 </details>
 
 <br>
