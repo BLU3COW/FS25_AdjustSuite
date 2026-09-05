@@ -3,14 +3,93 @@ AdjustSuite = AdjustSuite or {}
 local Suite = AdjustSuite
 local MODULE_SETTING_KEYS = {"module", "real", "unreal", "extreme"}
 
-Suite.moduleIds = Suite.moduleIds or {"AFV", "AMP", "AWS", "AWW", "APW", "ADS", "ABP", "ADR"}
+Suite.vehicleModuleIds = {"AFV", "AFC", "APC", "ABW", "AMP", "AWS", "AWW", "APW", "ADS", "ABP", "ADR"}
+Suite.placeableModuleIds = {"AFVP", "ADRP", "ACRP", "ACAP", "AIPP"}
+Suite.moduleIds = {}
+for _, moduleId in ipairs(Suite.vehicleModuleIds) do
+    table.insert(Suite.moduleIds, moduleId)
+end
+for _, moduleId in ipairs(Suite.placeableModuleIds) do
+    table.insert(Suite.moduleIds, moduleId)
+end
+Suite.moduleLabels = {
+    AFVP = "AFV-P",
+    ADRP = "ADR-P",
+    ACRP = "ACR-P",
+    ACAP = "ACA-P",
+    AIPP = "AIP-P"
+}
+Suite.ignoredFillTypeNames = Suite.ignoredFillTypeNames or {
+    DIESEL = true,
+    DEF = true,
+    AIR = true,
+    ELECTRICCHARGE = true,
+    ELECTRICITY = true,
+    METHANE = true,
+    FUEL = true,
+    BALE = true,
+    ROUNDBALE = true,
+    SQUAREBALE = true
+}
+
+function Suite.fillTypeIsAir(fillTypeIndex)
+    if FillType ~= nil and FillType.AIR ~= nil and fillTypeIndex == FillType.AIR then
+        return true
+    end
+
+    if fillTypeIndex ~= nil
+        and g_fillTypeManager ~= nil
+        and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
+        local ok, name = pcall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
+        if ok and string.upper(tostring(name or "")) == "AIR" then
+            return true
+        end
+    end
+
+    return false
+end
+
+function Suite.getOperatingConsumerFillUnitIndices(vehicle)
+    local motorizedSpec = vehicle ~= nil and vehicle.spec_motorized or nil
+    if motorizedSpec == nil then
+        return nil
+    end
+
+    local cachedIndices = motorizedSpec.adjustSuiteOperatingConsumerFillUnitIndices
+    if cachedIndices ~= nil then
+        return cachedIndices ~= false and cachedIndices or nil
+    end
+
+    local consumers = motorizedSpec.consumers
+    if consumers == nil then
+        return nil
+    end
+
+    local indices = {}
+    for _, consumer in pairs(consumers) do
+        local fillUnitIndex = consumer ~= nil and tonumber(consumer.fillUnitIndex) or nil
+        if fillUnitIndex ~= nil
+            and fillUnitIndex > 0
+            and not Suite.fillTypeIsAir(consumer.fillType) then
+            indices[math.floor(fillUnitIndex + 0.5)] = true
+        end
+    end
+
+    motorizedSpec.adjustSuiteOperatingConsumerFillUnitIndices = next(indices) ~= nil and indices or false
+    return next(indices) ~= nil and indices or nil
+end
+
+function Suite.fillUnitIsOperatingConsumer(vehicle, fillUnitIndex)
+    local indices = Suite.getOperatingConsumerFillUnitIndices(vehicle)
+    return indices ~= nil and indices[fillUnitIndex] == true
+end
 Suite.range = Suite.range or {
     minFactor = 0.20,
     realOffset = 20,
     unrealOffset = 200,
     minAbsoluteSpeed = 1,
     defaultIndex = 8,
-    pricePerPercent = 0.004
+    pricePerPercent = 0.0025
 }
 Suite.configurationOffsets = Suite.configurationOffsets or {
     -80, -60, -40, -20, -15, -10, -5,
@@ -21,7 +100,16 @@ Suite.configurationOffsets = Suite.configurationOffsets or {
 }
 Suite.selectionSettings = Suite.selectionSettings or {}
 Suite.showHelpMenu = Suite.showHelpMenu ~= false
-Suite.pricePercent = math.max(tonumber(Suite.pricePercent) or 100, 0)
+
+local function normalizePricePercent(value)
+    value = tonumber(value)
+    if value == nil or value ~= value then
+        return 100
+    end
+    return math.max(value, 0)
+end
+
+Suite.pricePercent = normalizePricePercent(Suite.pricePercent)
 
 local SETTINGS_ROOT = "adjustSuiteSettings"
 local SETTINGS_HELP_MENU_KEY = SETTINGS_ROOT .. ".settings.helpmenu"
@@ -30,12 +118,180 @@ local SETTINGS_MODULES_KEY = SETTINGS_ROOT .. ".modules"
 local DEFAULT_MODULE_SETTINGS = {
     module = true,
     real = true,
-    unreal = false,
+    unreal = true,
     extreme = false
 }
 
 function Suite.getModuleIdFromConfigurationName(configurationName)
     return string.match(tostring(configurationName or ""), "^(%u+)$")
+end
+
+function Suite.getModuleLabel(moduleId)
+    return Suite.moduleLabels[moduleId] or moduleId
+end
+
+function Suite.getModuleIdFromDisplayText(text)
+    local label = string.match(tostring(text or ""), "^([%u%-]+):")
+    return label ~= nil and string.gsub(label, "%-", "") or nil
+end
+
+local BALLAST_TOKENS = {"weight", "ballast", "gewicht", "counterweight"}
+
+function Suite.textLooksLikeBallast(value)
+    value = string.lower(tostring(value or ""))
+    for _, token in ipairs(BALLAST_TOKENS) do
+        if string.find(value, token, 1, true) ~= nil then
+            return true
+        end
+    end
+    return false
+end
+
+function Suite.xmlIsStandaloneWeight(xmlFile)
+    if xmlFile == nil then
+        return false
+    end
+
+    local category = string.lower(tostring(xmlFile:getValue("vehicle.storeData.category", "")))
+    if category == "weight" or category == "weights" then
+        return true
+    end
+
+    return Suite.textLooksLikeBallast(xmlFile:getValue("vehicle.base.typeDesc", ""))
+        and xmlFile:hasProperty("vehicle.attachable")
+        and not xmlFile:hasProperty("vehicle.motorized")
+end
+
+local function getPositiveConfigurationParameter(xmlFile, configurationKey)
+    local value = tostring(xmlFile:getValue(configurationKey .. "#params", ""))
+    for number in string.gmatch(value, "[%+%-]?[%d%.]+") do
+        number = tonumber(number)
+        if number ~= nil and number > 0 then
+            return number
+        end
+    end
+    return nil
+end
+
+local function configurationDisablesBallast(xmlFile, configurationKey)
+    local name = tostring(xmlFile:getValue(configurationKey .. "#name", ""))
+    local normalizedName = string.gsub(string.lower(name), "[^%w]", "")
+    return string.find(normalizedName, "configurationvalueno", 1, true) ~= nil
+        or normalizedName == "no"
+        or normalizedName == "nein"
+        or normalizedName == "non"
+        or normalizedName == "nee"
+        or normalizedName == "nie"
+end
+
+local function getBallastDescriptor(xmlFile, configurationKey, configurationsKey)
+    return tostring(xmlFile:getValue(configurationKey .. "#name", ""))
+        .. " " .. tostring(xmlFile:getValue(configurationKey .. "#params", ""))
+        .. " " .. tostring(configurationsKey ~= nil
+            and xmlFile:getValue(configurationsKey .. "#title", "")
+            or "")
+end
+
+local function hasBallastConfigurationKey(xmlFile, configurationKey)
+    return xmlFile ~= nil
+        and type(configurationKey) == "string"
+        and configurationKey ~= ""
+        and xmlFile:hasProperty(configurationKey)
+end
+
+function Suite.getBallastObjectChanges(xmlFile, configurationKey, configurationsKey, configurationBaseKey)
+    if not hasBallastConfigurationKey(xmlFile, configurationKey) then
+        return {}
+    end
+
+    if configurationDisablesBallast(xmlFile, configurationKey) then
+        return {}
+    end
+
+    if not Suite.textLooksLikeBallast(getBallastDescriptor(xmlFile, configurationKey, configurationsKey)) then
+        return {}
+    end
+
+    local entries = {}
+    local parameterMass = getPositiveConfigurationParameter(xmlFile, configurationKey)
+    for _, objectChangeKey in xmlFile:iterator(configurationKey .. ".objectChange") do
+        local activeMass = tonumber(xmlFile:getValue(objectChangeKey .. "#massActive"))
+        local inactiveMass = tonumber(xmlFile:getValue(objectChangeKey .. "#massInactive"))
+        if activeMass ~= nil and activeMass > 0 then
+            if inactiveMass == nil then
+                table.insert(entries, {
+                    objectChangeKey = objectChangeKey,
+                    mass = parameterMass or 1,
+                    effectiveMass = activeMass,
+                    deriveFromBase = parameterMass == nil
+                })
+            elseif activeMass > inactiveMass then
+                table.insert(entries, {
+                    objectChangeKey = objectChangeKey,
+                    mass = activeMass - inactiveMass,
+                    effectiveMass = activeMass
+                })
+            end
+        end
+    end
+    if #entries > 0 or configurationBaseKey == nil then
+        return entries
+    end
+
+    local index = 0
+    while true do
+        local siblingKey = string.format(configurationBaseKey .. "(%d)", index)
+        if not xmlFile:hasProperty(siblingKey) then
+            break
+        end
+        if siblingKey ~= configurationKey then
+            for _, objectChangeKey in xmlFile:iterator(siblingKey .. ".objectChange") do
+                local activeMass = tonumber(xmlFile:getValue(objectChangeKey .. "#massActive"))
+                local inactiveMass = tonumber(xmlFile:getValue(objectChangeKey .. "#massInactive"))
+                if activeMass ~= nil and inactiveMass ~= nil and inactiveMass > activeMass then
+                    table.insert(entries, {
+                        objectChangeKey = objectChangeKey,
+                        mass = inactiveMass - activeMass,
+                        effectiveMass = inactiveMass
+                    })
+                end
+            end
+            if #entries > 0 then
+                break
+            end
+        end
+        index = index + 1
+    end
+    return entries
+end
+
+function Suite.getBallastConfigurationMass(xmlFile, configurationKey, configurationsKey, configurationBaseKey)
+    if not hasBallastConfigurationKey(xmlFile, configurationKey) then
+        return 0
+    end
+
+    if configurationDisablesBallast(xmlFile, configurationKey)
+        or not Suite.textLooksLikeBallast(getBallastDescriptor(xmlFile, configurationKey, configurationsKey)) then
+        return 0
+    end
+
+    local mass = 0
+    for _, componentKey in xmlFile:iterator(configurationKey .. ".component") do
+        mass = mass + math.max(tonumber(xmlFile:getValue(componentKey .. "#additionalMass", 0)) or 0, 0)
+    end
+    if mass > 0 then
+        return mass
+    end
+
+    for _, entry in ipairs(Suite.getBallastObjectChanges(
+        xmlFile,
+        configurationKey,
+        configurationsKey,
+        configurationBaseKey
+    )) do
+        mass = mass + entry.mass
+    end
+    return mass
 end
 
 function Suite.getIsModuleEnabled(moduleId)
@@ -61,6 +317,11 @@ function Suite.canShowHelpText(vehicle, isActiveForInputIgnoreSelection)
 end
 
 function Suite.addHelpText(text)
+    local moduleId = Suite.getModuleIdFromDisplayText(text)
+    if moduleId ~= nil and not Suite.getIsModuleEnabled(moduleId) then
+        return
+    end
+
     if text ~= nil and g_currentMission ~= nil and g_currentMission.addExtraPrintText ~= nil then
         g_currentMission:addExtraPrintText(text)
     end
@@ -194,6 +455,86 @@ function Suite.getSelectedOffset(vehicle, configurationName)
     return 0
 end
 
+local function getBasePerMonthValue(production, baseField, monthField, hourField, minuteField)
+    local baseValue = tonumber(production[baseField])
+    if baseValue == nil then
+        local monthValue = tonumber(production[monthField])
+        local hourValue = tonumber(production[hourField])
+        local minuteValue = tonumber(production[minuteField])
+        if monthValue ~= nil then
+            baseValue = monthValue
+        elseif hourValue ~= nil then
+            baseValue = hourValue * 24
+        elseif minuteValue ~= nil then
+            baseValue = minuteValue * 1440
+        end
+        production[baseField] = baseValue
+    end
+    return baseValue
+end
+
+local function applyPerMonthValue(production, baseField, monthField, hourField, minuteField, factor, minimum)
+    local baseValue = getBasePerMonthValue(production, baseField, monthField, hourField, minuteField)
+    if baseValue == nil then
+        return
+    end
+
+    local value = baseValue * factor
+    if minimum ~= nil then
+        value = math.max(value, minimum)
+    end
+    production[monthField] = value
+    production[hourField] = value / 24
+    production[minuteField] = value / 1440
+end
+
+local function applyCycleAmounts(entries, factor)
+    for _, entry in ipairs(entries or {}) do
+        local baseAmount = tonumber(entry.adjustSuiteACAPBaseAmount)
+        if baseAmount == nil then
+            baseAmount = tonumber(entry.amount)
+            entry.adjustSuiteACAPBaseAmount = baseAmount
+        end
+        if baseAmount ~= nil then
+            entry.amount = math.max(baseAmount * factor, 0)
+        end
+    end
+end
+
+function Suite.applyProductionAdjustments(productionPoint)
+    if productionPoint == nil then
+        return
+    end
+
+    local placeable = productionPoint.owningPlaceable
+    local rateFactor = Suite.getFactorFromOffset(Suite.getSelectedOffset(placeable, "ACRP"))
+    local amountFactor = Suite.getFactorFromOffset(Suite.getSelectedOffset(placeable, "ACAP"))
+
+    for _, production in ipairs(productionPoint.productions or {}) do
+        applyPerMonthValue(
+            production,
+            "adjustSuiteACRPBaseCyclesPerMonth",
+            "cyclesPerMonth",
+            "cyclesPerHour",
+            "cyclesPerMinute",
+            rateFactor,
+            0.000001
+        )
+        applyCycleAmounts(production.inputs, amountFactor)
+        applyCycleAmounts(production.outputs, amountFactor)
+        applyPerMonthValue(
+            production,
+            "adjustSuiteBaseCostsPerActiveMonth",
+            "costsPerActiveMonth",
+            "costsPerActiveHour",
+            "costsPerActiveMinute",
+            rateFactor * amountFactor,
+            0
+        )
+    end
+
+end
+
 function Suite.createModuleAccessors(configurationName)
     local specName = "spec_" .. configurationName
 
@@ -212,7 +553,16 @@ function Suite.createModuleAccessors(configurationName)
             and vehicle.configurations[configurationName] ~= nil
     end
 
-    return getSpec, getSelectedOffset, hasSelectedConfiguration
+    local function getFactor(vehicle)
+        local spec = getSpec(vehicle)
+        if spec.currentFactor == nil then
+            spec.currentOffset = getSelectedOffset(vehicle)
+            spec.currentFactor = Suite.getFactorFromOffset(spec.currentOffset)
+        end
+        return spec.currentFactor
+    end
+
+    return getSpec, getSelectedOffset, hasSelectedConfiguration, getFactor
 end
 
 function Suite.getStatusTier(offset)
@@ -240,7 +590,7 @@ function Suite.getOffsetText(offset)
 end
 
 function Suite.buildConfigurationName(moduleId, offset)
-    return string.format("%s: %s [%s]", moduleId, Suite.getOffsetText(offset), Suite.getStatusText(offset))
+    return string.format("%s: %s [%s]", Suite.getModuleLabel(moduleId), Suite.getOffsetText(offset), Suite.getStatusText(offset))
 end
 
 function Suite.getStoreItemPrice(storeItem, xmlFile)
@@ -251,7 +601,10 @@ function Suite.getStoreItemPrice(storeItem, xmlFile)
     end
 
     if price <= 0 and xmlFile ~= nil then
-        price = tonumber(xmlFile:getValue("vehicle.storeData.price", 0)) or 0
+        local rootName = xmlFile:getRootName()
+        if rootName == "vehicle" or rootName == "placeable" then
+            price = tonumber(xmlFile:getValue(rootName .. ".storeData.price")) or 0
+        end
     end
 
     return math.max(price, 0)
@@ -339,7 +692,7 @@ local function applyModuleSettings(moduleId, values)
 end
 
 local function applyPricePercent(value, refreshStore)
-    Suite.pricePercent = math.max(tonumber(value) or 100, 0)
+    Suite.pricePercent = normalizePricePercent(value)
     if refreshStore and Suite.refreshStoreConfigurations ~= nil then
         for _, moduleId in ipairs(Suite.moduleIds) do
             Suite.refreshStoreConfigurations(moduleId)
@@ -360,6 +713,8 @@ local function writeSettingsTemplate(filename, settingsByModule, showHelpMenu, p
     if file == nil then
         return false
     end
+
+    pricePercent = normalizePricePercent(pricePercent)
 
     file:write('<?xml version="1.0" encoding="utf-8" standalone="no"?>\n')
     file:write("<adjustSuiteSettings>\n")
@@ -388,6 +743,7 @@ local function writeSettingsTemplate(filename, settingsByModule, showHelpMenu, p
 end
 
 local function writeSettingsXml(filename, settingsByModule, showHelpMenu, pricePercent)
+    pricePercent = normalizePricePercent(pricePercent)
     if writeSettingsTemplate(filename, settingsByModule, showHelpMenu, pricePercent) then
         return
     end
@@ -428,11 +784,25 @@ function Suite.loadSelectionSettings()
     end
 
     local settingsByModule = {}
+    local settingsFileChanged = false
     local showHelpMenu = true
     local pricePercent = 100
     if settingsFileExists then
-        showHelpMenu = getBoolOrDefault(getXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show"), true)
-        pricePercent = math.max(tonumber(getXMLFloat(xmlFile, SETTINGS_PRICE_KEY .. "#percent")) or 100, 0)
+        local configuredShowHelpMenu = getXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show")
+        if configuredShowHelpMenu == nil then
+            setXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show", showHelpMenu)
+            settingsFileChanged = true
+        else
+            showHelpMenu = configuredShowHelpMenu == true
+        end
+
+        local configuredPricePercent = getXMLFloat(xmlFile, SETTINGS_PRICE_KEY .. "#percent")
+        if configuredPricePercent == nil then
+            setXMLFloat(xmlFile, SETTINGS_PRICE_KEY .. "#percent", pricePercent)
+            settingsFileChanged = true
+        else
+            pricePercent = normalizePricePercent(configuredPricePercent)
+        end
     end
     Suite.showHelpMenu = showHelpMenu
     applyPricePercent(pricePercent, false)
@@ -443,7 +813,13 @@ function Suite.loadSelectionSettings()
 
         if settingsFileExists then
             for _, settingKey in ipairs(MODULE_SETTING_KEYS) do
-                settings[settingKey] = getBoolOrDefault(getXMLBool(xmlFile, key .. "#" .. settingKey), settings[settingKey])
+                local configuredValue = getXMLBool(xmlFile, key .. "#" .. settingKey)
+                if configuredValue == nil then
+                    setXMLBool(xmlFile, key .. "#" .. settingKey, settings[settingKey])
+                    settingsFileChanged = true
+                else
+                    settings[settingKey] = configuredValue == true
+                end
             end
         end
 
@@ -452,10 +828,15 @@ function Suite.loadSelectionSettings()
     end
 
     if xmlFile ~= nil and xmlFile ~= 0 then
+        if settingsFileChanged then
+            saveXMLFile(xmlFile)
+        end
         delete(xmlFile)
     end
 
-    writeSettingsXml(filename, settingsByModule, showHelpMenu, pricePercent)
+    if not settingsFileExists then
+        writeSettingsXml(filename, settingsByModule, showHelpMenu, pricePercent)
+    end
 end
 
 AdjustSuiteSettingsEvent = {}
@@ -470,7 +851,7 @@ function AdjustSuiteSettingsEvent.new(settingsByModule, showHelpMenu, pricePerce
     local self = AdjustSuiteSettingsEvent.emptyNew()
     self.settingsByModule = {}
     self.showHelpMenu = showHelpMenu ~= false
-    self.pricePercent = math.max(tonumber(pricePercent) or 100, 0)
+    self.pricePercent = normalizePricePercent(pricePercent)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         self.settingsByModule[moduleId] = copyModuleSettings(settingsByModule[moduleId])
@@ -482,7 +863,7 @@ end
 function AdjustSuiteSettingsEvent:readStream(streamId, connection)
     self.settingsByModule = {}
     self.showHelpMenu = streamReadBool(streamId)
-    self.pricePercent = math.max(streamReadFloat32(streamId), 0)
+    self.pricePercent = normalizePricePercent(streamReadFloat32(streamId))
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = {}
@@ -523,5 +904,5 @@ local function sendSelectionSettings(baseMission, connection, x, y, z, viewDista
     end
 end
 
-FSBaseMission.onConnectionFinishedLoading = Utils.appendedFunction(FSBaseMission.onConnectionFinishedLoading, sendSelectionSettings)
+FSBaseMission.onConnectionFinishedLoading = Utils.prependedFunction(FSBaseMission.onConnectionFinishedLoading, sendSelectionSettings)
 Suite.loadSelectionSettings()
