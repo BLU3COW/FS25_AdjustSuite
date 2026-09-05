@@ -98,7 +98,7 @@ Egal ob du im Modus Real, Unreal oder Extreme spielen möchtest: Du entscheidest
 | --- | --- | --- | --- | --- |
 | BASE | -0 % | +0 % | --- | ON |
 | REAL | -20 % | +20 % | 5 % | ON |
-| UNREAL | -80 % | +200 % | 20 % | OFF |
+| UNREAL | -80 % | +200 % | 20 % | ON |
 | EXTREME | -80 % | +800 % | 100 % | OFF |
 </div>
 <br>
