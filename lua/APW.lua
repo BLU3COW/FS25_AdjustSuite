@@ -1,4 +1,5 @@
-APW = APW or {}
+AdjustSuiteAPW = AdjustSuiteAPW or {}
+local APW = AdjustSuiteAPW
 
 local Suite = AdjustSuite
 

@@ -1,4 +1,5 @@
-AWS = AWS or {}
+AdjustSuiteAWS = AdjustSuiteAWS or {}
+local AWS = AdjustSuiteAWS
 
 local Suite = AdjustSuite
 local SETTINGS = Suite.range

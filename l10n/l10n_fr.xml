@@ -14,6 +14,9 @@
         <text name="CONFIG_AS_KN" text="kN" />
         <text name="CONFIG_AS_LPS" text="l/s" />
         <text name="CONFIG_AFV_TITLE" text="Volume de remplissage" />
+        <text name="CONFIG_AFC_TITLE" text="Capacité de carburant" />
+        <text name="CONFIG_APC_TITLE" text="Compensation de charge utile" />
+        <text name="CONFIG_ABW_TITLE" text="Poids de lestage" />
         <text name="CONFIG_AMP_TITLE" text="Puissance du moteur" />
         <text name="CONFIG_AWS_TITLE" text="Vitesse de travail" />
         <text name="CONFIG_AWW_TITLE" text="Largeur de travail" />
@@ -21,6 +24,11 @@
         <text name="CONFIG_ADS_TITLE" text="Vitesse d'avancement" />
         <text name="CONFIG_ABP_TITLE" text="Force de freinage" />
         <text name="CONFIG_ADR_TITLE" text="Débit de déchargement" />
+        <text name="CONFIG_AFVP_TITLE" text="Volume de remplissage" />
+        <text name="CONFIG_ADRP_TITLE" text="Débit de déchargement" />
+        <text name="CONFIG_ACRP_TITLE" text="Vitesse de cycle" />
+        <text name="CONFIG_ACAP_TITLE" text="Quantité par cycle" />
+        <text name="CONFIG_AIPP_TITLE" text="Revenus" />
         <text name="ACTION_AWW_BROAD" text="Dépose en largeur" />
         <text name="ACTION_AWW_SWATH" text="Dépose en andains" />
     </texts>

@@ -14,6 +14,9 @@
         <text name="CONFIG_AS_KN" text="kN" />
         <text name="CONFIG_AS_LPS" text="l/s" />
         <text name="CONFIG_AFV_TITLE" text="Fill Volume" />
+        <text name="CONFIG_AFC_TITLE" text="Fuel Capacity" />
+        <text name="CONFIG_APC_TITLE" text="Payload Compensation" />
+        <text name="CONFIG_ABW_TITLE" text="Ballast Weight" />
         <text name="CONFIG_AMP_TITLE" text="Motor Power" />
         <text name="CONFIG_AWS_TITLE" text="Working Speed" />
         <text name="CONFIG_AWW_TITLE" text="Working Width" />
@@ -21,6 +24,11 @@
         <text name="CONFIG_ADS_TITLE" text="Driving Speed" />
         <text name="CONFIG_ABP_TITLE" text="Brake Power" />
         <text name="CONFIG_ADR_TITLE" text="Discharge Rate" />
+        <text name="CONFIG_AFVP_TITLE" text="Fill Volume" />
+        <text name="CONFIG_ADRP_TITLE" text="Discharge Rate" />
+        <text name="CONFIG_ACRP_TITLE" text="Cycle Rate" />
+        <text name="CONFIG_ACAP_TITLE" text="Cycle Amount" />
+        <text name="CONFIG_AIPP_TITLE" text="Income Payment" />
         <text name="ACTION_AWW_BROAD" text="Wide Spreading" />
         <text name="ACTION_AWW_SWATH" text="Swath Spreading" />
     </texts>

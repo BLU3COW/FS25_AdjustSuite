@@ -1,4 +1,5 @@
-AMP = AMP or {}
+AdjustSuiteAMP = AdjustSuiteAMP or {}
+local AMP = AdjustSuiteAMP
 
 local Suite = AdjustSuite
 local getFactorFromOffset = Suite.getFactorFromOffset
@@ -83,7 +84,7 @@ function AMP:loadMotor(superFunc, xmlFile, motorId)
 
     end
 
-    local motor = superFunc(self, xmlFile, motorId)
+    local ok, motor = pcall(superFunc, self, xmlFile, motorId)
 
     if torqueScalePath ~= nil and math.abs(offset) > 0.001 then
         if originalTorqueScale == nil then
@@ -93,6 +94,9 @@ function AMP:loadMotor(superFunc, xmlFile, motorId)
         end
     end
 
+    if not ok then
+        error(motor, 0)
+    end
     return motor
 end
 

@@ -1,25 +1,17 @@
-ABP = ABP or {}
+AdjustSuiteABP = AdjustSuiteABP or {}
+local ABP = AdjustSuiteABP
 
 local Suite = AdjustSuite
-local getSpec, getSelectedOffset, hasSelectedConfiguration = Suite.createModuleAccessors("ABP")
-
-local function getFactor(vehicle)
-    local spec = getSpec(vehicle)
-    if spec.currentFactor == nil then
-        spec.currentOffset = getSelectedOffset(vehicle)
-        spec.currentFactor = Suite.getFactorFromOffset(spec.currentOffset)
-    end
-
-    return spec.currentFactor
-end
+local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ABP")
 
 function ABP.prerequisitesPresent(specializations)
-    return Motorized ~= nil
+    local hasWheels = Wheels ~= nil and SpecializationUtil.hasSpecialization(Wheels, specializations)
+    local isRoadVehicle = Motorized ~= nil
         and Drivable ~= nil
-        and Wheels ~= nil
         and SpecializationUtil.hasSpecialization(Motorized, specializations)
         and SpecializationUtil.hasSpecialization(Drivable, specializations)
-        and SpecializationUtil.hasSpecialization(Wheels, specializations)
+    local isAttachable = Attachable ~= nil and SpecializationUtil.hasSpecialization(Attachable, specializations)
+    return hasWheels and (isRoadVehicle or isAttachable)
 end
 
 function ABP.registerOverwrittenFunctions(vehicleType)
@@ -38,7 +30,7 @@ function ABP:onLoad(savegame)
 end
 
 function ABP:getBrakeForce(superFunc)
-    local brakeForce = superFunc(self)
+    local brakeForce = tonumber(superFunc(self)) or 0
     if not hasSelectedConfiguration(self) then
         return brakeForce
     end

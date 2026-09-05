@@ -1,35 +1,58 @@
-ADS = ADS or {}
+AdjustSuiteADS = AdjustSuiteADS or {}
+local ADS = AdjustSuiteADS
 
 local Suite = AdjustSuite
 local getSpec, getSelectedOffset, hasSelectedConfiguration = Suite.createModuleAccessors("ADS")
 
-local function scaleGearRatios(gears, factor, scaledTables)
-    if type(gears) ~= "table" or scaledTables[gears] == true then
+local MAX_OVERDRIVE_SPEED_STEP = 1.25
+local MAX_FIXED_GEARS = 31
+
+local function addOverdriveGears(gears, factor, direction)
+    if factor <= 1 or #gears == 0 or #gears >= MAX_FIXED_GEARS then
+        return 0
+    end
+
+    local topGear = gears[#gears]
+    local topRatio = type(topGear) == "table" and math.abs(tonumber(topGear.ratio) or 0) or 0
+    if topRatio <= 0 then
+        return 0
+    end
+
+    local count = math.max(math.ceil(math.log(factor) / math.log(MAX_OVERDRIVE_SPEED_STEP)), 1)
+    count = math.min(count, MAX_FIXED_GEARS - #gears)
+
+    local speedStep = factor ^ (1 / count)
+    for index = 1, count do
+        local gearIndex = #gears + 1
+        local gearName = tostring(gearIndex * direction)
+        local reverseName = tostring(gearIndex * direction * -1)
+        gears[gearIndex] = {
+            ratio = topRatio / (speedStep ^ index),
+            default = false,
+            name = gearName,
+            reverseName = reverseName,
+            dashboardName = gearName,
+            dashboardReverseName = reverseName
+        }
+    end
+
+    return count
+end
+
+local function adjustFixedGears(gears, factor, direction, adjustedTables)
+    if type(gears) ~= "table" or adjustedTables[gears] == true then
         return
     end
 
-    scaledTables[gears] = true
-    local minRatio = math.huge
-    local maxRatio = 0
-    local ratioCount = 0
-
-    for _, gear in ipairs(gears) do
-        if type(gear.ratio) == "number" then
-            local ratio = math.abs(gear.ratio)
-            minRatio = math.min(minRatio, ratio)
-            maxRatio = math.max(maxRatio, ratio)
-            ratioCount = ratioCount + 1
-        end
-    end
-
-    for _, gear in ipairs(gears) do
-        if type(gear.ratio) == "number" then
-            local topSpeedShare = 1
-            if ratioCount > 1 and maxRatio - minRatio > 0.000001 then
-                topSpeedShare = (maxRatio - math.abs(gear.ratio)) / (maxRatio - minRatio)
+    adjustedTables[gears] = true
+    if factor < 1 then
+        for _, gear in ipairs(gears) do
+            if type(gear.ratio) == "number" then
+                gear.ratio = gear.ratio / factor
             end
-            gear.ratio = gear.ratio / (factor ^ topSpeedShare)
         end
+    elseif factor > 1 then
+        addOverdriveGears(gears, factor, direction)
     end
 end
 
@@ -92,10 +115,10 @@ local function applyDrivingSpeed(vehicle)
     local spec = getSpec(vehicle)
     local offset = getSelectedOffset(vehicle)
     local factor = Suite.getFactorFromOffset(offset)
-    local scaledTables = {}
+    local adjustedTables = {}
 
-    scaleGearRatios(motor.forwardGears, factor, scaledTables)
-    scaleGearRatios(motor.backwardGears, factor, scaledTables)
+    adjustFixedGears(motor.forwardGears, factor, 1, adjustedTables)
+    adjustFixedGears(motor.backwardGears, factor, -1, adjustedTables)
 
     motor.minForwardGearRatioOrigin = scaleRatio(motor.minForwardGearRatioOrigin, factor)
     motor.minBackwardGearRatioOrigin = scaleRatio(motor.minBackwardGearRatioOrigin, factor)

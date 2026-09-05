@@ -1,11 +1,13 @@
-AFV = AFV or {}
+AdjustSuiteAFV = AdjustSuiteAFV or {}
+local AFV = AdjustSuiteAFV
 
 local Suite = AdjustSuite
 local clampOffset = Suite.clampOffset
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("AFV")
 
-local IGNORED_FILLTYPE_NAMES = AFV.ignoredFillTypeNames
+local IGNORED_FILLTYPE_NAMES = Suite.ignoredFillTypeNames
+AFV.ignoredFillTypeNames = IGNORED_FILLTYPE_NAMES
 
 local function roundCapacityUp(capacity)
     return math.max(math.ceil((tonumber(capacity) or 0) - 0.000001), 1)
@@ -184,7 +186,9 @@ local function fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
     end
 
     local fillUnitKey = getFillUnitXMLKey(vehicle, fillUnitIndex)
-    return fillUnitKey ~= nil and vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
+    return fillUnitKey ~= nil
+        and (vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
+            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false)
 end
 
 local function getFillUnitDisplayUnit(vehicle, fillUnitIndex, capacity)
@@ -282,12 +286,14 @@ local function collectFillUnits(vehicle, force)
         return false
     end
 
+    local operatingIndices = Suite.getOperatingConsumerFillUnitIndices(vehicle)
     for index, fillUnit in pairs(fillUnits) do
         local capacity = getBaseCapacity(fillUnit)
 
         if capacity ~= nil
             and capacity > 0
             and capacity < math.huge
+            and (operatingIndices == nil or operatingIndices[index] ~= true)
             and fillUnitHasUsableFillTypes(fillUnit)
             and not fillUnitIsTechnicalHidden(vehicle, index, fillUnit) then
             table.insert(spec.units, {

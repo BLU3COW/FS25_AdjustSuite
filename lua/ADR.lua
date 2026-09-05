@@ -1,16 +1,98 @@
-ADR = ADR or {}
+AdjustSuiteADR = AdjustSuiteADR or {}
+local ADR = AdjustSuiteADR
 
 local Suite = AdjustSuite
-local getSpec, getSelectedOffset, hasSelectedConfiguration = Suite.createModuleAccessors("ADR")
+local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ADR")
+local WIDTH_CONFIGURATION_NAMES = {"AWW", "APW"}
 
-local function getFactor(vehicle)
-    local spec = getSpec(vehicle)
-    if spec.currentFactor == nil then
-        spec.currentOffset = getSelectedOffset(vehicle)
-        spec.currentFactor = Suite.getFactorFromOffset(spec.currentOffset)
+local function getIsBufferCombine(vehicle)
+    local combineSpec = vehicle ~= nil and vehicle.spec_combine or nil
+    if combineSpec == nil then
+        return false
     end
 
-    return spec.currentFactor
+    if combineSpec.isBufferCombine == true then
+        return true
+    end
+
+    local capacity = vehicle.getFillUnitCapacity ~= nil
+        and vehicle:getFillUnitCapacity(combineSpec.fillUnitIndex)
+        or nil
+    return capacity == math.huge
+end
+
+local function getBufferFlowFactor(vehicle)
+    local combineSpec = vehicle ~= nil and vehicle.spec_combine or nil
+    if combineSpec == nil or not getIsBufferCombine(vehicle) then
+        return 1
+    end
+
+    local widthFactor, speedFactor = 1, 1
+    local function includeTool(tool)
+        local configurations = tool ~= nil and tool.configurations or nil
+        if configurations ~= nil then
+            for _, moduleId in ipairs(WIDTH_CONFIGURATION_NAMES) do
+                if configurations[moduleId] ~= nil then
+                    widthFactor = math.max(
+                        widthFactor,
+                        Suite.getFactorFromOffset(Suite.getSelectedOffset(tool, moduleId))
+                    )
+                end
+            end
+            if configurations.AWS ~= nil then
+                speedFactor = math.max(
+                    speedFactor,
+                    Suite.getFactorFromOffset(Suite.getSelectedOffset(tool, "AWS"))
+                )
+            end
+        end
+    end
+
+    includeTool(vehicle)
+    for cutter in pairs(combineSpec.attachedCutters or {}) do
+        includeTool(cutter)
+    end
+
+    return widthFactor * speedFactor
+end
+
+local function applyBufferEmptySpeeds(vehicle)
+    if not getIsBufferCombine(vehicle) then
+        return false
+    end
+
+    local dischargeable = vehicle.spec_dischargeable
+    if dischargeable == nil or dischargeable.dischargeNodes == nil then
+        return false
+    end
+
+    local combineSpec = vehicle.spec_combine
+    local factor = getBufferFlowFactor(vehicle)
+    local applied = false
+    for _, dischargeNode in ipairs(dischargeable.dischargeNodes) do
+        if tonumber(dischargeNode.fillUnitIndex) == tonumber(combineSpec.fillUnitIndex) then
+            local baseEmptySpeed = tonumber(dischargeNode.ADRBufferBaseEmptySpeed)
+            if baseEmptySpeed == nil then
+                baseEmptySpeed = tonumber(dischargeNode.emptySpeed)
+                dischargeNode.ADRBufferBaseEmptySpeed = baseEmptySpeed
+            end
+
+            if baseEmptySpeed ~= nil and baseEmptySpeed > 0 then
+                dischargeNode.emptySpeed = baseEmptySpeed * factor
+                applied = true
+            end
+        end
+    end
+
+    return applied
+end
+
+local function isBufferDischargeNode(vehicle, dischargeNode)
+    local combineSpec = vehicle ~= nil and vehicle.spec_combine or nil
+    return combineSpec ~= nil
+        and getIsBufferCombine(vehicle)
+        and tonumber(dischargeNode ~= nil and dischargeNode.fillUnitIndex) == tonumber(combineSpec.fillUnitIndex)
+        and (tonumber(dischargeNode ~= nil and dischargeNode.emptySpeed) or 0) > 0
 end
 
 local function dischargeNodeHasUsableFillUnit(vehicle, dischargeNode)
@@ -26,6 +108,10 @@ local function dischargeNodeHasUsableFillUnit(vehicle, dischargeNode)
 end
 
 local function getAdjustedRates(vehicle)
+    if getIsBufferCombine(vehicle) then
+        return nil
+    end
+
     local dischargeable = vehicle.spec_dischargeable
     if dischargeable == nil or dischargeable.dischargeNodes == nil then
         return nil
@@ -71,6 +157,9 @@ end
 
 function ADR.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ADR)
+    SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", ADR)
+    SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", ADR)
+    SpecializationUtil.registerEventListener(vehicleType, "onPostDetachImplement", ADR)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ADR)
 end
 
@@ -80,8 +169,24 @@ function ADR:onLoad(savegame)
     end
 end
 
+function ADR:onPostLoad(savegame)
+    applyBufferEmptySpeeds(self)
+end
+
+function ADR:onPostAttachImplement(attachable, inputJointDescIndex, jointDescIndex)
+    applyBufferEmptySpeeds(self)
+end
+
+function ADR:onPostDetachImplement(implement)
+    applyBufferEmptySpeeds(self)
+end
+
 function ADR:getDischargeNodeEmptyFactor(superFunc, dischargeNode)
     local emptyFactor = tonumber(superFunc(self, dischargeNode)) or 1
+    if isBufferDischargeNode(self, dischargeNode) then
+        return emptyFactor
+    end
+
     if not hasSelectedConfiguration(self) or not dischargeNodeHasUsableFillUnit(self, dischargeNode) then
         return emptyFactor
     end
