@@ -482,6 +482,7 @@ Du kannst das Projekt auch aktiv unterstützen, indem du Wünsche, Ideen, Verbes
 
 <div align="center">
 
+.github/assets/screenshots/adjustsuite_001.png
 <img width="1600" height="900" alt="007" src="https://github.com/user-attachments/assets/df2ed527-d9c8-447a-816d-b098a8ea0f73" />
 <img width="1600" height="900" alt="006" src="https://github.com/user-attachments/assets/0b69d18e-80d6-441f-b4b6-7ee4a57ff246" />
 <img width="1600" height="900" alt="005" src="https://github.com/user-attachments/assets/85cc0b8a-5184-4996-a008-148bea03dbe8" />
