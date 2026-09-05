@@ -54,7 +54,7 @@
 
 
 
-<div align="center">With <strong>AdjustSuite</strong>, you can reduce the need for multiple separate mods when your goal is mainly to adjust and personalize your gameplay experience. Customize vehicles and attachments in <strong>FS25</strong> to suit your personal playstyle. Optimize performance, working width, capacity, handling, and much more so that every machine is better suited to your farm, your fields, and your workflows.
+<div align="center">With <strong>AdjustSuite</strong>, you can reduce the need for multiple separate mods when your main goal is to adjust and personalize your gameplay experience. Customize vehicles, attachments, placeables, and productions in <strong>FS25</strong> to suit your personal playstyle. Optimize power, working width, capacities, handling, production values, and much more so that every machine, attachment, placeable, and production fits your farm, your fields, and your workflows.
 <br><br>
 Whether you want to play in Real, Unreal, or Extreme mode, you decide how your game behaves. Further improvements and new modules are already in development. Want to help shape the project? Feel free to get involved and share your requests, suggestions, or ideas for improvement.</div>
 <br>
@@ -63,7 +63,7 @@ Whether you want to play in Real, Unreal, or Extreme mode, you decide how your g
 <details>
 <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
 <br>
-<div align="center">Mit <strong>AdjustSuite</strong> kannst du die Anzahl zusätzlicher Einzelmods reduzieren, wenn es dir vor allem darum geht, dein Spielerlebnis gezielt anzupassen. Fahrzeuge und Anbaugeräte in <strong>LS25</strong> lassen sich damit ganz nach deinem persönlichen Spielstil verändern. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Fahrverhalten und vieles mehr, damit jede Maschine besser zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt.
+<div align="center">Mit <strong>AdjustSuite</strong> kannst du die Anzahl zusätzlicher Einzelmods reduzieren, wenn es dir vor allem darum geht, dein Spielerlebnis gezielt anzupassen. Fahrzeuge, Anbaugeräte, platzierbare Objekte und Produktionen in <strong>LS25</strong> lassen sich damit ganz nach deinem persönlichen Spielstil verändern. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Fahrverhalten, Produktionswerte und vieles mehr, damit jede Maschine, jedes Anbaugerät, jedes platzierbare Objekt und jede Produktion besser zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt.
 <br><br>
 Egal ob du im Modus Real, Unreal oder Extreme spielen möchtest: Du entscheidest, wie sich dein Spiel anfühlt und verhält. Weitere Verbesserungen und neue Module sind bereits in Entwicklung. Du möchtest das Projekt mitgestalten? Dann bring dich gerne ein und teile deine Wünsche, Vorschläge oder Ideen zur Verbesserung.</div>
 </details>
@@ -105,26 +105,32 @@ Egal ob du im Modus Real, Unreal oder Extreme spielen möchtest: Du entscheidest
 
 
 
-<div align="center">By default, only the <strong>REAL</strong> range is enabled. This keeps all adjustments within a balanced range and aligns them as closely as possible with realistic values.
+<div align="center">Select the desired adjustments directly in the vehicle and attachment shop or in construction mode before making a purchase. By default, the <strong>REAL</strong> and <strong>UNREAL</strong> adjustment ranges are enabled. This keeps all adjustments within a balanced range and aligns them as closely as possible with realistic values.
 <br>
 <br>
 The <strong>BASE</strong> range serves as an unmodified baseline without any percentage adjustments. With <strong>REAL</strong>, you can make minor changes without significantly altering the gameplay experience. <strong>UNREAL</strong> offers significantly more freedom for freer adjustments, while <strong>EXTREME</strong> is intended for maximum customization if you deliberately want to go well beyond realistic limits.
 <br>
 <br>
-If you want more freedom with the settings, you can define wider adjustment ranges in the <strong>“modSettings.xml”</strong> file and tailor the mod even more precisely to your personal playstyle. However, always keep in mind the game’s logical and physical limits, as values that are too extreme can affect handling, the functionality of individual tools, or the game’s balance.</div>
+If you want even more freedom, you can unlock the <strong>EXTREME</strong> range in <strong>“modSettings/FS25_AdjustSuite.xml”</strong>. This file also allows you to enable or disable individual modules, configure help-menu entries, and adjust price scaling. Restart the game after making changes. In multiplayer, the settings of the host or dedicated server apply to all players.
+<br>
+<br>
+Always keep the game’s logical and physical limits in mind, as extreme values may affect handling, tool functionality, or game balance.</div>
 <br>
 <div align="center">
 
 <details>
 <summary><div align="center"><img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" /> ➡️​ <strong>Deutsch</strong> ⬅️ <img width="15"  alt="flag-german" src=".github/assets/badges/flag-german.svg" />​</div></summary>
 <br>
-<div align="center">Standardmäßig ist nur der Bereich <strong>REAL</strong> aktiviert. Dadurch bleiben alle Anpassungen in einem ausgewogenen Rahmen und orientieren sich möglichst nah an realistischen Werten.
+<div align="center">Wähle die gewünschten Anpassungen vor dem Kauf direkt im Fahrzeug- und Anbaugeräteshop oder im Baumodus aus. Standardmäßig sind die Anpassungsbereiche <strong>REAL</strong> und <strong>UNREAL</strong> aktiviert.
 <br>
 <br>
 Der Bereich <strong>BASE</strong> dient als unveränderte Grundlage ohne prozentuale Anpassung. Mit <strong>REAL</strong> kannst du kleinere Änderungen vornehmen, ohne das Spielgefühl stark zu verändern. <strong>UNREAL</strong> bietet deutlich mehr Freiraum für freiere Einstellungen, während <strong>EXTREME</strong> für maximale Anpassungen gedacht ist, wenn du bewusst weit über realistische Grenzen hinausgehen möchtest.
 <br>
 <br>
-Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei <strong>„modSettings.xml“</strong> größere Anpassungsbereiche festlegen und den Mod noch genauer auf deinen persönlichen Spielstil abstimmen. Beachte dabei jedoch immer die logischen und physikalischen Grenzen des Spiels, da zu extreme Werte das Fahrverhalten, die Funktion einzelner Geräte oder die Spielbalance beeinflussen können.</div>
+Wenn du noch mehr Freiheit bei den Einstellungen wünschst, kannst du den Bereich <strong>EXTREME</strong> in <strong>„modSettings/FS25_AdjustSuite.xml“</strong> freischalten. In dieser Datei lassen sich außerdem einzelne Module aktivieren oder deaktivieren, Hilfemenü-Einträge konfigurieren und die Preisskalierung anpassen. Starte das Spiel nach Änderungen an der Datei neu. Im Multiplayer gelten für alle Spieler die Einstellungen des Hosts beziehungsweise Dedicated Servers.
+<br>
+<br>
+Beachte stets die logischen und physikalischen Grenzen des Spiels, da extreme Werte das Fahrverhalten, die Funktion einzelner Geräte oder die Spielbalance beeinflussen können.</div>
 </details>
 </div>
 <br>
@@ -144,8 +150,11 @@ Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei <s
 <div align="center">
 
 | Module | English | German | Default |
-| --- | --- | --- | --- |
+| ------ | ------- | ------ | ------- |
 | AFV | Fill Volume | Füllvolumen | ON |
+| AFC | Fuel Capacity | Kraftstoffkapazität | ON |
+| APC | Payload Compensation | Nutzlastausgleich | ON |
+| ABW | Ballast Weight | Ballastgewicht | ON |
 | AMP | Motor Power | Motorleistung | ON |
 | AWS | Working Speed | Arbeitsgeschwindigkeit | ON |
 | AWW | Working Width | Arbeitsbreite | ON |
@@ -153,6 +162,11 @@ Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei <s
 | ADS | Driving Speed | Fahrgeschwindigkeit | ON |
 | ABP | Brake Power | Bremskraft | ON |
 | ADR | Discharge Rate | Entladerate | ON |
+| AFV-P | Fill Volume | Füllvolumen | ON |
+| ADR-P | Discharge Rate | Entladerate | ON |
+| ACR-P | Cycle Rate | Zyklusrate | ON |
+| ACA-P | Cycle Amount | Zyklusmenge | ON |
+| AIP-P | Income Payments | Einkommenszahlungen | ON |
 
 </div>
 <br>
@@ -160,10 +174,16 @@ Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in der Datei <s
 <div align="center">By default, all modules are enabled. Each module controls a specific customization area and can be turned on or off individually as needed. This allows you to decide which characteristics of your vehicles and attachments should be modified and which areas should remain unchanged.
 <br>
 <br>
-With <strong>AFV</strong>, you can adjust the fill volume, for example for trailers, tanks, seeders, spreaders, or other equipment with capacity. <strong>AMP</strong> controls engine power and allows vehicles to be made more powerful, less powerful, or better suited to specific tasks. <strong>AWS</strong> lets you adjust the working speed of implements, such as when seeding, fertilizing, harvesting, or tilling. <strong>AWW</strong> changes the working width of implements so fields can be worked more quickly, more comfortably, or more realistically.
+With <strong>AFV</strong>, you can adjust the fill volume of trailers, tanks, seeders, spreaders, and other equipment with storage capacity. <strong>AFC</strong> changes the capacity for fuel, DEF, electric charge, and supported alternative propulsion supplies. <strong>APC</strong> compensates for the physical mass of supported FillUnit payloads, while <strong>ABW</strong> adjusts standalone front weights and integrated ballast configurations.
 <br>
 <br>
-With <strong>APW</strong>, you can adjust the pickup width, for example on loading wagons, balers, or other implements with a pickup function. <strong>ADS</strong> controls the travel speed of vehicles, while <strong>ABP</strong> influences braking force for more suitable handling. <strong>ADR</strong> allows you to adjust the unloading rate, meaning the speed at which trailers, tanks, or implements discharge their load.</div>
+<strong>AMP</strong> controls motor power, <strong>AWS</strong> adjusts the working speed of implements, and <strong>AWW</strong> changes their working width. <strong>APW</strong> modifies the pickup width of loading wagons, balers, and other equipment with a pickup function. <strong>ADS</strong> controls driving speed, while <strong>ABP</strong> adjusts braking power for vehicles, braked trailers, and attachments. <strong>ADR</strong> changes the rate at which supported equipment discharges its load.
+<br>
+<br>
+Placeables and productions can also be adjusted directly in construction mode before purchase. <strong>AFV-P</strong> changes the storage capacities of placeables and productions, while <strong>ADR-P</strong> controls their loading and unloading rates. <strong>ACR-P</strong> adjusts production cycle rates, and <strong>ACA-P</strong> changes input and output amounts per production cycle as well as supported feeding-robot payloads. <strong>AIP-P</strong> adjusts the payments generated by income-producing placeables.
+<br>
+<br>
+The latest version also improves compatibility with <strong>Courseplay</strong>, <strong>AutoDrive</strong>, and <strong>Precision Farming</strong>. Shop configuration handling, settings synchronization, and module filtering have been improved for more reliable operation.
 <br>
 <div align="center">
 
@@ -173,10 +193,16 @@ With <strong>APW</strong>, you can adjust the pickup width, for example on loadi
 <div align="center">Standardmäßig sind alle Module aktiviert. Jedes Modul steuert einen bestimmten Anpassungsbereich und kann bei Bedarf einzeln ein- oder ausgeschaltet werden. So kannst du selbst entscheiden, welche Eigenschaften deiner Fahrzeuge und Anbaugeräte verändert werden sollen und welche Bereiche unverändert bleiben.
 <br>
 <br>
-Mit <strong>AFV</strong> passt du das Füllvolumen an, zum Beispiel bei Anhängern, Tanks, Sämaschinen, Streuern oder anderen Geräten mit Kapazität. <strong>AMP</strong> steuert die Motorleistung und ermöglicht es, Fahrzeuge stärker, schwächer oder besser auf bestimmte Aufgaben abzustimmen. Über <strong>AWS</strong> lässt sich die Arbeitsgeschwindigkeit von Geräten anpassen, etwa beim Säen, Düngen, Ernten oder bei der Bodenbearbeitung. <strong>AWW</strong> verändert die Arbeitsbreite von Geräten, damit Flächen schneller, komfortabler oder realistischer bearbeitet werden können.
+Mit <strong>AFV</strong> passt du das Füllvolumen von Anhängern, Tanks, Sämaschinen, Streuern und anderen Geräten mit Kapazität an. <strong>AFC</strong> verändert die Kapazität für Kraftstoff, DEF, elektrische Ladung und unterstützte alternative Betriebsstoffe. <strong>APC</strong> gleicht die physikalische Masse unterstützter FillUnit-Ladungen aus, während <strong>ABW</strong> eigenständige Frontgewichte und integrierte Ballastkonfigurationen anpasst.
 <br>
 <br>
-Mit <strong>APW</strong> passt du die Pickupbreite an, zum Beispiel bei Ladewagen, Ballenpressen oder anderen Geräten mit Aufnahmefunktion. <strong>ADS</strong> steuert die Fahrgeschwindigkeit von Fahrzeugen, während <strong>ABP</strong> die Bremskraft beeinflusst und so für ein passenderes Fahrverhalten sorgen kann. Über <strong>ADR</strong> lässt sich außerdem die Entladerate anpassen, also die Geschwindigkeit, mit der Anhänger, Tanks oder Geräte ihre Ladung abgeben.</div>
+<strong>AMP</strong> steuert die Motorleistung, <strong>AWS</strong> verändert die Arbeitsgeschwindigkeit von Geräten und <strong>AWW</strong> deren Arbeitsbreite. Mit <strong>APW</strong> passt du die Pickupbreite von Ladewagen, Ballenpressen und anderen Geräten mit Aufnahmefunktion an. <strong>ADS</strong> steuert die Fahrgeschwindigkeit, während <strong>ABP</strong> die Bremskraft von Fahrzeugen, gebremsten Anhängern und Anbaugeräten verändert. <strong>ADR</strong> passt die Geschwindigkeit an, mit der unterstützte Geräte ihre Ladung abgeben.
+<br>
+<br>
+Auch platzierbare Objekte und Produktionen können vor dem Kauf direkt im Baumodus angepasst werden. <strong>AFV-P</strong> verändert die Lagerkapazitäten von platzierbaren Objekten und Produktionen, während <strong>ADR-P</strong> deren Lade- und Entladegeschwindigkeit steuert. <strong>ACR-P</strong> passt die Produktions-Zyklusrate an und <strong>ACA-P</strong> verändert die Eingangs- und Ausgangsmengen pro Produktionszyklus sowie unterstützte Nutzlasten von Fütterungsrobotern. <strong>AIP-P</strong> passt die Zahlungen einkommensgenerierender platzierbarer Objekte an.
+<br>
+<br>
+Die neueste Version verbessert außerdem die Kompatibilität mit <strong>Courseplay</strong>, <strong>AutoDrive</strong> und <strong>Precision Farming</strong>. Die Verarbeitung von Shop-Konfigurationen, die Synchronisierung der Einstellungen und die Modulfilterung wurden für einen zuverlässigeren Betrieb verbessert.
 </details>
 </div>
 <br>
@@ -276,22 +302,46 @@ The <strong>“modSettings.xml”</strong> file is created automatically when th
 
 <div align="center">
 
-### v1.0.0.1
+### v1.0.0.1 (released)
+
+### <strong>AFC</strong> - Adjust Fuel Capacity
+Adds adjustable capacities for fuel, DEF, electric charge, and supported alternative propulsion supplies.
+
+### <strong>APC</strong> - Adjust Payload Compensation
+Compensates for the physical mass of supported FillUnit payloads.
+
+### <strong>ABW</strong> - Adjust Ballast Weight
+Adjusts the weight of standalone front weights and integrated ballast configurations.
 
 ### <strong>AFV-P</strong> - Adjust Fill Volume for Placeables
-Adjusts storage and fill volume values for selected placeables.
+Adjusts storage and fill-volume capacities for selected placeables and productions.
 
 ### <strong>ADR-P</strong> - Adjust Discharge Rate for Placeables
-Adjusts loading and discharge rates for selected placeables.
+Adjusts loading and unloading rates for selected placeables and productions.
 
-### <strong>ACR-P</strong> - Adjust Cycle Rate for Placeables
-Adjusts production cycle speed for production points.
+### <strong>ACR-P</strong> - Adjust Cycle Rate for Productions
+Adjusts the cycle rate of supported production points.
+
+### <strong>ACA-P</strong> - Adjust Cycle Amount for Productions
+Adjusts input and output amounts per production cycle as well as supported feeding-robot payloads.
 
 ### <strong>AIP-P</strong> - Adjust Income Payments for Placeables
-Adjusts income payments for income-generating placeables.
+Adjusts payments generated by supported income-producing placeables.
 
-### <strong>ABP</strong> - Adjust Brake Power "Update"
-Improved support for braked trailers and attachments.
+### <strong>ABP</strong> - Adjust Brake Power Update
+Improves support for braked trailers and attachments.
+
+### <strong>Compatibility Improvements</strong>
+Improves compatibility with Courseplay, AutoDrive, and Precision Farming.
+
+### <strong>Shop and Settings Improvements</strong>
+Improves shop configuration handling, settings synchronization, and module filtering.
+
+### <strong>APW Fix</strong>
+Fixes a runtime issue when resolving pickup work-area nodes.
+
+### <strong>Internal Improvements</strong>
+Reworks several internal checks for FillUnits, discharge nodes, work areas, and placeable production data.
 
 <br>
 
@@ -303,23 +353,46 @@ Improved support for braked trailers and attachments.
 
 <div align="center">
 
-### v1.0.0.1
+### v1.0.0.1 (Veröffentlicht)
 
-### <strong>AFV-P</strong> - Füllvolumen für platzierbare Objekte
-Passt Speicher- und Füllvolumenwerte für ausgewählte platzierbare Objekte an.
+### <strong>AFC</strong> – Kraftstoffkapazität anpassen
+Fügt anpassbare Kapazitäten für Kraftstoff, DEF, elektrische Ladung und unterstützte alternative Betriebsstoffe hinzu.
 
-### <strong>ADR-P</strong> - Entladerate für platzierbare Objekte
-Passt Lade- und Entladeraten für ausgewählte platzierbare Objekte an.
+### <strong>APC</strong> – Nutzlastausgleich anpassen
+Gleicht die physikalische Masse unterstützter FillUnit-Ladungen aus.
 
-### <strong>ACR-P</strong> - Zyklusrate für Produktionen
-Passt die Produktionsgeschwindigkeit von Produktionspunkten an.
+### <strong>ABW</strong> – Ballastgewicht anpassen
+Passt das Gewicht eigenständiger Frontgewichte und integrierter Ballastkonfigurationen an.
 
-### <strong>AIP-P</strong> - Einkommen für platzierbare Objekte
-Passt Einkommenszahlungen für einkommensgenerierende platzierbare Objekte an.
+### <strong>AFV-P</strong> – Füllvolumen platzierbarer Objekte anpassen
+Passt Lagerkapazitäten und Füllvolumen ausgewählter platzierbarer Objekte und Produktionen an.
 
-### <strong>ABP</strong> - Bremskraft "Update"
-Verbesserte Unterstützung für gebremste Anhänger und Anbaugeräte.
+### <strong>ADR-P</strong> – Entlate platzierbarerbarer Obbarer Objekte anpassen
+Passt die Lade- und Entgeschwindigkeit ausgewählter platzierbarerbarer Obbarer Objekte und Produktionen an.
 
+### <strong>ACR-P</strong> – ZyZyklusrklusratetionszyklen anpassen
+Passt die ZyZyklusratetionszyklen unterstützter Produktionsstätten an.
+
+### <strong>ACA-P</strong> – ZyklusmengenmenMengen pro Produktionszyklus anpassen
+Passt Eingangs- und Ausgangsmengen pro Produktionszyklus sowie unterstützte Nutzlasten vonFütterungsroboterrobotern an.
+
+### <strong>AIP-P</strong> – EinkEinkkommenszahlungenEinkEinkommzahlungen platzierbarer Objekte anpassen
+Passt die Zahlungen unterstützter einkommgenerierender platzierbarer Objekte an.
+
+### <strong>ABP</strong> – Aktualisierung der BreBremsBremsBremskraft
+Verbessert die Unterstützung für gebremste Anhänger und Anbaugeräte.
+
+### <strong>Kompatibilitätsverbesserungen</strong>
+Verbessert die Kompatibilität mit Courseplay, AutoDrive und Precision Farming.
+
+### <strong>Verbesserungen an Shop und Einstellungen</strong>
+Verbessert die Verarbeitung von Shop-Konfigurationen, die Synchronisierung der Einstellungen und die Filterung der Module.
+
+### <strong>APW-Fehlerbehebung</strong>
+Behebt einen Laufzeitfehler beim Auflösen der Arbeitsbereichsknoten von Pickup-Geräten.
+
+### <strong>Interne Verbesserungen</strong>
+Überarbeitet verschiedene interne Prüfungen für FillUnits, EntEntladeknoten, Arbeitsbereiche und Produktionsdaten platzierbarer Objekte.
 
 </div>
 </details>
