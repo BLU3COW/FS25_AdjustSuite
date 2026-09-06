@@ -312,6 +312,74 @@ local function collectFillUnits(vehicle, force)
     return #spec.units > 0
 end
 
+local function captureSavedFillLevels(savegame, spec)
+    spec.savedFillLevels = nil
+    if savegame == nil or savegame.resetVehicles or savegame.xmlFile == nil or savegame.key == nil then
+        return
+    end
+
+    local savedLevels = {}
+    local i = 0
+    while true do
+        local unitKey = string.format("%s.fillUnit.unit(%d)", savegame.key, i)
+        if not savegame.xmlFile:hasProperty(unitKey) then
+            break
+        end
+
+        local fillUnitIndex = savegame.xmlFile:getValue(unitKey .. "#index")
+        local fillLevel = savegame.xmlFile:getValue(unitKey .. "#fillLevel")
+        if fillUnitIndex ~= nil and fillLevel ~= nil then
+            savedLevels[math.floor(fillUnitIndex + 0.5)] = fillLevel
+        end
+
+        i = i + 1
+    end
+
+    spec.savedFillLevels = savedLevels
+end
+
+-- The base game clamps a loaded fillLevel to the vehicle's default (unadjusted)
+-- capacity before this mod's onPostLoad gets a chance to enlarge it, so a level
+-- saved above the default capacity would otherwise be lost on every restart.
+local function restoreSavedFillLevels(vehicle, spec)
+    local savedLevels = spec.savedFillLevels
+    spec.savedFillLevels = nil
+    if savedLevels == nil then
+        return
+    end
+
+    for _, entry in ipairs(spec.units) do
+        local savedLevel = savedLevels[entry.index]
+        local fillUnit = entry.fillUnit
+        local capacity = entry.adjustedCapacity or fillUnit.capacity
+        if savedLevel ~= nil and capacity ~= nil then
+            local targetLevel = math.min(savedLevel, capacity)
+            local currentLevel = tonumber(fillUnit.fillLevel) or 0
+            if targetLevel > currentLevel + 0.001 then
+                local delta = targetLevel - currentLevel
+                local applied = false
+                if vehicle.addFillUnitFillLevel ~= nil and fillUnit.fillType ~= nil then
+                    local farmId = vehicle.getOwnerFarmId ~= nil and vehicle:getOwnerFarmId() or nil
+                    local toolType = ToolType ~= nil and ToolType.UNDEFINED or nil
+                    applied = pcall(
+                        vehicle.addFillUnitFillLevel,
+                        vehicle,
+                        farmId,
+                        entry.index,
+                        delta,
+                        fillUnit.fillType,
+                        toolType,
+                        nil
+                    )
+                end
+                if not applied then
+                    fillUnit.fillLevel = targetLevel
+                end
+            end
+        end
+    end
+end
+
 local function applyOffset(vehicle)
     local spec = getSpec(vehicle)
 
@@ -356,8 +424,11 @@ function AFV.registerEventListeners(vehicleType)
 end
 
 function AFV:onPostLoad(savegame)
+    local spec = getSpec(self)
+    captureSavedFillLevels(savegame, spec)
     collectFillUnits(self, true)
     applyOffset(self)
+    restoreSavedFillLevels(self, spec)
 end
 
 function AFV:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
