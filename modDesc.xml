@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="111">
     <author>BLU3COW</author>
-    <version>1.0.0.1</version>
+    <version>1.0.0.2</version>
 
     <title>
         <en>AdjustSuite</en>
@@ -35,20 +35,8 @@ AIP-P - Income Payments
 
 Source code, help and issue reports: https://github.com/BLU3COW/FS25_AdjustSuite
 
-Changelog 1.0.0.1:
-- Added ABP support for braked trailers and attachments.
-- Added AFC for fuel, DEF, electric charge and alternative propulsion supplies.
-- Added APC for compensating the physical mass of supported FillUnit payloads.
-- Added ABW for standalone front weights and integrated ballast configurations.
-- Added AFV-P for placeable and production storage capacities.
-- Added ADR-P for placeable loading and unloading speeds.
-- Added ACR-P for production cycle rates.
-- Added ACA-P for production input and output amounts per cycle and feeding robot payloads.
-- Added AIP-P for income-generating placeables.
-- Improved compatibility with Courseplay, AutoDrive and Precision Farming.
-- Improved shop configuration handling, settings sync and module filtering.
-- Fixed an APW runtime issue when resolving pickup work area nodes.
-- Reworked several internal checks for fill units, discharge nodes, work areas and placeable production data.]]></en>
+Changelog 1.0.0.2:
+- Fixed AFC and AFV losing a fill level saved above the vehicle's default capacity after a game restart.]]></en>
         <de><![CDATA[AdjustSuite
 Mit AdjustSuite kannst du die Anzahl zusätzlicher Einzelmods reduzieren, wenn es dir vor allem darum geht, dein Spielerlebnis gezielt anzupassen. Fahrzeuge, Anbaugeräte, platzierbare Objekte und Produktionen in LS25 lassen sich damit ganz nach deinem persönlichen Spielstil verändern. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Fahrverhalten, Produktionswerte und vieles mehr, damit jede Maschine, jedes Anbaugerät, jedes platzierbare Objekt und jede Produktion besser zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt.
 Standardmäßig sind die Bereiche REAL und UNREAL aktiviert. Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in modSettings größere Anpassungsbereiche freischalten und den Mod noch genauer auf deinen persönlichen Spielstil abstimmen. Beachte dabei jedoch immer die logischen und physikalischen Grenzen des Spiels, da zu extreme Werte das Fahrverhalten, die Funktion einzelner Geräte oder die Spielbalance beeinflussen können.
@@ -76,20 +64,8 @@ AIP-P - Einkommenszahlungen
 
 Quellcode, Hilfe und Fehlermeldungen: https://github.com/BLU3COW/FS25_AdjustSuite
 
-Changelog 1.0.0.1:
-- ABP unterstützt jetzt auch gebremste Anhänger und Anbaugeräte.
-- AFC für Kraftstoff, DEF, elektrische Ladung und alternative Betriebsstoffe hinzugefügt.
-- APC zum Ausgleich der physikalischen Masse unterstützter FillUnit-Ladungen hinzugefügt.
-- ABW für eigenständige Frontgewichte und integrierte Ballastkonfigurationen hinzugefügt.
-- AFV-P für Lagerkapazitäten von platzierbaren Objekten und Produktionen hinzugefügt.
-- ADR-P für Lade- und Entladegeschwindigkeiten von platzierbaren Objekten hinzugefügt.
-- ACR-P für Produktions-Zyklusraten hinzugefügt.
-- ACA-P für Eingangs- und Ausgangsmengen pro Produktionszyklus sowie Nutzlasten von Fütterungsrobotern hinzugefügt.
-- AIP-P für einkommensgenerierende platzierbare Objekte hinzugefügt.
-- Kompatibilität mit Courseplay, AutoDrive und Precision Farming verbessert.
-- Shop-Konfigurationen, Settings-Synchronisierung und Modulfilterung robuster gemacht.
-- APW-Laufzeitfehler bei der Auflösung von Pickup-Arbeitsbereichsknoten behoben.
-- Interne Prüfungen für FillUnits, Entladeknoten, Arbeitsbereiche und Produktionsdaten überarbeitet.]]></de>
+Changelog 1.0.0.2:
+- Fehler behoben, bei dem AFC und AFV einen über der Standardkapazität liegenden, gespeicherten Füllstand nach einem Spielneustart verloren.]]></de>
         <fr><![CDATA[AdjustSuite
 Avec AdjustSuite, tu peux réduire le besoin de plusieurs mods séparés lorsque ton objectif est surtout d'ajuster et de personnaliser ton expérience de jeu. Personnalise les véhicules, outils, objets plaçables et productions dans FS25 selon ton style de jeu. Optimise la puissance, la largeur de travail, les capacités, le comportement de conduite, les valeurs de production et bien plus encore, afin que chaque machine, outil, objet plaçable et production corresponde mieux à ta ferme, tes champs et tes méthodes de travail.
 Par défaut, les niveaux REAL et UNREAL sont activés. Si tu veux plus de liberté, tu peux débloquer des plages d'ajustement plus larges dans modSettings et adapter le mod encore plus précisément à ton style de jeu. Garde toutefois toujours à l'esprit les limites logiques et physiques du jeu, car des valeurs trop extrêmes peuvent influencer la conduite, le fonctionnement de certains outils ou l'équilibre du jeu.
@@ -117,20 +93,8 @@ AIP-P - Revenus
 
 Code source, aide et signalement des problèmes : https://github.com/BLU3COW/FS25_AdjustSuite
 
-Changelog 1.0.0.1:
-- Ajout de la prise en charge ABP pour les remorques et outils freinés.
-- Ajout de AFC pour le carburant, le DEF, la charge électrique et les énergies alternatives.
-- Ajout de APC pour compenser la masse physique des charges FillUnit prises en charge.
-- Ajout de ABW pour les masses avant indépendantes et les configurations de lestage intégrées.
-- Ajout de AFV-P pour les capacités de stockage des objets plaçables et productions.
-- Ajout de ADR-P pour les vitesses de chargement et déchargement des objets plaçables.
-- Ajout de ACR-P pour les vitesses de cycle de production.
-- Ajout de ACA-P pour les quantités d'entrée et de sortie par cycle de production ainsi que les charges des robots d'alimentation.
-- Ajout de AIP-P pour les objets plaçables générant des revenus.
-- Compatibilité améliorée avec Courseplay, AutoDrive et Precision Farming.
-- Gestion des configurations de magasin, synchronisation des réglages et filtrage des modules améliorés.
-- Correction d'un problème d'exécution APW lors de la résolution des nœuds de zones de ramassage.
-- Plusieurs contrôles internes retravaillés pour les FillUnits, nœuds de déchargement, zones de travail et données de production des objets plaçables.]]></fr>
+Changelog 1.0.0.2:
+- Correction d'un problème où AFC et AFV perdaient un niveau de remplissage sauvegardé au-dessus de la capacité par défaut du véhicule après un redémarrage du jeu.]]></fr>
     </description>
 
     <iconFilename>icon_AdjustSuite.dds</iconFilename>
