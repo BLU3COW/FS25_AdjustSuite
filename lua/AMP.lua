@@ -45,14 +45,7 @@ function AMP:loadMotor(superFunc, xmlFile, motorId)
         "motor"
     )
 
-    local basePower = ConfigurationUtil.getConfigurationValue(
-        xmlFile,
-        key,
-        "",
-        "#hp",
-        nil,
-        fallbackConfigKey
-    )
+    local basePower = ConfigurationUtil.getConfigurationValue(xmlFile, key, "", "#hp", nil, fallbackConfigKey)
 
     if basePower == nil then
         basePower = xmlFile:getValue("vehicle.storeData.specs.power")
@@ -65,14 +58,8 @@ function AMP:loadMotor(superFunc, xmlFile, motorId)
     local originalTorqueScale = torqueScalePath ~= nil and xmlFile:getValue(torqueScalePath) or nil
 
     if torqueScalePath ~= nil and math.abs(offset) > 0.001 then
-        local torqueScaleBefore = ConfigurationUtil.getConfigurationValue(
-            xmlFile,
-            key,
-            ".motor",
-            "#torqueScale",
-            1,
-            fallbackConfigKey
-        )
+        local torqueScaleBefore =
+            ConfigurationUtil.getConfigurationValue(xmlFile, key, ".motor", "#torqueScale", 1, fallbackConfigKey)
 
         local torqueScaleAfter = torqueScaleBefore * factor
 
@@ -81,7 +68,6 @@ function AMP:loadMotor(superFunc, xmlFile, motorId)
         elseif xmlFile.setFloat ~= nil then
             xmlFile:setFloat(torqueScalePath, torqueScaleAfter)
         end
-
     end
 
     local ok, motor = pcall(superFunc, self, xmlFile, motorId)

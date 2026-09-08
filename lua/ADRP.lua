@@ -6,11 +6,10 @@ local LOAD_TRIGGER_PATHS = {
     "placeable.silo.loadingStation.loadTrigger",
     "placeable.buyingStation.loadTrigger",
     "placeable.husbandry.loadingStation.loadTrigger",
-    "placeable.manureHeap.loadingStation.loadTrigger"
+    "placeable.manureHeap.loadingStation.loadTrigger",
 }
 local PRODUCTION_PATH = "placeable.productionPoint"
-local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH
-    .. ".productionPointConfigurations.productionPointConfiguration"
+local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfigurations.productionPointConfiguration"
 
 local function visitLoadTriggerPath(xmlFile, path, callback)
     local found = false
@@ -40,11 +39,7 @@ local function visitSelectedLoadTriggers(placeable, callback)
     end
 
     local configurationId = tonumber(placeable.configurations ~= nil and placeable.configurations.productionPoint) or 1
-    local productionKey = string.format(
-        "%s(%d).productionPoint",
-        PRODUCTION_CONFIGURATIONS_PATH,
-        configurationId - 1
-    )
+    local productionKey = string.format("%s(%d).productionPoint", PRODUCTION_CONFIGURATIONS_PATH, configurationId - 1)
     if not placeable.xmlFile:hasProperty(productionKey) then
         productionKey = PRODUCTION_PATH
     end
@@ -60,7 +55,7 @@ function ADRP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, 
         return nil
     end
 
-    return {basePrice = Suite.getStoreItemPrice(storeItem, xmlFile)}
+    return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
 function ADRP.applyToPlaceableXML(placeable, offset)
@@ -71,9 +66,6 @@ function ADRP.applyToPlaceableXML(placeable, offset)
 
     visitSelectedLoadTriggers(placeable, function(key)
         local value = tonumber(placeable.xmlFile:getValue(key .. "#fillLitersPerSecond", 1000)) or 1000
-        placeable.xmlFile:setValue(
-            key .. "#fillLitersPerSecond",
-            math.max(math.floor(value * factor + 0.5), 1)
-        )
+        placeable.xmlFile:setValue(key .. "#fillLitersPerSecond", math.max(math.floor(value * factor + 0.5), 1))
     end)
 end

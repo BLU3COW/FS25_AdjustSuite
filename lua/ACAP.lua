@@ -3,8 +3,7 @@ local ACAP = AdjustSuiteACAP
 
 local Suite = AdjustSuite
 local PRODUCTION_PATH = "placeable.productionPoint"
-local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH
-    .. ".productionPointConfigurations.productionPointConfiguration"
+local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfigurations.productionPointConfiguration"
 local FEEDING_ROBOT_PATH = "placeable.husbandry.feedingRobot"
 
 local function scaleRuntimeValue(object, key, factor)
@@ -40,8 +39,7 @@ end
 function ACAP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
     local hasCycleAmounts = productionPointHasCycleAmounts(xmlFile, PRODUCTION_PATH)
     xmlFile:iterate(PRODUCTION_CONFIGURATIONS_PATH, function(_, key)
-        hasCycleAmounts = hasCycleAmounts
-            or productionPointHasCycleAmounts(xmlFile, key .. ".productionPoint")
+        hasCycleAmounts = hasCycleAmounts or productionPointHasCycleAmounts(xmlFile, key .. ".productionPoint")
     end)
     local hasFeedingRobot = xmlFile:hasProperty(FEEDING_ROBOT_PATH)
         and xmlFile:getValue(FEEDING_ROBOT_PATH .. "#filename") ~= nil
@@ -49,7 +47,7 @@ function ACAP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, 
         return nil
     end
 
-    return {basePrice = Suite.getStoreItemPrice(storeItem, xmlFile)}
+    return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
 function ACAP.onFeedingRobotLoaded(placeable, robot, args)
@@ -70,21 +68,19 @@ function ACAP.onFeedingRobotLoaded(placeable, robot, args)
     local capacity = tonumber(robot.fillPlaneCapacity)
         or tonumber(type(robot.fillPlane) == "table" and robot.fillPlane.capacity)
         or tonumber(type(robot.fillPlane) == "table" and robot.fillPlane.maxCapacity)
-    if capacity ~= nil and capacity > 0
-        and type(robot.fillPlane) == "table"
-        and robot.fillPlane.setState ~= nil then
+    if capacity ~= nil and capacity > 0 and type(robot.fillPlane) == "table" and robot.fillPlane.setState ~= nil then
         robot.fillPlane:setState(math.clamp((tonumber(robot.fillLevel) or 0) / capacity, 0, 1))
     end
 
     robot.adjustSuiteACAPScaled = true
 end
 
-if PlaceableHusbandryFeedingRobot ~= nil
+if
+    PlaceableHusbandryFeedingRobot ~= nil
     and PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded ~= nil
-    and ACAP.feedingRobotHookInstalled ~= true then
+    and ACAP.feedingRobotHookInstalled ~= true
+then
     ACAP.feedingRobotHookInstalled = true
-    PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded = Utils.appendedFunction(
-        PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded,
-        ACAP.onFeedingRobotLoaded
-    )
+    PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded =
+        Utils.appendedFunction(PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded, ACAP.onFeedingRobotLoaded)
 end

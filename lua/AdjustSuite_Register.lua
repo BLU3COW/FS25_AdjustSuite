@@ -76,10 +76,8 @@ local function getFillUnitConfigurationContext(
     excludedFillUnitIndices
 )
     configurationId = math.max(math.floor((tonumber(configurationId) or 1) + 0.5), 1)
-    local configurationKey = string.format(
-        "vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)",
-        configurationId - 1
-    )
+    local configurationKey =
+        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
 
     if not xmlFile:hasProperty(configurationKey) then
         if configurationId ~= 1 then
@@ -104,17 +102,19 @@ local function getFillUnitConfigurationContext(
             break
         end
 
-        if (excludedFillUnitIndices == nil or excludedFillUnitIndices[fillUnitIndex + 1] ~= true)
+        if
+            (excludedFillUnitIndices == nil or excludedFillUnitIndices[fillUnitIndex + 1] ~= true)
             and xmlFillUnitIsUsable(xmlFile, fillUnitKey)
             and (includeTechnicalHidden == true or not xmlFillUnitIsTechnicalHidden(xmlFile, fillUnitKey))
-            and (requireMassUpdate ~= true or xmlFillUnitUpdatesMass(xmlFile, fillUnitKey)) then
-            return {hasUsable = true}
+            and (requireMassUpdate ~= true or xmlFillUnitUpdatesMass(xmlFile, fillUnitKey))
+        then
+            return { hasUsable = true }
         end
 
         fillUnitIndex = fillUnitIndex + 1
     end
 
-    return {hasUsable = false}
+    return { hasUsable = false }
 end
 
 local function getFillUnitConfigurationContexts(
@@ -159,10 +159,8 @@ local function getOperatingConsumerFillUnitIndices(xmlFile)
     local indices = {}
     local configurationIndex = 0
     while true do
-        local configurationKey = string.format(
-            "vehicle.motorized.consumerConfigurations.consumerConfiguration(%d)",
-            configurationIndex
-        )
+        local configurationKey =
+            string.format("vehicle.motorized.consumerConfigurations.consumerConfiguration(%d)", configurationIndex)
         if not xmlFile:hasProperty(configurationKey) then
             break
         end
@@ -191,10 +189,8 @@ end
 
 local function getOperatingFillUnitConfigurationContext(xmlFile, configurationId, operatingIndices)
     configurationId = math.max(math.floor((tonumber(configurationId) or 1) + 0.5), 1)
-    local configurationKey = string.format(
-        "vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)",
-        configurationId - 1
-    )
+    local configurationKey =
+        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
 
     if not xmlFile:hasProperty(configurationKey) then
         if configurationId ~= 1 then
@@ -219,15 +215,19 @@ local function getOperatingFillUnitConfigurationContext(xmlFile, configurationId
         end
 
         local capacity = tonumber(xmlFile:getValue(fillUnitKey .. "#capacity", 0))
-        if operatingIndices[fillUnitIndex + 1] == true
-            and capacity ~= nil and capacity > 0 and capacity < math.huge then
-            return {hasUsable = true}
+        if
+            operatingIndices[fillUnitIndex + 1] == true
+            and capacity ~= nil
+            and capacity > 0
+            and capacity < math.huge
+        then
+            return { hasUsable = true }
         end
 
         fillUnitIndex = fillUnitIndex + 1
     end
 
-    return {hasUsable = false}
+    return { hasUsable = false }
 end
 
 local function getOperatingFillUnitConfigurationContexts(xmlFile)
@@ -270,11 +270,10 @@ local function getVehicleTypeConfigurationContexts(xmlFile, customEnvironment, r
 
         local vehicleTypeName = xmlFile:getValue(key .. "#vehicleType")
         local vehicleType = vehicleTypeName ~= nil
-            and g_vehicleTypeManager:getTypeByName(vehicleTypeName, customEnvironment)
+                and g_vehicleTypeManager:getTypeByName(vehicleTypeName, customEnvironment)
             or nil
-        local isUsable = vehicleType ~= nil
-            and hasSpecialization(requiredSpecialization, vehicleType.specializations)
-        contexts[configurationIndex + 1] = {hasUsable = isUsable}
+        local isUsable = vehicleType ~= nil and hasSpecialization(requiredSpecialization, vehicleType.specializations)
+        contexts[configurationIndex + 1] = { hasUsable = isUsable }
         hasUsable = hasUsable or isUsable
         configurationIndex = configurationIndex + 1
     end
@@ -284,11 +283,13 @@ end
 
 local function storeCategoryIsExcluded(categoryNames)
     for categoryName in string.gmatch(string.lower(tostring(categoryNames or "")), "[^%s,;|]+") do
-        if categoryName == "bales"
+        if
+            categoryName == "bales"
             or categoryName == "bigbags"
             or categoryName == "bigbagpallets"
             or string.find(categoryName, "bale", 1, true) == 1
-            or string.find(categoryName, "pallet", 1, true) ~= nil then
+            or string.find(categoryName, "pallet", 1, true) ~= nil
+        then
             return true
         end
     end
@@ -306,12 +307,14 @@ local function afvXmlIsExcluded(xmlFile)
         return true
     end
 
-    if xmlFile:hasProperty("vehicle.baler")
+    if
+        xmlFile:hasProperty("vehicle.baler")
         or xmlFile:hasProperty("vehicle.baleLoader")
         or xmlFile:hasProperty("vehicle.autoLoaderBales")
         or xmlFile:hasProperty("vehicle.baleWrapper")
         or xmlFile:hasProperty("vehicle.bigBag")
-        or xmlFile:hasProperty("vehicle.multipleItemPurchase") then
+        or xmlFile:hasProperty("vehicle.multipleItemPurchase")
+    then
         return true
     end
 
@@ -352,7 +355,7 @@ end
 
 local nonWidthWorkAreaTypes = {
     combinechopper = true,
-    combineswath = true
+    combineswath = true,
 }
 
 local function workAreaCollectionHasAdjustableWidth(xmlFile, collectionKey)
@@ -381,10 +384,8 @@ local function hasAdjustableWorkAreas(xmlFile)
 
     local configurationIndex = 0
     while true do
-        local configurationKey = string.format(
-            "vehicle.workAreas.workAreaConfigurations.workAreaConfiguration(%d)",
-            configurationIndex
-        )
+        local configurationKey =
+            string.format("vehicle.workAreas.workAreaConfigurations.workAreaConfiguration(%d)", configurationIndex)
         if not xmlFile:hasProperty(configurationKey) then
             break
         end
@@ -418,7 +419,7 @@ end
 
 local pickupWorkAreaFunctions = {
     processBalerArea = true,
-    processForageWagonArea = true
+    processForageWagonArea = true,
 }
 
 local function workAreaCollectionHasPickupFunction(xmlFile, collectionKey)
@@ -451,10 +452,8 @@ local function hasPickupWorkArea(xmlFile)
 
     local configurationIndex = 0
     while true do
-        local configurationKey = string.format(
-            "vehicle.workAreas.workAreaConfigurations.workAreaConfiguration(%d)",
-            configurationIndex
-        )
+        local configurationKey =
+            string.format("vehicle.workAreas.workAreaConfigurations.workAreaConfiguration(%d)", configurationIndex)
         if not xmlFile:hasProperty(configurationKey) then
             break
         end
@@ -527,7 +526,7 @@ local function getDischargeableConfigurationContext(xmlFile, configurationId)
         configurationKey = "vehicle.dischargeable"
     end
 
-    return {hasUsable = dischargeableKeyHasUsableNode(xmlFile, configurationKey)}
+    return { hasUsable = dischargeableKeyHasUsableNode(xmlFile, configurationKey) }
 end
 
 local function getDischargeableConfigurationContexts(xmlFile)
@@ -557,10 +556,8 @@ local function xmlCombineUsesOnlyBufferFillUnits(xmlFile)
         return false
     end
 
-    local fillUnitIndex = math.max(
-        math.floor((tonumber(xmlFile:getValue("vehicle.combine#fillUnitIndex", 1)) or 1) + 0.5),
-        1
-    )
+    local fillUnitIndex =
+        math.max(math.floor((tonumber(xmlFile:getValue("vehicle.combine#fillUnitIndex", 1)) or 1) + 0.5), 1)
     local fillUnitXmlIndex = fillUnitIndex - 1
     local foundFillUnit = false
 
@@ -576,28 +573,22 @@ local function xmlCombineUsesOnlyBufferFillUnits(xmlFile)
 
     local configurationIndex = 0
     while true do
-        local configurationKey = string.format(
-            "vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)",
-            configurationIndex
-        )
+        local configurationKey =
+            string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationIndex)
         if not xmlFile:hasProperty(configurationKey) then
             break
         end
 
-        if fillUnitIsFinite(string.format(
-            "%s.fillUnits.fillUnit(%d)",
-            configurationKey,
-            fillUnitXmlIndex
-        )) then
+        if fillUnitIsFinite(string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitXmlIndex)) then
             return false
         end
         configurationIndex = configurationIndex + 1
     end
 
-    if configurationIndex == 0 and fillUnitIsFinite(string.format(
-        "vehicle.fillUnit.fillUnits.fillUnit(%d)",
-        fillUnitXmlIndex
-    )) then
+    if
+        configurationIndex == 0
+        and fillUnitIsFinite(string.format("vehicle.fillUnit.fillUnits.fillUnit(%d)", fillUnitXmlIndex))
+    then
         return false
     end
 
@@ -608,7 +599,7 @@ local function getBasePriceContext(storeItem, xmlFile)
     if storeItem == nil then
         return nil
     end
-    return {basePrice = Suite.getStoreItemPrice(storeItem, xmlFile)}
+    return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
 local function isRoadVehicleType(vehicleTypeName, vehicleType)
@@ -628,14 +619,16 @@ end
 local function getRoadModuleDefinition()
     return {
         typeFilter = isRoadVehicleType,
-        getStoreContext = getMotorizedStoreContext
+        getStoreContext = getMotorizedStoreContext,
     }
 end
 
 local function isBrakeVehicleType(vehicleTypeName, vehicleType)
     return isRoadVehicleType(vehicleTypeName, vehicleType)
-        or (hasSpecialization(Wheels, vehicleType.specializations)
-            and hasSpecialization(Attachable, vehicleType.specializations))
+        or (
+            hasSpecialization(Wheels, vehicleType.specializations)
+            and hasSpecialization(Attachable, vehicleType.specializations)
+        )
 end
 
 local function getBrakeStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
@@ -678,7 +671,7 @@ local function getBallastConfigurationContexts(xmlFile, configurations)
                         configurationDesc.configurationKey
                     )
                 end
-                optionContexts[index] = {hasUsable = mass > 0}
+                optionContexts[index] = { hasUsable = mass > 0 }
                 optionHasUsable = optionHasUsable or mass > 0
             end
 
@@ -706,22 +699,13 @@ end
 local definitions = {
     AFV = {
         typeFilter = function(vehicleTypeName, vehicleType)
-            return hasSpecialization(FillUnit, vehicleType.specializations)
-                or isCarFillableVehicleType(vehicleTypeName)
+            return hasSpecialization(FillUnit, vehicleType.specializations) or isCarFillableVehicleType(vehicleTypeName)
         end,
         getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
             local operatingIndices = getOperatingConsumerFillUnitIndices(xmlFile)
-            local capacityByFillUnit, hasUsable = getFillUnitConfigurationContexts(
-                xmlFile,
-                nil,
-                nil,
-                operatingIndices
-            )
-            local vehicleTypeContexts, hasUsableVehicleType = getVehicleTypeConfigurationContexts(
-                xmlFile,
-                customEnvironment,
-                FillUnit
-            )
+            local capacityByFillUnit, hasUsable = getFillUnitConfigurationContexts(xmlFile, nil, nil, operatingIndices)
+            local vehicleTypeContexts, hasUsableVehicleType =
+                getVehicleTypeConfigurationContexts(xmlFile, customEnvironment, FillUnit)
             local hasUsableCombination = hasUsable and (vehicleTypeContexts == nil or hasUsableVehicleType)
             if storeItem == nil or afvXmlIsExcluded(xmlFile) or not hasUsableCombination then
                 return nil
@@ -732,7 +716,7 @@ local definitions = {
                 capacityByFillUnit = capacityByFillUnit,
                 vehicleTypeContexts = vehicleTypeContexts,
                 hasUsableConfiguration = hasUsableCombination,
-                active = hasUsableCombination
+                active = hasUsableCombination,
             }
         end,
         rememberStoreContext = function(storeItem, context)
@@ -742,17 +726,14 @@ local definitions = {
         end,
         isSelectable = function(baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
-        end
+        end,
     },
     AFC = {
         typeFilter = isMotorizedFillUnitVehicleType,
         getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
             local capacityByFillUnit, hasUsable = getOperatingFillUnitConfigurationContexts(xmlFile)
-            local vehicleTypeContexts, hasUsableVehicleType = getVehicleTypeConfigurationContexts(
-                xmlFile,
-                customEnvironment,
-                Motorized
-            )
+            local vehicleTypeContexts, hasUsableVehicleType =
+                getVehicleTypeConfigurationContexts(xmlFile, customEnvironment, Motorized)
             local hasUsableCombination = hasUsable and (vehicleTypeContexts == nil or hasUsableVehicleType)
             if storeItem == nil or not hasUsableCombination then
                 return nil
@@ -763,7 +744,7 @@ local definitions = {
                 capacityByFillUnit = capacityByFillUnit,
                 vehicleTypeContexts = vehicleTypeContexts,
                 hasUsableConfiguration = hasUsableCombination,
-                active = hasUsableCombination
+                active = hasUsableCombination,
             }
         end,
         rememberStoreContext = function(storeItem, context)
@@ -773,26 +754,17 @@ local definitions = {
         end,
         isSelectable = function(baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
-        end
+        end,
     },
     APC = {
         typeFilter = function(vehicleTypeName, vehicleType)
-            return hasSpecialization(FillUnit, vehicleType.specializations)
-                or isCarFillableVehicleType(vehicleTypeName)
+            return hasSpecialization(FillUnit, vehicleType.specializations) or isCarFillableVehicleType(vehicleTypeName)
         end,
         getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
             local operatingIndices = getOperatingConsumerFillUnitIndices(xmlFile)
-            local massByFillUnit, hasUsable = getFillUnitConfigurationContexts(
-                xmlFile,
-                true,
-                nil,
-                operatingIndices
-            )
-            local vehicleTypeContexts, hasUsableVehicleType = getVehicleTypeConfigurationContexts(
-                xmlFile,
-                customEnvironment,
-                FillUnit
-            )
+            local massByFillUnit, hasUsable = getFillUnitConfigurationContexts(xmlFile, true, nil, operatingIndices)
+            local vehicleTypeContexts, hasUsableVehicleType =
+                getVehicleTypeConfigurationContexts(xmlFile, customEnvironment, FillUnit)
             local hasUsableCombination = hasUsable and (vehicleTypeContexts == nil or hasUsableVehicleType)
             if storeItem == nil or afvXmlIsExcluded(xmlFile) or not hasUsableCombination then
                 return nil
@@ -803,7 +775,7 @@ local definitions = {
                 massByFillUnit = massByFillUnit,
                 vehicleTypeContexts = vehicleTypeContexts,
                 hasUsableConfiguration = hasUsableCombination,
-                active = hasUsableCombination
+                active = hasUsableCombination,
             }
         end,
         rememberStoreContext = function(storeItem, context)
@@ -813,7 +785,7 @@ local definitions = {
         end,
         isSelectable = function(baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
-        end
+        end,
     },
     ABW = {
         typeFilter = isBallastVehicleType,
@@ -828,7 +800,7 @@ local definitions = {
                 basePrice = Suite.getStoreItemPrice(storeItem, xmlFile),
                 ballastConfigurations = ballastConfigurations,
                 standalone = standalone,
-                active = standalone or hasConfiguredBallast
+                active = standalone or hasConfiguredBallast,
             }
         end,
         rememberStoreContext = function(storeItem, context)
@@ -838,7 +810,7 @@ local definitions = {
         end,
         isSelectable = function(baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
-        end
+        end,
     },
     AMP = {
         typeFilter = function(vehicleTypeName, vehicleType)
@@ -847,7 +819,10 @@ local definitions = {
         end,
         getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
             local isMotorVehicle = storeItem ~= nil
-                and (xmlFile:hasProperty("vehicle.motorized") or xmlFile:hasProperty("vehicle.motorized.motorConfigurations"))
+                and (
+                    xmlFile:hasProperty("vehicle.motorized")
+                    or xmlFile:hasProperty("vehicle.motorized.motorConfigurations")
+                )
             if not isMotorVehicle then
                 return nil
             end
@@ -857,7 +832,7 @@ local definitions = {
             end
 
             return getBasePriceContext(storeItem, xmlFile)
-        end
+        end,
     },
     AWS = {
         baseValueField = "AWSStandardSpeedLimit",
@@ -878,15 +853,12 @@ local definitions = {
             local isMotorVehicle = xmlFile:hasProperty("vehicle.motorized") or xmlFile:hasProperty("vehicle.enterable")
             local isSelfPropelledWorkMachine = isMotorVehicle and hasWorkAreas(xmlFile)
             local speedLimit = (not isMotorVehicle or isSelfPropelledWorkMachine)
-                and tonumber(xmlFile:getValue("vehicle.base.speedLimit#value"))
+                    and tonumber(xmlFile:getValue("vehicle.base.speedLimit#value"))
                 or nil
             local vehicleTypeContexts, hasUsableVehicleType
             if xmlFile:hasProperty("vehicle.sprayer") then
-                vehicleTypeContexts, hasUsableVehicleType = getVehicleTypeConfigurationContexts(
-                    xmlFile,
-                    customEnvironment,
-                    Sprayer
-                )
+                vehicleTypeContexts, hasUsableVehicleType =
+                    getVehicleTypeConfigurationContexts(xmlFile, customEnvironment, Sprayer)
             end
             local hasUsableConfiguration = vehicleTypeContexts == nil or hasUsableVehicleType
             if storeItem == nil or speedLimit == nil or speedLimit <= 0.5 or not hasUsableConfiguration then
@@ -898,7 +870,7 @@ local definitions = {
                 basePrice = Suite.getStoreItemPrice(storeItem, xmlFile),
                 vehicleTypeContexts = vehicleTypeContexts,
                 hasUsableConfiguration = hasUsableConfiguration,
-                active = hasUsableConfiguration
+                active = hasUsableConfiguration,
             }
         end,
         rememberStoreContext = function(storeItem, context)
@@ -909,17 +881,20 @@ local definitions = {
             return tonumber(baseValue) ~= nil
                 and baseValue > 0.5
                 and (offset == 0 or (context ~= nil and context.active == true))
-        end
+        end,
     },
     AWW = {
         baseValueField = "AWWStandardWorkingWidth",
         typeFilter = function(vehicleTypeName, vehicleType)
             return not hasSpecialization(Locomotive, vehicleType.specializations)
                 and not hasSpecialization(Pickup, vehicleType.specializations)
-                and (hasSpecialization(WorkArea, vehicleType.specializations)
-                    or hasSpecialization(Leveler, vehicleType.specializations)
-                    or hasSpecialization(BunkerSiloCompacter, vehicleType.specializations)
-                    or hasSpecialization(Shovel, vehicleType.specializations))
+                and (hasSpecialization(WorkArea, vehicleType.specializations) or hasSpecialization(
+                    Leveler,
+                    vehicleType.specializations
+                ) or hasSpecialization(BunkerSiloCompacter, vehicleType.specializations) or hasSpecialization(
+                    Shovel,
+                    vehicleType.specializations
+                ))
                 and vehicleTypeName ~= "trainTimberTrailer"
                 and vehicleTypeName ~= "trainTrailer"
                 and vehicleTypeName ~= "pallet"
@@ -936,9 +911,9 @@ local definitions = {
 
             return {
                 baseValue = workingWidth,
-                basePrice = Suite.getStoreItemPrice(storeItem, xmlFile)
+                basePrice = Suite.getStoreItemPrice(storeItem, xmlFile),
             }
-        end
+        end,
     },
     APW = {
         typeFilter = function(vehicleTypeName, vehicleType)
@@ -952,12 +927,12 @@ local definitions = {
             end
 
             return getBasePriceContext(storeItem, xmlFile)
-        end
+        end,
     },
     ADS = getRoadModuleDefinition(),
     ABP = {
         typeFilter = isBrakeVehicleType,
-        getStoreContext = getBrakeStoreContext
+        getStoreContext = getBrakeStoreContext,
     },
     ADR = {
         typeFilter = function(vehicleTypeName, vehicleType)
@@ -966,11 +941,13 @@ local definitions = {
         getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
             local dischargeByConfiguration, hasUsable = getDischargeableConfigurationContexts(xmlFile)
             local fillUnitByConfiguration = getFillUnitConfigurationContexts(xmlFile, false, true)
-            if storeItem == nil
+            if
+                storeItem == nil
                 or afvXmlIsExcluded(xmlFile)
                 or xmlCombineUsesOnlyBufferFillUnits(xmlFile)
                 or not hasDischargeNodes(xmlFile)
-                or not hasUsable then
+                or not hasUsable
+            then
                 return nil
             end
 
@@ -979,7 +956,7 @@ local definitions = {
                 dischargeByConfiguration = dischargeByConfiguration,
                 fillUnitByConfiguration = fillUnitByConfiguration,
                 hasUsableConfiguration = hasUsable,
-                active = hasUsable
+                active = hasUsable,
             }
         end,
         rememberStoreContext = function(storeItem, context)
@@ -989,8 +966,8 @@ local definitions = {
         end,
         isSelectable = function(baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
-        end
-    }
+        end,
+    },
 }
 
 for _, moduleId in ipairs(Suite.vehicleModuleIds) do
@@ -1006,16 +983,12 @@ for _, moduleId in ipairs(Suite.vehicleModuleIds) do
 end
 
 AdjustSuitePlaceableConfigurationItem = {}
-local AdjustSuitePlaceableConfigurationItem_mt = Class(
-    AdjustSuitePlaceableConfigurationItem,
-    PlaceableConfigurationItem
-)
+local AdjustSuitePlaceableConfigurationItem_mt =
+    Class(AdjustSuitePlaceableConfigurationItem, PlaceableConfigurationItem)
 
 function AdjustSuitePlaceableConfigurationItem.new(configName, customMt)
-    return AdjustSuitePlaceableConfigurationItem:superClass().new(
-        configName,
-        customMt or AdjustSuitePlaceableConfigurationItem_mt
-    )
+    return AdjustSuitePlaceableConfigurationItem:superClass()
+        .new(configName, customMt or AdjustSuitePlaceableConfigurationItem_mt)
 end
 
 function AdjustSuitePlaceableConfigurationItem:onPreLoad(placeable, configId)
@@ -1023,13 +996,14 @@ function AdjustSuitePlaceableConfigurationItem:onPreLoad(placeable, configId)
 
     local module = _G[getModuleClassName(self.configName)]
     if module ~= nil and module.applyToPlaceableXML ~= nil then
-        local ok, message = pcall(
-            module.applyToPlaceableXML,
-            placeable,
-            Suite.getOffsetFromConfigId(configId)
-        )
+        local ok, message = pcall(module.applyToPlaceableXML, placeable, Suite.getOffsetFromConfigId(configId))
         if not ok then
-            Logging.xmlError(placeable.xmlFile, "%s could not apply configuration: %s", self.configName, tostring(message))
+            Logging.xmlError(
+                placeable.xmlFile,
+                "%s could not apply configuration: %s",
+                self.configName,
+                tostring(message)
+            )
         end
     end
 end
@@ -1054,7 +1028,7 @@ for _, moduleId in ipairs(Suite.placeableModuleIds) do
         configName = moduleId,
         titleKey = string.format("CONFIG_%s_TITLE", moduleId),
         getStoreContext = module.getStoreContext,
-        rememberStoreContext = module.rememberStoreContext
+        rememberStoreContext = module.rememberStoreContext,
     }
 end
 
@@ -1076,8 +1050,7 @@ end
 local function xmlVehicleTypeHasModule(definition, xmlFile, customEnvironment)
     local vehicleTypeName = xmlFile:getValue(xmlFile:getRootName() .. "#type")
     if definition.id == "AFV" or definition.id == "APC" then
-        return isCarFillableVehicleType(vehicleTypeName)
-            or xmlFile:hasProperty("vehicle.fillUnit")
+        return isCarFillableVehicleType(vehicleTypeName) or xmlFile:hasProperty("vehicle.fillUnit")
     end
 
     local vehicleType = getVehicleType(xmlFile, customEnvironment)
@@ -1145,12 +1118,15 @@ function Suite.refreshStoreConfigurations(moduleId)
 
     for xmlFilename in pairs(filenames) do
         local storeItem = g_storeManager:getItemByXMLFilename(xmlFilename)
-        local configItems = storeItem ~= nil and storeItem.configurations ~= nil and storeItem.configurations[definition.configName] or nil
+        local configItems = storeItem ~= nil
+                and storeItem.configurations ~= nil
+                and storeItem.configurations[definition.configName]
+            or nil
         if configItems ~= nil then
             local context = {
                 baseValue = definition.baseValueField ~= nil and tonumber(storeItem[definition.baseValueField]) or nil,
                 basePrice = Suite.getStoreItemPrice(storeItem, nil),
-                active = true
+                active = true,
             }
 
             if moduleId == "AFV" then
@@ -1252,7 +1228,8 @@ local function getActiveConfigurationId(screen, storeItem, configurationName)
         local previewId = tonumber(vehicle.configurations[configurationName])
         if previewId ~= nil then
             previewIds[previewId] = true
-            local matches = getConfigurationMatches(screenConfigurations, vehicle.configurations, false, configurationName)
+            local matches =
+                getConfigurationMatches(screenConfigurations, vehicle.configurations, false, configurationName)
             if matches > bestPreviewMatches then
                 bestPreviewId, bestPreviewMatches = previewId, matches
             end
@@ -1272,7 +1249,7 @@ local function getActiveConfigurationId(screen, storeItem, configurationName)
         local setConfigurations = configurationSet.configurations or {}
         local setId = tonumber(setConfigurations[configurationName])
         local matches = setId ~= nil
-            and getConfigurationMatches(setConfigurations, screenConfigurations, true, configurationName)
+                and getConfigurationMatches(setConfigurations, screenConfigurations, true, configurationName)
             or nil
         if matches ~= nil and matches > bestSetMatches then
             bestSetId, bestSetMatches = setId, matches
@@ -1284,7 +1261,7 @@ local function getActiveConfigurationId(screen, storeItem, configurationName)
 
     if configurationId == nil then
         configurationId = storeItem.defaultConfigurationIds ~= nil
-            and tonumber(storeItem.defaultConfigurationIds[configurationName])
+                and tonumber(storeItem.defaultConfigurationIds[configurationName])
             or 1
     end
     return configurationId
@@ -1311,7 +1288,7 @@ local function getDynamicShopState(screen, moduleId)
         end
 
         local fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
-        local fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or {hasUsable = false}
+        local fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
         local vehicleTypeContexts = isPayloadCompensation and storeItem.APCVehicleTypeByConfiguration
             or isFuelCapacity and storeItem.AFCVehicleTypeByConfiguration
             or storeItem.AFVVehicleTypeByConfiguration
@@ -1319,11 +1296,10 @@ local function getDynamicShopState(screen, moduleId)
         local vehicleTypeContext = nil
         if vehicleTypeContexts ~= nil then
             vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
-            vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or {hasUsable = false}
+            vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
         end
 
-        return fillUnitContext.hasUsable == true
-            and (vehicleTypeContext == nil or vehicleTypeContext.hasUsable == true),
+        return fillUnitContext.hasUsable == true and (vehicleTypeContext == nil or vehicleTypeContext.hasUsable == true),
             string.format("%s:%s", tostring(fillUnitId), tostring(vehicleTypeId or 0))
     end
 
@@ -1334,17 +1310,16 @@ local function getDynamicShopState(screen, moduleId)
         end
 
         local dischargeId = getActiveConfigurationId(screen, storeItem, "dischargeable")
-        local dischargeContext = dischargeContexts[dischargeId] or dischargeContexts[1] or {hasUsable = false}
+        local dischargeContext = dischargeContexts[dischargeId] or dischargeContexts[1] or { hasUsable = false }
         local fillUnitContexts = storeItem.ADRFillUnitByConfiguration
         local fillUnitId = nil
         local fillUnitContext = nil
         if fillUnitContexts ~= nil then
             fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
-            fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or {hasUsable = false}
+            fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
         end
 
-        return dischargeContext.hasUsable == true
-            and (fillUnitContext == nil or fillUnitContext.hasUsable == true),
+        return dischargeContext.hasUsable == true and (fillUnitContext == nil or fillUnitContext.hasUsable == true),
             string.format("%s:%s", tostring(dischargeId), tostring(fillUnitId or 0))
     end
 
@@ -1368,8 +1343,7 @@ local function getDynamicShopState(screen, moduleId)
 
         for _, configurationName in ipairs(configurationNames) do
             local configurationId = getActiveConfigurationId(screen, storeItem, configurationName)
-            local context = ballastConfigurations[configurationName][configurationId]
-                or {hasUsable = false}
+            local context = ballastConfigurations[configurationName][configurationId] or { hasUsable = false }
             active = active or context.hasUsable == true
             table.insert(stateParts, string.format("%s:%s", configurationName, tostring(configurationId)))
         end
@@ -1383,9 +1357,7 @@ local function getDynamicShopState(screen, moduleId)
         end
 
         local vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
-        local vehicleTypeContext = vehicleTypeContexts[vehicleTypeId]
-            or vehicleTypeContexts[1]
-            or {hasUsable = false}
+        local vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
         return vehicleTypeContext.hasUsable == true, tostring(vehicleTypeId)
     end
 
@@ -1479,17 +1451,21 @@ local function updateSuiteShopControls(screen, force)
     collectSuiteShopOptions(layout, options)
     local layoutChanged = false
 
-    for _, moduleId in ipairs({"AFV", "AFC", "APC", "ABW", "AWS", "ADR"}) do
+    for _, moduleId in ipairs({ "AFV", "AFC", "APC", "ABW", "AWS", "ADR" }) do
         local shouldShow, stateKey = getDynamicShopState(screen, moduleId)
         local option = options[moduleId]
         local row = getConfigurationRow(option, layout)
-        if shouldShow ~= nil and option ~= nil and row ~= nil and row.setVisible ~= nil
-            and (force or screen.AdjustSuiteDynamicStates[moduleId] ~= stateKey) then
+        if
+            shouldShow ~= nil
+            and option ~= nil
+            and row ~= nil
+            and row.setVisible ~= nil
+            and (force or screen.AdjustSuiteDynamicStates[moduleId] ~= stateKey)
+        then
             if shouldShow then
                 refreshDynamicShopOption(screen, moduleId, option)
             else
-                local selectedIndex = tonumber(screen.configurations[moduleId])
-                    or Suite.getDefaultIndex()
+                local selectedIndex = tonumber(screen.configurations[moduleId]) or Suite.getDefaultIndex()
                 if selectedIndex ~= Suite.getDefaultIndex() then
                     resetDynamicShopSelection(screen, moduleId, option)
                 end
@@ -1540,7 +1516,7 @@ local function visitConstructionConfigurationTables(screen, callback)
         brush ~= nil and brush.placeablePreview or nil,
         brush ~= nil and brush.placeableLoadingData or nil,
         brush ~= nil and brush.loadingData or nil,
-        brush ~= nil and brush.buyData or nil
+        brush ~= nil and brush.buyData or nil,
     }
     local visited = {}
     for _, candidate in pairs(candidates) do
@@ -1664,8 +1640,12 @@ end
 local function updateSuiteConstructionControls(screen)
     local storeItem = getConstructionStoreItem(screen)
     local layout = getConfigurationLayout(screen)
-    if storeItem == nil or layout == nil or storeItem.configurations == nil
-        or storeItem.configurations["AIPP"] == nil then
+    if
+        storeItem == nil
+        or layout == nil
+        or storeItem.configurations == nil
+        or storeItem.configurations["AIPP"] == nil
+    then
         return
     end
 
@@ -1679,13 +1659,12 @@ local function updateSuiteConstructionControls(screen)
 
     local incomeId = getConstructionSelection(screen, storeItem, layout, "incomePerHour")
     local solarId = getConstructionSelection(screen, storeItem, layout, "solarPanels")
-    local shouldShow = Suite.getIsModuleEnabled("AIPP") and (
-        storeItem.AIPPHasFixedIncome == true
-            or storeItem.AIPPIncomeByConfiguration ~= nil
-                and storeItem.AIPPIncomeByConfiguration[incomeId] == true
-            or storeItem.AIPPSolarByConfiguration ~= nil
-                and storeItem.AIPPSolarByConfiguration[solarId] == true
-    )
+    local shouldShow = Suite.getIsModuleEnabled("AIPP")
+        and (
+            storeItem.AIPPHasFixedIncome == true
+            or storeItem.AIPPIncomeByConfiguration ~= nil and storeItem.AIPPIncomeByConfiguration[incomeId] == true
+            or storeItem.AIPPSolarByConfiguration ~= nil and storeItem.AIPPSolarByConfiguration[solarId] == true
+        )
     local stateKey = string.format("%s:%s:%s", tostring(storeItem.xmlFilename), tostring(incomeId), tostring(solarId))
     if screen.AdjustSuiteAIPPStateKey == stateKey and (row.visible == true) == shouldShow then
         return
@@ -1732,8 +1711,7 @@ if Suite.shopHooksInstalled ~= true and ShopConfigScreen ~= nil then
     end
 end
 
-if Suite.constructionHooksInstalled ~= true and ConstructionScreen ~= nil
-    and ConstructionScreen.update ~= nil then
+if Suite.constructionHooksInstalled ~= true and ConstructionScreen ~= nil and ConstructionScreen.update ~= nil then
     Suite.constructionHooksInstalled = true
     ConstructionScreen.update = Utils.appendedFunction(ConstructionScreen.update, function(screen)
         updateSuiteConstructionControls(screen)
@@ -1749,12 +1727,13 @@ function Suite.registerVehicleTypes(typeManager)
         if vehicleType ~= nil then
             for _, moduleId in ipairs(Suite.vehicleModuleIds) do
                 local definition = definitions[moduleId]
-                local specialization = typeManager.specializationManager:getSpecializationObjectByName(
-                    definition.specializationName
-                )
-                if specialization ~= nil
+                local specialization =
+                    typeManager.specializationManager:getSpecializationObjectByName(definition.specializationName)
+                if
+                    specialization ~= nil
                     and not hasSpecialization(specialization, vehicleType.specializations)
-                    and definition.typeFilter(vehicleTypeName, vehicleType) then
+                    and definition.typeFilter(vehicleTypeName, vehicleType)
+                then
                     typeManager:addSpecialization(vehicleTypeName, definition.specializationName)
                 end
             end
@@ -1768,8 +1747,18 @@ if Suite.typeRegistrationInstalled ~= true then
     TypeManager.validateTypes = Utils.prependedFunction(TypeManager.validateTypes, Suite.registerVehicleTypes)
 end
 
-local function addSuiteStoreConfigurations(manager, superFunc, xmlFile, key, baseDir, customEnvironment, isMod, storeItem)
-    local configurations, defaultConfigurationIds = superFunc(manager, xmlFile, key, baseDir, customEnvironment, isMod, storeItem)
+local function addSuiteStoreConfigurations(
+    manager,
+    superFunc,
+    xmlFile,
+    key,
+    baseDir,
+    customEnvironment,
+    isMod,
+    storeItem
+)
+    local configurations, defaultConfigurationIds =
+        superFunc(manager, xmlFile, key, baseDir, customEnvironment, isMod, storeItem)
     local moduleIds = nil
     local moduleDefinitions = nil
     local isVehicle = manager == g_vehicleConfigurationManager and key == "vehicle"
@@ -1786,16 +1775,23 @@ local function addSuiteStoreConfigurations(manager, superFunc, xmlFile, key, bas
     for _, moduleId in ipairs(moduleIds) do
         local definition = moduleDefinitions[moduleId]
         local isSupported = not isVehicle or xmlVehicleTypeHasModule(definition, xmlFile, customEnvironment)
-        if isSupported
-            and (configurations == nil or configurations[definition.configName] == nil) then
-            local context = definition.getStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        if isSupported and (configurations == nil or configurations[definition.configName] == nil) then
+            local context = definition.getStoreContext(
+                xmlFile,
+                configurations,
+                defaultConfigurationIds,
+                customEnvironment,
+                storeItem
+            )
             if context ~= nil then
-                local items = createConfigurationItems(manager, definition, xmlFile, baseDir, customEnvironment, context)
+                local items =
+                    createConfigurationItems(manager, definition, xmlFile, baseDir, customEnvironment, context)
                 if items ~= nil and #items > 0 then
                     configurations = configurations or {}
                     defaultConfigurationIds = defaultConfigurationIds or {}
                     configurations[definition.configName] = items
-                    defaultConfigurationIds[definition.configName] = ConfigurationUtil.getDefaultConfigIdFromItems(items)
+                    defaultConfigurationIds[definition.configName] =
+                        ConfigurationUtil.getDefaultConfigIdFromItems(items)
                     rememberStoreItem(definition, storeItem, context)
                 else
                     print(string.format("Error: %s - could not create configuration items", definition.configName))
@@ -1831,10 +1827,8 @@ for _, moduleId in ipairs(Suite.placeableModuleIds) do
     end
 end
 
-ConfigurationUtil.getConfigurationsFromXML = Utils.overwrittenFunction(
-    ConfigurationUtil.getConfigurationsFromXML,
-    addSuiteStoreConfigurations
-)
+ConfigurationUtil.getConfigurationsFromXML =
+    Utils.overwrittenFunction(ConfigurationUtil.getConfigurationsFromXML, addSuiteStoreConfigurations)
 
 function Suite:update(dt)
     if AdjustSuiteAutoDrive ~= nil then

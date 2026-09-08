@@ -77,10 +77,8 @@ local function getFillUnitXMLKey(vehicle, fillUnitIndex)
 
     local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
     configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
-    local configurationKey = string.format(
-        "vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)",
-        configurationId - 1
-    )
+    local configurationKey =
+        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
     local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
 
     if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
@@ -105,9 +103,7 @@ local function resolveUnitText(value)
 end
 
 local function getUnitText(vehicle, fillUnitIndex, fillUnit)
-    local unitText = resolveUnitText(
-        fillUnit.unitTextOverride or fillUnit.customUnitText or fillUnit.unitText
-    )
+    local unitText = resolveUnitText(fillUnit.unitTextOverride or fillUnit.customUnitText or fillUnit.unitText)
     if unitText ~= nil then
         return unitText
     end
@@ -128,8 +124,7 @@ local function formatCapacity(capacity, unitText)
 
     local nearestInteger = math.floor(capacity + 0.5)
     local decimals = math.abs(capacity - nearestInteger) > 0.001 and 2 or 0
-    local value = g_i18n ~= nil and g_i18n.formatNumber ~= nil
-        and g_i18n:formatNumber(capacity, decimals, true)
+    local value = g_i18n ~= nil and g_i18n.formatNumber ~= nil and g_i18n:formatNumber(capacity, decimals, true)
         or string.format(decimals == 0 and "%.0f" or "%.2f", capacity)
     return string.format("%s %s", value, unitText)
 end
@@ -234,7 +229,7 @@ local function collectOperatingUnits(vehicle, force)
                     fillType = fillType,
                     fillTypeTitle = getFillTypeTitle(fillType),
                     baseCapacity = baseCapacity,
-                    unitText = getUnitText(vehicle, fillUnitIndex, fillUnit)
+                    unitText = getUnitText(vehicle, fillUnitIndex, fillUnit),
                 }
                 unitsByIndex[fillUnitIndex] = entry
                 table.insert(spec.units, entry)
@@ -367,10 +362,7 @@ function AFC:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     local offset = Utils.getNoNil(tonumber(spec.currentOffset), getSelectedOffset(self))
     local helpText = string.format("AFC: %s [%s]", Suite.getOffsetText(offset), Suite.getStatusText(offset))
     for _, entry in ipairs(spec.units) do
-        local capacityText = formatCapacity(
-            entry.adjustedCapacity or entry.fillUnit.capacity,
-            entry.unitText
-        )
+        local capacityText = formatCapacity(entry.adjustedCapacity or entry.fillUnit.capacity, entry.unitText)
         if capacityText ~= nil then
             if entry.fillTypeTitle ~= nil and entry.fillTypeTitle ~= "" then
                 capacityText = string.format("%s: %s", entry.fillTypeTitle, capacityText)

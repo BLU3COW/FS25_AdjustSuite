@@ -6,8 +6,8 @@ local Suite = AdjustSuite
 function Compatibility.getBunkerSiloSpeed(trailerModule, superFunc)
     local trailer = trailerModule.bunkerTrailer
     local dischargeNode = trailer ~= nil
-        and trailer.getCurrentDischargeNode ~= nil
-        and trailer:getCurrentDischargeNode()
+            and trailer.getCurrentDischargeNode ~= nil
+            and trailer:getCurrentDischargeNode()
         or nil
     local baseEmptySpeed = dischargeNode ~= nil and tonumber(dischargeNode.emptySpeed) or nil
     local factor = Suite.getFactorFromOffset(Suite.getSelectedOffset(trailer, "ADR"))
@@ -26,15 +26,11 @@ function Compatibility.getBunkerSiloSpeed(trailerModule, superFunc)
 end
 
 function Compatibility.install()
-    if Compatibility.installed == true
-        or ADTrailerModule == nil
-        or ADTrailerModule.getBunkerSiloSpeed == nil then
+    if Compatibility.installed == true or ADTrailerModule == nil or ADTrailerModule.getBunkerSiloSpeed == nil then
         return
     end
 
-    ADTrailerModule.getBunkerSiloSpeed = Utils.overwrittenFunction(
-        ADTrailerModule.getBunkerSiloSpeed,
-        Compatibility.getBunkerSiloSpeed
-    )
+    ADTrailerModule.getBunkerSiloSpeed =
+        Utils.overwrittenFunction(ADTrailerModule.getBunkerSiloSpeed, Compatibility.getBunkerSiloSpeed)
     Compatibility.installed = true
 end

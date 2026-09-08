@@ -3,9 +3,8 @@ local ACRP = AdjustSuiteACRP
 
 local Suite = AdjustSuite
 local PRODUCTION_PATH = "placeable.productionPoint"
-local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH
-    .. ".productionPointConfigurations.productionPointConfiguration"
-local CYCLE_ATTRIBUTES = {"cyclesPerMonth", "cyclesPerHour", "cyclesPerMinute"}
+local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfigurations.productionPointConfiguration"
+local CYCLE_ATTRIBUTES = { "cyclesPerMonth", "cyclesPerHour", "cyclesPerMinute" }
 
 local function productionPointHasCycles(xmlFile, key)
     local hasCycles = false
@@ -26,7 +25,7 @@ function ACRP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, 
         return nil
     end
 
-    return {basePrice = Suite.getStoreItemPrice(storeItem, xmlFile)}
+    return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
 function ACRP.applyToProductionPoint(productionPoint)
@@ -42,18 +41,10 @@ end
 
 if ProductionPoint ~= nil and ProductionPoint.register ~= nil and ACRP.hookInstalled ~= true then
     ACRP.hookInstalled = true
-    ProductionPoint.register = Utils.appendedFunction(
-        ProductionPoint.register,
-        ACRP.applyToProductionPoint
-    )
+    ProductionPoint.register = Utils.appendedFunction(ProductionPoint.register, ACRP.applyToProductionPoint)
 end
 
-if AdjustSuiteSettingsEvent ~= nil
-    and AdjustSuiteSettingsEvent.run ~= nil
-    and ACRP.settingsHookInstalled ~= true then
+if AdjustSuiteSettingsEvent ~= nil and AdjustSuiteSettingsEvent.run ~= nil and ACRP.settingsHookInstalled ~= true then
     ACRP.settingsHookInstalled = true
-    AdjustSuiteSettingsEvent.run = Utils.appendedFunction(
-        AdjustSuiteSettingsEvent.run,
-        ACRP.refreshProductionPoints
-    )
+    AdjustSuiteSettingsEvent.run = Utils.appendedFunction(AdjustSuiteSettingsEvent.run, ACRP.refreshProductionPoints)
 end

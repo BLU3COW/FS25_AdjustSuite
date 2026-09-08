@@ -26,10 +26,12 @@ local function fillTypeIsIgnored(fillTypeIndex)
 end
 
 local function getFillTypeMassPerLiter(fillTypeIndex)
-    if fillTypeIndex == nil
+    if
+        fillTypeIndex == nil
         or (FillType ~= nil and fillTypeIndex == FillType.UNKNOWN)
         or fillTypeIsIgnored(fillTypeIndex)
-        or g_fillTypeManager == nil then
+        or g_fillTypeManager == nil
+    then
         return nil
     end
 
@@ -50,10 +52,8 @@ local function getFillUnitXMLKey(vehicle, fillUnitIndex)
 
     local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
     configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
-    local configurationKey = string.format(
-        "vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)",
-        configurationId - 1
-    )
+    local configurationKey =
+        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
     local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
 
     if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
@@ -70,8 +70,10 @@ local function fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
 
     local fillUnitKey = getFillUnitXMLKey(vehicle, fillUnitIndex)
     return fillUnitKey ~= nil
-        and (vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
-            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false)
+        and (
+            vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
+            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false
+        )
 end
 
 local function fillUnitIsEligible(vehicle, fillUnitIndex, fillUnit, fillTypeIndex)
@@ -91,9 +93,13 @@ local function hasEligibleFillUnit(vehicle)
     end
 
     for fillUnitIndex, fillUnit in ipairs(fillUnits) do
-        if not fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
+        if
+            not fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
             and not Suite.fillUnitIsOperatingConsumer(vehicle, fillUnitIndex)
-            and fillUnit.updateMass == true and fillUnit.fillMassNode ~= nil and fillUnit.fillMassNode ~= 0 then
+            and fillUnit.updateMass == true
+            and fillUnit.fillMassNode ~= nil
+            and fillUnit.fillMassNode ~= 0
+        then
             for fillTypeIndex in pairs(fillUnit.fillTypes or {}) do
                 if getFillTypeMassPerLiter(fillTypeIndex) ~= nil then
                     return true
@@ -114,7 +120,11 @@ function APC.prerequisitesPresent(specializations)
 end
 
 function APC.registerOverwrittenFunctions(vehicleType)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getAdditionalComponentMass", APC.getAdditionalComponentMass)
+    SpecializationUtil.registerOverwrittenFunction(
+        vehicleType,
+        "getAdditionalComponentMass",
+        APC.getAdditionalComponentMass
+    )
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "addFillUnitFillLevel", APC.addFillUnitFillLevel)
 end
 
@@ -122,7 +132,6 @@ function APC.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", APC)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", APC)
 end
-
 
 function APC:onPostLoad(savegame)
     if hasSelectedConfiguration(self) and self.setMassDirty ~= nil then
@@ -143,8 +152,10 @@ function APC:getAdditionalComponentMass(superFunc, component)
 
     local fillUnits = self.spec_fillUnit ~= nil and self.spec_fillUnit.fillUnits or nil
     for fillUnitIndex, fillUnit in ipairs(fillUnits or {}) do
-        if fillUnit.fillMassNode == component.node
-            and fillUnitIsEligible(self, fillUnitIndex, fillUnit, fillUnit.fillType) then
+        if
+            fillUnit.fillMassNode == component.node
+            and fillUnitIsEligible(self, fillUnitIndex, fillUnit, fillUnit.fillType)
+        then
             local massPerLiter = getFillTypeMassPerLiter(fillUnit.fillType)
             local fillLevel = tonumber(fillUnit.fillLevel) or 0
             additionalMass = additionalMass + fillLevel * massPerLiter * (payloadMassFactor - 1)
@@ -154,10 +165,19 @@ function APC:getAdditionalComponentMass(superFunc, component)
     return math.max(additionalMass, 0)
 end
 
-function APC:addFillUnitFillLevel(superFunc, farmId, fillUnitIndex, fillLevelDelta, fillTypeIndex, toolType, fillPositionData)
+function APC:addFillUnitFillLevel(
+    superFunc,
+    farmId,
+    fillUnitIndex,
+    fillLevelDelta,
+    fillTypeIndex,
+    toolType,
+    fillPositionData
+)
     local fillUnits = self.spec_fillUnit ~= nil and self.spec_fillUnit.fillUnits or nil
     local fillUnit = fillUnits ~= nil and fillUnits[fillUnitIndex] or nil
-    if not hasSelectedConfiguration(self)
+    if
+        not hasSelectedConfiguration(self)
         or not self.isServer
         or (tonumber(fillLevelDelta) or 0) <= 0
         or fillUnit == nil
@@ -165,7 +185,8 @@ function APC:addFillUnitFillLevel(superFunc, farmId, fillUnitIndex, fillLevelDel
         or not fillUnitIsEligible(self, fillUnitIndex, fillUnit, fillTypeIndex)
         or g_currentMission == nil
         or g_currentMission.missionInfo == nil
-        or g_currentMission.missionInfo.trailerFillLimit ~= true then
+        or g_currentMission.missionInfo.trailerFillLimit ~= true
+    then
         return superFunc(self, farmId, fillUnitIndex, fillLevelDelta, fillTypeIndex, toolType, fillPositionData)
     end
 
@@ -180,16 +201,8 @@ function APC:addFillUnitFillLevel(superFunc, farmId, fillUnitIndex, fillLevelDel
 
     local ignoreFillLimit = fillUnit.ignoreFillLimit
     fillUnit.ignoreFillLimit = true
-    local ok, appliedDelta = pcall(
-        superFunc,
-        self,
-        farmId,
-        fillUnitIndex,
-        adjustedDelta,
-        fillTypeIndex,
-        toolType,
-        fillPositionData
-    )
+    local ok, appliedDelta =
+        pcall(superFunc, self, farmId, fillUnitIndex, adjustedDelta, fillTypeIndex, toolType, fillPositionData)
     fillUnit.ignoreFillLimit = ignoreFillLimit
     if not ok then
         error(appliedDelta, 0)
@@ -198,17 +211,15 @@ function APC:addFillUnitFillLevel(superFunc, farmId, fillUnitIndex, fillLevelDel
 end
 
 function APC:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
-    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
+    if
+        not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
         or not hasSelectedConfiguration(self)
-        or not hasEligibleFillUnit(self) then
+        or not hasEligibleFillUnit(self)
+    then
         return
     end
 
     local spec = getSpec(self)
     local offset = spec.currentOffset or 0
-    Suite.addHelpText(string.format(
-        "APC: %s [%s]",
-        Suite.getOffsetText(offset),
-        Suite.getStatusText(offset)
-    ))
+    Suite.addHelpText(string.format("APC: %s [%s]", Suite.getOffsetText(offset), Suite.getStatusText(offset)))
 end

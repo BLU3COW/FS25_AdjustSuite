@@ -3,8 +3,7 @@ local AIPP = AdjustSuiteAIPP
 
 local Suite = AdjustSuite
 local INCOME_PATH = "placeable.incomePerHour"
-local INCOME_CONFIGURATIONS_PATH = INCOME_PATH
-    .. ".incomePerHourConfigurations.incomePerHourConfiguration"
+local INCOME_CONFIGURATIONS_PATH = INCOME_PATH .. ".incomePerHourConfigurations.incomePerHourConfiguration"
 local SOLAR_CONFIGURATIONS_PATH = "placeable.solarPanels.solarPanelsConfigurations.solarPanelsConfiguration"
 
 local function valueIsIncome(xmlFile, key)
@@ -34,7 +33,8 @@ local function scaleValue(xmlFile, key, factor)
 end
 
 local function selectedAttributeKey(placeable, configurationName, configurationsPath, attribute)
-    local configurationId = tonumber(placeable.configurations ~= nil and placeable.configurations[configurationName]) or 1
+    local configurationId = tonumber(placeable.configurations ~= nil and placeable.configurations[configurationName])
+        or 1
     return string.format("%s(%d)#%s", configurationsPath, configurationId - 1, attribute)
 end
 
@@ -58,8 +58,7 @@ function AIPP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, 
         end
     end)
 
-    local hasConfigurableIncome = containsTrue(incomeByConfiguration)
-        or containsTrue(solarByConfiguration)
+    local hasConfigurableIncome = containsTrue(incomeByConfiguration) or containsTrue(solarByConfiguration)
     if not hasFixedIncome and not hasConfigurableIncome then
         return nil
     end
@@ -68,7 +67,7 @@ function AIPP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, 
         basePrice = Suite.getStoreItemPrice(storeItem, xmlFile),
         hasFixedIncome = hasFixedIncome,
         incomeByConfiguration = incomeByConfiguration,
-        solarByConfiguration = solarByConfiguration
+        solarByConfiguration = solarByConfiguration,
     }
 end
 
@@ -87,16 +86,14 @@ function AIPP.applyToPlaceableXML(placeable, offset)
     local xmlFile = placeable.xmlFile
     scaleValue(xmlFile, INCOME_PATH, factor)
     scaleValue(xmlFile, "placeable.windTurbine#incomePerHour", factor)
-    scaleValue(xmlFile, selectedAttributeKey(
-        placeable,
-        "incomePerHour",
-        INCOME_CONFIGURATIONS_PATH,
-        "incomePerHour"
-    ), factor)
-    scaleValue(xmlFile, selectedAttributeKey(
-        placeable,
-        "solarPanels",
-        SOLAR_CONFIGURATIONS_PATH,
-        "incomePerHour"
-    ), factor)
+    scaleValue(
+        xmlFile,
+        selectedAttributeKey(placeable, "incomePerHour", INCOME_CONFIGURATIONS_PATH, "incomePerHour"),
+        factor
+    )
+    scaleValue(
+        xmlFile,
+        selectedAttributeKey(placeable, "solarPanels", SOLAR_CONFIGURATIONS_PATH, "incomePerHour"),
+        factor
+    )
 end

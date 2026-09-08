@@ -111,7 +111,10 @@ local function fillUnitHasUsableFillTypes(fillUnit)
     local foundUsable = false
     local foundOnlyIgnored = false
 
-    local candidates = fillUnit.fillTypes or fillUnit.supportedFillTypes or fillUnit.supportedFillTypeIndices or fillUnit.fillTypeCategories
+    local candidates = fillUnit.fillTypes
+        or fillUnit.supportedFillTypes
+        or fillUnit.supportedFillTypeIndices
+        or fillUnit.fillTypeCategories
 
     if type(candidates) == "table" then
         for key, value in pairs(candidates) do
@@ -151,7 +154,9 @@ local function getBaseCapacity(fillUnit)
         return nil
     end
 
-    local baseCapacity = tonumber(fillUnit.AFVBaseCapacity) or tonumber(fillUnit.defaultCapacity) or tonumber(fillUnit.capacity)
+    local baseCapacity = tonumber(fillUnit.AFVBaseCapacity)
+        or tonumber(fillUnit.defaultCapacity)
+        or tonumber(fillUnit.capacity)
     if baseCapacity ~= nil and baseCapacity > 0 and baseCapacity < math.huge then
         fillUnit.AFVBaseCapacity = baseCapacity
         return baseCapacity
@@ -167,10 +172,8 @@ local function getFillUnitXMLKey(vehicle, fillUnitIndex)
 
     local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
     configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
-    local configurationKey = string.format(
-        "vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)",
-        configurationId - 1
-    )
+    local configurationKey =
+        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
     local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
 
     if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
@@ -187,8 +190,10 @@ local function fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
 
     local fillUnitKey = getFillUnitXMLKey(vehicle, fillUnitIndex)
     return fillUnitKey ~= nil
-        and (vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
-            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false)
+        and (
+            vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
+            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false
+        )
 end
 
 local function getFillUnitDisplayUnit(vehicle, fillUnitIndex, capacity)
@@ -221,7 +226,16 @@ local function clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity)
             toolType = ToolType.UNDEFINED
         end
 
-        applied = pcall(vehicle.addFillUnitFillLevel, vehicle, farmId, fillUnitIndex, capacity - fillLevel, fillUnit.fillType, toolType, nil)
+        applied = pcall(
+            vehicle.addFillUnitFillLevel,
+            vehicle,
+            farmId,
+            fillUnitIndex,
+            capacity - fillLevel,
+            fillUnit.fillType,
+            toolType,
+            nil
+        )
     end
 
     if not applied then
@@ -234,7 +248,13 @@ local function clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity)
 
     if tonumber(fillUnit.fillLevelToDisplay) ~= nil and fillUnit.fillLevelToDisplay > capacity then
         if vehicle.setFillUnitFillLevelToDisplay ~= nil then
-            pcall(vehicle.setFillUnitFillLevelToDisplay, vehicle, fillUnitIndex, capacity, fillUnit.fillLevelToDisplayIsPersistent)
+            pcall(
+                vehicle.setFillUnitFillLevelToDisplay,
+                vehicle,
+                fillUnitIndex,
+                capacity,
+                fillUnit.fillLevelToDisplayIsPersistent
+            )
         else
             fillUnit.fillLevelToDisplay = capacity
         end
@@ -290,17 +310,19 @@ local function collectFillUnits(vehicle, force)
     for index, fillUnit in pairs(fillUnits) do
         local capacity = getBaseCapacity(fillUnit)
 
-        if capacity ~= nil
+        if
+            capacity ~= nil
             and capacity > 0
             and capacity < math.huge
             and (operatingIndices == nil or operatingIndices[index] ~= true)
             and fillUnitHasUsableFillTypes(fillUnit)
-            and not fillUnitIsTechnicalHidden(vehicle, index, fillUnit) then
+            and not fillUnitIsTechnicalHidden(vehicle, index, fillUnit)
+        then
             table.insert(spec.units, {
                 index = index,
                 fillUnit = fillUnit,
                 baseCapacity = capacity,
-                displayUnit = getFillUnitDisplayUnit(vehicle, index, capacity)
+                displayUnit = getFillUnitDisplayUnit(vehicle, index, capacity),
             })
         end
     end
@@ -404,9 +426,7 @@ local function applyOffset(vehicle)
 end
 
 function AFV.prepareFillVolumeOnLoad(vehicle, savegame)
-    if vehicle == nil
-        or vehicle.configurations == nil
-        or vehicle.configurations.AFV == nil then
+    if vehicle == nil or vehicle.configurations == nil or vehicle.configurations.AFV == nil then
         return
     end
 
@@ -454,9 +474,7 @@ function AFV:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     Suite.addHelpText(helpText)
 end
 
-if FillVolume ~= nil
-    and FillVolume.onLoad ~= nil
-    and AFV.fillVolumeOnLoadHookInstalled ~= true then
+if FillVolume ~= nil and FillVolume.onLoad ~= nil and AFV.fillVolumeOnLoadHookInstalled ~= true then
     AFV.fillVolumeOnLoadHookInstalled = true
     FillVolume.onLoad = Utils.prependedFunction(FillVolume.onLoad, AFV.prepareFillVolumeOnLoad)
 end

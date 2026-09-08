@@ -32,7 +32,7 @@ local function addOverdriveGears(gears, factor, direction)
             name = gearName,
             reverseName = reverseName,
             dashboardName = gearName,
-            dashboardReverseName = reverseName
+            dashboardReverseName = reverseName,
         }
     end
 
@@ -82,8 +82,7 @@ local function updateCruiseControl(vehicle, factor)
         cruiseControl.speed = math.min(cruiseControl.speed, maxSpeed)
     end
 
-    if tonumber(cruiseControl.speedReverse) == nil
-        or cruiseControl.speedReverse >= previousMaxReverseSpeed - 0.01 then
+    if tonumber(cruiseControl.speedReverse) == nil or cruiseControl.speedReverse >= previousMaxReverseSpeed - 0.01 then
         cruiseControl.speedReverse = maxReverseSpeed
     else
         cruiseControl.speedReverse = math.min(cruiseControl.speedReverse, maxReverseSpeed)
@@ -99,16 +98,13 @@ local function applyDrivingSpeed(vehicle)
     end
 
     local motor = vehicle.spec_motorized ~= nil and vehicle.spec_motorized.motor or nil
-    if motor == nil
-        or motor.getMaximumForwardSpeed == nil
-        or motor.getMaximumBackwardSpeed == nil then
+    if motor == nil or motor.getMaximumForwardSpeed == nil or motor.getMaximumBackwardSpeed == nil then
         return false
     end
 
     local baseForwardSpeed = tonumber(motor.maxForwardSpeedOrigin) or tonumber(motor.maxForwardSpeed)
     local baseBackwardSpeed = tonumber(motor.maxBackwardSpeedOrigin) or tonumber(motor.maxBackwardSpeed)
-    if baseForwardSpeed == nil or baseForwardSpeed <= 0
-        or baseBackwardSpeed == nil or baseBackwardSpeed <= 0 then
+    if baseForwardSpeed == nil or baseForwardSpeed <= 0 or baseBackwardSpeed == nil or baseBackwardSpeed <= 0 then
         return false
     end
 
@@ -202,17 +198,18 @@ end
 
 function ADS:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
     local spec = getSpec(self)
-    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
-        or spec.currentForwardSpeed == nil then
+    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or spec.currentForwardSpeed == nil then
         return
     end
 
     local displaySpeed, displayUnit = getDisplaySpeed(spec.currentForwardSpeed)
-    Suite.addHelpText(string.format(
-        "ADS: %s [%s] - %s %s",
-        Suite.getOffsetText(spec.currentOffset or 0),
-        Suite.getStatusText(spec.currentOffset or 0),
-        tostring(displaySpeed),
-        displayUnit
-    ))
+    Suite.addHelpText(
+        string.format(
+            "ADS: %s [%s] - %s %s",
+            Suite.getOffsetText(spec.currentOffset or 0),
+            Suite.getStatusText(spec.currentOffset or 0),
+            tostring(displaySpeed),
+            displayUnit
+        )
+    )
 end

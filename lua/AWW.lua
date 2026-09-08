@@ -31,8 +31,8 @@ local function getConfiguredWorkingWidth(vehicle)
     end
 
     local storeItem = vehicle.configFileName ~= nil
-        and g_storeManager ~= nil
-        and g_storeManager:getItemByXMLFilename(vehicle.configFileName)
+            and g_storeManager ~= nil
+            and g_storeManager:getItemByXMLFilename(vehicle.configFileName)
         or nil
     local width = storeItem ~= nil and tonumber(storeItem.AWWStandardWorkingWidth) or nil
     if (width == nil or width <= 0) and vehicle.xmlFile ~= nil then
@@ -48,9 +48,12 @@ local function getAreaNodes(workArea)
         return nil, nil, nil
     end
 
-    local startNode = resolveNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
-    local widthNode = resolveNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
-    local heightNode = resolveNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
+    local startNode =
+        resolveNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
+    local widthNode =
+        resolveNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
+    local heightNode =
+        resolveNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
 
     if startNode ~= nil and widthNode ~= nil and startNode ~= 0 and widthNode ~= 0 then
         return startNode, widthNode, heightNode
@@ -89,7 +92,7 @@ local function createAreaEntry(workArea, index)
         workAreaIndex = workArea.index or index,
         startNode = startNode,
         widthNode = widthNode,
-        heightNode = heightNode
+        heightNode = heightNode,
     }
 end
 
@@ -189,7 +192,7 @@ local function getAreaProjectionBounds(areas, referenceNode, axisX, axisY, axisZ
     local maxProjection = -math.huge
 
     for _, area in ipairs(areas) do
-        for _, node in ipairs({area.startNode, area.widthNode, area.heightNode}) do
+        for _, node in ipairs({ area.startNode, area.widthNode, area.heightNode }) do
             local x, y, z = getNodePositionInReference(node, referenceNode)
             if x ~= nil then
                 local projection = getProjection(x, y, z, axisX, axisY, axisZ)
@@ -222,9 +225,7 @@ local function collectWorkAreas(vehicle)
         local area = createAreaEntry(workArea, index)
         if area ~= nil then
             if getAreaIsAuxiliary(workArea) then
-                if vehicle.spec_mower ~= nil
-                    or vehicle.spec_tedder ~= nil
-                    or vehicle.spec_windrower ~= nil then
+                if vehicle.spec_mower ~= nil or vehicle.spec_tedder ~= nil or vehicle.spec_windrower ~= nil then
                     table.insert(spec.dropAreas, area)
                 end
             else
@@ -258,10 +259,12 @@ local function collectWorkAreas(vehicle)
     spec.usePlowWidthAxis = usePlowAxis
     spec.plowAreas = usePlowAxis and widthAreas or nil
     spec.plowPackerAreas = nil
-    if usePlowAxis
+    if
+        usePlowAxis
         and vehicle.spec_plowPacker ~= nil
         and vehicle.spec_plowPacker.packerAvailable == true
-        and WorkAreaType.CULTIVATOR ~= nil then
+        and WorkAreaType.CULTIVATOR ~= nil
+    then
         spec.plowPackerAreas = {}
         for _, area in ipairs(spec.areas) do
             if area.workArea.type == WorkAreaType.CULTIVATOR then
@@ -332,16 +335,9 @@ local function scaleWindrowerAreasAroundCenterGap(spec, areas, factor, appliedNo
     local outerMax = -math.huge
 
     for _, area in ipairs(areas) do
-        if WorkAreaType ~= nil
-            and WorkAreaType.WINDROWER ~= nil
-            and area.workArea.type == WorkAreaType.WINDROWER then
-            local areaMin, areaMax = getAreaProjectionBounds(
-                {area},
-                spec.referenceNode,
-                spec.widthAxisX,
-                spec.widthAxisY,
-                spec.widthAxisZ
-            )
+        if WorkAreaType ~= nil and WorkAreaType.WINDROWER ~= nil and area.workArea.type == WorkAreaType.WINDROWER then
+            local areaMin, areaMax =
+                getAreaProjectionBounds({ area }, spec.referenceNode, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
             if areaMin == nil or areaMin <= spec.widthCenterProjection and areaMax >= spec.widthCenterProjection then
                 return false
             end
@@ -363,29 +359,24 @@ local function scaleWindrowerAreasAroundCenterGap(spec, areas, factor, appliedNo
     local outerWidth = outerMax - outerMin
     local activeWidth = outerWidth - centerGap
     local targetActiveWidth = outerWidth * factor - centerGap
-    if #windrowerAreas < 2
+    if
+        #windrowerAreas < 2
         or leftInner == -math.huge
         or rightInner == math.huge
         or centerGap <= 0
         or activeWidth <= 0.01
-        or targetActiveWidth <= 0.01 then
+        or targetActiveWidth <= 0.01
+    then
         return false
     end
 
     local sideFactor = targetActiveWidth / activeWidth
     for _, area in ipairs(windrowerAreas) do
-        for _, node in ipairs({area.startNode, area.widthNode, area.heightNode}) do
+        for _, node in ipairs({ area.startNode, area.widthNode, area.heightNode }) do
             if node ~= nil and node ~= 0 and appliedNodes[node] ~= true then
                 local x, y, z = getNodePositionInReference(node, spec.referenceNode)
                 if x ~= nil then
-                    local projection = getProjection(
-                        x,
-                        y,
-                        z,
-                        spec.widthAxisX,
-                        spec.widthAxisY,
-                        spec.widthAxisZ
-                    )
+                    local projection = getProjection(x, y, z, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
                     local targetProjection = projection
                     if projection <= leftInner then
                         targetProjection = leftInner + (projection - leftInner) * sideFactor
@@ -394,13 +385,15 @@ local function scaleWindrowerAreasAroundCenterGap(spec, areas, factor, appliedNo
                     end
 
                     local projectionDelta = targetProjection - projection
-                    if setNodePositionFromReference(
-                        node,
-                        spec.referenceNode,
-                        x + spec.widthAxisX * projectionDelta,
-                        y + spec.widthAxisY * projectionDelta,
-                        z + spec.widthAxisZ * projectionDelta
-                    ) then
+                    if
+                        setNodePositionFromReference(
+                            node,
+                            spec.referenceNode,
+                            x + spec.widthAxisX * projectionDelta,
+                            y + spec.widthAxisY * projectionDelta,
+                            z + spec.widthAxisZ * projectionDelta
+                        )
+                    then
                         appliedNodes[node] = true
                     end
                 end
@@ -455,7 +448,7 @@ local function getSyntheticAreaGeometry(spec, areas)
         widthX = spec.widthCenterProjection + direction * halfWidth,
         y = sy,
         startZ = startZ,
-        heightZ = heightZ
+        heightZ = heightZ,
     }
 end
 
@@ -470,10 +463,16 @@ local function ensureSyntheticAreaNodes(spec, fieldName, nodeName)
         local startNode = createTransformGroup("AWW_" .. nodeName .. "Start")
         local widthNode = createTransformGroup("AWW_" .. nodeName .. "Width")
         local heightNode = createTransformGroup("AWW_" .. nodeName .. "Height")
-        if parentNode == nil or parentNode == 0
-            or startNode == nil or startNode == 0
-            or widthNode == nil or widthNode == 0
-            or heightNode == nil or heightNode == 0 then
+        if
+            parentNode == nil
+            or parentNode == 0
+            or startNode == nil
+            or startNode == 0
+            or widthNode == nil
+            or widthNode == 0
+            or heightNode == nil
+            or heightNode == 0
+        then
             return nil
         end
 
@@ -485,7 +484,7 @@ local function ensureSyntheticAreaNodes(spec, fieldName, nodeName)
             parentNode = parentNode,
             startNode = startNode,
             widthNode = widthNode,
-            heightNode = heightNode
+            heightNode = heightNode,
         }
         spec[fieldName] = areaSet
     end
@@ -504,9 +503,29 @@ local function configureSyntheticAreaSet(spec, areas, fieldName, nodeName)
         return false
     end
 
-    if not setNodePositionFromReference(areaSet.startNode, spec.referenceNode, geometry.startX, geometry.y, geometry.startZ)
-        or not setNodePositionFromReference(areaSet.widthNode, spec.referenceNode, geometry.widthX, geometry.y, geometry.startZ)
-        or not setNodePositionFromReference(areaSet.heightNode, spec.referenceNode, geometry.startX, geometry.y, geometry.heightZ) then
+    if
+        not setNodePositionFromReference(
+            areaSet.startNode,
+            spec.referenceNode,
+            geometry.startX,
+            geometry.y,
+            geometry.startZ
+        )
+        or not setNodePositionFromReference(
+            areaSet.widthNode,
+            spec.referenceNode,
+            geometry.widthX,
+            geometry.y,
+            geometry.startZ
+        )
+        or not setNodePositionFromReference(
+            areaSet.heightNode,
+            spec.referenceNode,
+            geometry.startX,
+            geometry.y,
+            geometry.heightZ
+        )
+    then
         return false
     end
 
@@ -520,7 +539,7 @@ local function configureSyntheticAreaSet(spec, areas, fieldName, nodeName)
             workArea = workArea,
             startNode = workArea.start,
             widthNode = workArea.width,
-            heightNode = workArea.height
+            heightNode = workArea.height,
         })
         areaSet.members[workArea] = true
         workArea.start = areaSet.startNode
@@ -544,7 +563,7 @@ local function updateSyntheticAreaSetGeometry(spec, areaSet)
         table.insert(originalAreas, {
             startNode = mapping.startNode,
             widthNode = mapping.widthNode,
-            heightNode = mapping.heightNode
+            heightNode = mapping.heightNode,
         })
     end
 
@@ -559,15 +578,14 @@ local function updateSyntheticAreaSetGeometry(spec, areaSet)
 end
 
 local function copySyntheticAreaSetGeometry(spec, sourceAreaSet, targetAreaSet)
-    if sourceAreaSet == nil or sourceAreaSet.active ~= true
-        or targetAreaSet == nil or targetAreaSet.active ~= true then
+    if sourceAreaSet == nil or sourceAreaSet.active ~= true or targetAreaSet == nil or targetAreaSet.active ~= true then
         return false
     end
 
     for _, nodePair in ipairs({
-        {sourceAreaSet.startNode, targetAreaSet.startNode},
-        {sourceAreaSet.widthNode, targetAreaSet.widthNode},
-        {sourceAreaSet.heightNode, targetAreaSet.heightNode}
+        { sourceAreaSet.startNode, targetAreaSet.startNode },
+        { sourceAreaSet.widthNode, targetAreaSet.widthNode },
+        { sourceAreaSet.heightNode, targetAreaSet.heightNode },
     }) do
         local x, y, z = getNodePositionInReference(nodePair[1], spec.referenceNode)
         if x == nil or not setNodePositionFromReference(nodePair[2], spec.referenceNode, x, y, z) then
@@ -579,8 +597,10 @@ local function copySyntheticAreaSetGeometry(spec, sourceAreaSet, targetAreaSet)
 end
 
 local function setPlowAreaWidths(spec, appliedNodes)
-    if #(spec.plowAreas or {}) > 1
-        and configureSyntheticAreaSet(spec, spec.plowAreas, "syntheticPlowArea", "PlowArea") then
+    if
+        #(spec.plowAreas or {}) > 1
+        and configureSyntheticAreaSet(spec, spec.plowAreas, "syntheticPlowArea", "PlowArea")
+    then
         return
     end
 
@@ -604,26 +624,28 @@ local function setPlowAreaWidths(spec, appliedNodes)
                 node = area.startNode,
                 x = sx + spec.widthAxisX * startDelta,
                 y = sy + spec.widthAxisY * startDelta,
-                z = sz + spec.widthAxisZ * startDelta
+                z = sz + spec.widthAxisZ * startDelta,
             })
             table.insert(targets, {
                 node = area.widthNode,
                 x = wx + spec.widthAxisX * widthDelta,
                 y = wy + spec.widthAxisY * widthDelta,
-                z = wz + spec.widthAxisZ * widthDelta
+                z = wz + spec.widthAxisZ * widthDelta,
             })
             table.insert(targets, {
                 node = area.heightNode,
                 x = hx + spec.widthAxisX * startDelta,
                 y = hy + spec.widthAxisY * startDelta,
-                z = hz + spec.widthAxisZ * startDelta
+                z = hz + spec.widthAxisZ * startDelta,
             })
         end
     end
 
     for _, target in ipairs(targets) do
-        if appliedNodes[target.node] ~= true
-            and setNodePositionFromReference(target.node, spec.referenceNode, target.x, target.y, target.z) then
+        if
+            appliedNodes[target.node] ~= true
+            and setNodePositionFromReference(target.node, spec.referenceNode, target.x, target.y, target.z)
+        then
             appliedNodes[target.node] = true
         end
     end
@@ -637,11 +659,11 @@ local function captureDropModeAreas(spec)
         local minProjection = math.huge
         local maxProjection = -math.huge
 
-        for _, node in ipairs({dropArea.startNode, dropArea.widthNode, dropArea.heightNode}) do
+        for _, node in ipairs({ dropArea.startNode, dropArea.widthNode, dropArea.heightNode }) do
             local x, y, z = getNodePositionInReference(node, spec.referenceNode)
             if x ~= nil then
                 local projection = getProjection(x, y, z, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
-                table.insert(nodes, {node = node, x = x, y = y, z = z, projection = projection})
+                table.insert(nodes, { node = node, x = x, y = y, z = z, projection = projection })
                 minProjection = math.min(minProjection, projection)
                 maxProjection = math.max(maxProjection, projection)
             end
@@ -659,7 +681,7 @@ local function captureDropModeAreas(spec)
                 nodes = nodes,
                 minProjection = minProjection,
                 maxProjection = maxProjection,
-                sourceAreas = sourceAreas
+                sourceAreas = sourceAreas,
             })
         end
     end
@@ -674,7 +696,13 @@ local function setDropModeNodePositions(spec, useWindrowDropAreas)
         local targetMin = nil
         local targetMax = nil
         if not useWindrowDropAreas then
-            targetMin, targetMax = getAreaProjectionBounds(modeArea.sourceAreas, spec.referenceNode, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
+            targetMin, targetMax = getAreaProjectionBounds(
+                modeArea.sourceAreas,
+                spec.referenceNode,
+                spec.widthAxisX,
+                spec.widthAxisY,
+                spec.widthAxisZ
+            )
             if targetMin == nil then
                 targetMin = spec.widthCenterProjection - (spec.currentWidth * 0.5)
                 targetMax = spec.widthCenterProjection + (spec.currentWidth * 0.5)
@@ -687,7 +715,8 @@ local function setDropModeNodePositions(spec, useWindrowDropAreas)
                 local modeCenter = (modeArea.minProjection + modeArea.maxProjection) * 0.5
                 targetProjection = spec.dropCenterProjection + (entry.projection - modeCenter) * spec.currentFactor
             else
-                local ratio = (entry.projection - modeArea.minProjection) / (modeArea.maxProjection - modeArea.minProjection)
+                local ratio = (entry.projection - modeArea.minProjection)
+                    / (modeArea.maxProjection - modeArea.minProjection)
                 targetProjection = targetMin + ((targetMax - targetMin) * ratio)
             end
 
@@ -789,13 +818,8 @@ local function restoreWindrowerDropAreaMappings(spec)
 end
 
 local function getAreaCenterProjection(spec, area)
-    local minProjection, maxProjection = getAreaProjectionBounds(
-        {area},
-        spec.referenceNode,
-        spec.widthAxisX,
-        spec.widthAxisY,
-        spec.widthAxisZ
-    )
+    local minProjection, maxProjection =
+        getAreaProjectionBounds({ area }, spec.referenceNode, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
     return minProjection ~= nil and (minProjection + maxProjection) * 0.5 or nil
 end
 
@@ -814,9 +838,7 @@ local function configureSingleWindrowDropArea(vehicle, spec)
 
     for _, area in ipairs(spec.areas) do
         local workArea = area.workArea
-        if WorkAreaType ~= nil
-            and WorkAreaType.WINDROWER ~= nil
-            and workArea.type == WorkAreaType.WINDROWER then
+        if WorkAreaType ~= nil and WorkAreaType.WINDROWER ~= nil and workArea.type == WorkAreaType.WINDROWER then
             local dropAreaIndex = spec.nativeWindrowerDropAreaIndices[workArea]
             if dropAreaIndex == nil then
                 dropAreaIndex = tonumber(workArea.dropWindrowWorkAreaIndex)
@@ -824,8 +846,7 @@ local function configureSingleWindrowDropArea(vehicle, spec)
             end
 
             local dropArea = getAreaByWorkAreaIndex(spec.dropAreas, dropAreaIndex)
-            if dropAreaIndex == nil
-                or dropArea == nil then
+            if dropAreaIndex == nil or dropArea == nil then
                 restoreWindrowerDropAreaMappings(spec)
                 return
             end
@@ -876,11 +897,12 @@ local function configureSingleWindrowDropArea(vehicle, spec)
     for dropAreaIndex in pairs(dropAreaUsageCounts) do
         local dropCenter = dropAreaCenters[dropAreaIndex]
         if dropCenter ~= nil then
-            local score = flowDirection == 0
-                and -math.abs(dropCenter - spec.widthCenterProjection)
+            local score = flowDirection == 0 and -math.abs(dropCenter - spec.widthCenterProjection)
                 or dropCenter * flowDirection
-            if score > targetScore
-                or (score == targetScore and (targetDropAreaIndex == nil or dropAreaIndex < targetDropAreaIndex)) then
+            if
+                score > targetScore
+                or (score == targetScore and (targetDropAreaIndex == nil or dropAreaIndex < targetDropAreaIndex))
+            then
                 targetDropAreaIndex = dropAreaIndex
                 targetScore = score
             end
@@ -896,7 +918,6 @@ local function configureSingleWindrowDropArea(vehicle, spec)
         workArea.dropWindrowWorkAreaIndex = targetDropAreaIndex
     end
     spec.singleWindrowDropAreaConfigured = true
-
 end
 
 local function getIntermediateWindrowDropAreas(spec)
@@ -940,9 +961,7 @@ local function configureSharedTedderDropArea(vehicle, spec)
 
     for _, area in ipairs(spec.areas) do
         local workArea = area.workArea
-        if WorkAreaType ~= nil
-            and WorkAreaType.TEDDER ~= nil
-            and workArea.type == WorkAreaType.TEDDER then
+        if WorkAreaType ~= nil and WorkAreaType.TEDDER ~= nil and workArea.type == WorkAreaType.TEDDER then
             local dropAreaIndex = spec.nativeTedderDropAreaIndices[workArea]
             if dropAreaIndex == nil then
                 dropAreaIndex = tonumber(workArea.dropWindrowWorkAreaIndex)
@@ -961,12 +980,10 @@ local function configureSharedTedderDropArea(vehicle, spec)
         end
     end
 
-    if tedderAreaCount == 0 or not configureSyntheticAreaSet(
-        spec,
-        {targetDropArea},
-        "syntheticTedderDropArea",
-        "TedderDropArea"
-    ) then
+    if
+        tedderAreaCount == 0
+        or not configureSyntheticAreaSet(spec, { targetDropArea }, "syntheticTedderDropArea", "TedderDropArea")
+    then
         restoreTedderDropAreaMappings(spec)
         return false
     end
@@ -983,11 +1000,11 @@ local function captureNativeDropArea(spec, dropArea)
     local minProjection = math.huge
     local maxProjection = -math.huge
 
-    for _, node in ipairs({dropArea.startNode, dropArea.widthNode, dropArea.heightNode}) do
+    for _, node in ipairs({ dropArea.startNode, dropArea.widthNode, dropArea.heightNode }) do
         local x, y, z = getNodePositionInReference(node, spec.referenceNode)
         if x ~= nil then
             local projection = getProjection(x, y, z, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
-            table.insert(nodes, {node = node, x = x, y = y, z = z, projection = projection})
+            table.insert(nodes, { node = node, x = x, y = y, z = z, projection = projection })
             minProjection = math.min(minProjection, projection)
             maxProjection = math.max(maxProjection, projection)
         end
@@ -1001,7 +1018,7 @@ local function captureNativeDropArea(spec, dropArea)
         area = dropArea,
         nodes = nodes,
         minProjection = minProjection,
-        maxProjection = maxProjection
+        maxProjection = maxProjection,
     }
 end
 
@@ -1028,9 +1045,11 @@ local function configureNativeMowerDropAreas(vehicle, spec)
     local usedBaseDropAreas = {}
     for _, mapping in pairs(baseMode.workAreas) do
         local sourceArea = getAreaByWorkAreaIndex(spec.areas, mapping.workAreaIndex)
-        if sourceArea == nil
+        if
+            sourceArea == nil
             or dropAreas[mapping.dropAreaIndex] == nil
-            or usedBaseDropAreas[mapping.dropAreaIndex] == true then
+            or usedBaseDropAreas[mapping.dropAreaIndex] == true
+        then
             return false
         end
 
@@ -1041,8 +1060,7 @@ local function configureNativeMowerDropAreas(vehicle, spec)
     local sharedDropAreas = {}
     for _, workMode in ipairs(workModeSpec.workModes) do
         for _, mapping in pairs(workMode.workAreas or {}) do
-            if dropAreas[mapping.dropAreaIndex] ~= nil
-                and usedBaseDropAreas[mapping.dropAreaIndex] ~= true then
+            if dropAreas[mapping.dropAreaIndex] ~= nil and usedBaseDropAreas[mapping.dropAreaIndex] ~= true then
                 sharedDropAreas[mapping.dropAreaIndex] = true
             end
         end
@@ -1082,16 +1100,18 @@ end
 local function getNativeMowerMode(vehicle, state)
     local workModeSpec = vehicle.spec_workMode
     state = tonumber(state) or (workModeSpec ~= nil and tonumber(workModeSpec.state))
-    return state ~= nil and workModeSpec ~= nil and workModeSpec.workModes ~= nil
-        and workModeSpec.workModes[state] or nil
+    return state ~= nil and workModeSpec ~= nil and workModeSpec.workModes ~= nil and workModeSpec.workModes[state]
+        or nil
 end
 
 local function applyNativeMowerDropMode(vehicle, spec, state, appliedNodes)
     local workMode = getNativeMowerMode(vehicle, state)
-    if workMode == nil
+    if
+        workMode == nil
         or workMode.workAreas == nil
         or spec.nativeMowerDropAreas == nil
-        or spec.nativeMowerBaseMappings == nil then
+        or spec.nativeMowerBaseMappings == nil
+    then
         return false
     end
 
@@ -1108,10 +1128,19 @@ local function applyNativeMowerDropMode(vehicle, spec, state, appliedNodes)
         local sourceArea = getAreaByWorkAreaIndex(spec.areas, workAreaIndex)
         local dropArea = spec.nativeMowerDropAreas[dropAreaIndex]
         if sourceArea ~= nil and dropArea ~= nil then
-            local targetMin, targetMax = getAreaProjectionBounds({sourceArea}, spec.referenceNode, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
-            if activeSharedArea ~= nil and targetMin ~= nil
+            local targetMin, targetMax = getAreaProjectionBounds(
+                { sourceArea },
+                spec.referenceNode,
+                spec.widthAxisX,
+                spec.widthAxisY,
+                spec.widthAxisZ
+            )
+            if
+                activeSharedArea ~= nil
+                and targetMin ~= nil
                 and targetMin <= spec.widthCenterProjection
-                and targetMax >= spec.widthCenterProjection then
+                and targetMax >= spec.widthCenterProjection
+            then
                 targetMin = activeSharedArea.minProjection
                 targetMax = activeSharedArea.maxProjection
             end
@@ -1143,7 +1172,8 @@ local function configureSyntheticMowerModes(vehicle, spec)
         return false
     end
 
-    local minProjection, maxProjection = getAreaProjectionBounds(spec.dropAreas, spec.referenceNode, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
+    local minProjection, maxProjection =
+        getAreaProjectionBounds(spec.dropAreas, spec.referenceNode, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
     if minProjection == nil or maxProjection - minProjection <= 0.01 then
         return false
     end
@@ -1180,7 +1210,8 @@ local function applySyntheticMowerMode(vehicle, useWindrowDropAreas)
     vehicle.spec_mower.useWindrowDropAreas = useWindrowDropAreas
     spec.requestedUseWindrowDropAreas = useWindrowDropAreas
 
-    local minProjection, maxProjection = getAreaProjectionBounds(spec.dropAreas, spec.referenceNode, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
+    local minProjection, maxProjection =
+        getAreaProjectionBounds(spec.dropAreas, spec.referenceNode, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
     if minProjection ~= nil then
         spec.currentDropWidth = round2(maxProjection - minProjection)
     end
@@ -1189,7 +1220,6 @@ local function applySyntheticMowerMode(vehicle, useWindrowDropAreas)
 
     return true
 end
-
 
 local function scaleMarkerSet(spec, leftMarker, rightMarker, backMarker, factor, appliedNodes)
     scaleNodeAlongWidthAxis(spec, leftMarker, factor, appliedNodes)
@@ -1253,13 +1283,25 @@ local function refreshAIMarkerCaches(vehicle, aiSpec)
     aiSpec.inputAttacherJointToMarkerOffset = {}
     if vehicle.calcAIMarkerAttacherJointOffset ~= nil then
         if aiSpec.leftMarker ~= nil and aiSpec.rightMarker ~= nil and aiSpec.backMarker ~= nil then
-            pcall(vehicle.calcAIMarkerAttacherJointOffset, vehicle, aiSpec.leftMarker, aiSpec.rightMarker, aiSpec.backMarker)
+            pcall(
+                vehicle.calcAIMarkerAttacherJointOffset,
+                vehicle,
+                aiSpec.leftMarker,
+                aiSpec.rightMarker,
+                aiSpec.backMarker
+            )
         end
 
         if aiSpec.aiBaseSetups ~= nil then
             for _, aiSetup in ipairs(aiSpec.aiBaseSetups) do
                 if aiSetup.leftMarker ~= nil and aiSetup.rightMarker ~= nil and aiSetup.backMarker ~= nil then
-                    pcall(vehicle.calcAIMarkerAttacherJointOffset, vehicle, aiSetup.leftMarker, aiSetup.rightMarker, aiSetup.backMarker)
+                    pcall(
+                        vehicle.calcAIMarkerAttacherJointOffset,
+                        vehicle,
+                        aiSetup.leftMarker,
+                        aiSetup.rightMarker,
+                        aiSetup.backMarker
+                    )
                 end
             end
         end
@@ -1289,7 +1331,14 @@ local function applyAIMarkerWidth(vehicle, spec, factor, appliedNodes)
     if aiSpec.aiBaseSetups ~= nil then
         for _, aiSetup in ipairs(aiSpec.aiBaseSetups) do
             applyMarkerSet(spec, aiSetup.leftMarker, aiSetup.rightMarker, aiSetup.backMarker, factor, appliedNodes)
-            applyMarkerSet(spec, aiSetup.sizeLeftMarker, aiSetup.sizeRightMarker, aiSetup.sizeBackMarker, factor, appliedNodes)
+            applyMarkerSet(
+                spec,
+                aiSetup.sizeLeftMarker,
+                aiSetup.sizeRightMarker,
+                aiSetup.sizeBackMarker,
+                factor,
+                appliedNodes
+            )
         end
     end
 
@@ -1297,9 +1346,7 @@ local function applyAIMarkerWidth(vehicle, spec, factor, appliedNodes)
 end
 
 local function scaleSprayerUsageWidth(spec, usageScale, factor)
-    if usageScale == nil
-        or usageScale.workAreaIndex ~= nil
-        or type(usageScale.workingWidth) ~= "number" then
+    if usageScale == nil or usageScale.workAreaIndex ~= nil or type(usageScale.workingWidth) ~= "number" then
         return
     end
 
@@ -1361,7 +1408,7 @@ local function addEffectNode(nodes, seen, node, effectData)
     end
 
     seen[node] = true
-    table.insert(nodes, {node = node, effectData = effectData})
+    table.insert(nodes, { node = node, effectData = effectData })
 end
 
 local function addEffectObjects(nodes, seen, effects)
@@ -1433,7 +1480,7 @@ local function getWidthAlignedScaleAxis(spec, node)
         return nil
     end
 
-    local axes = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+    local axes = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } }
     local bestIndex = nil
     local bestAlignment = -1
 
@@ -1442,14 +1489,9 @@ local function getWidthAlignedScaleAxis(spec, node)
         if ok and type(x) == "number" and type(y) == "number" and type(z) == "number" then
             local length = distance3(0, 0, 0, x, y, z)
             if length > 0.0001 then
-                local alignment = math.abs(getProjection(
-                    x / length,
-                    y / length,
-                    z / length,
-                    spec.widthAxisX,
-                    spec.widthAxisY,
-                    spec.widthAxisZ
-                ))
+                local alignment = math.abs(
+                    getProjection(x / length, y / length, z / length, spec.widthAxisX, spec.widthAxisY, spec.widthAxisZ)
+                )
                 if alignment > bestAlignment then
                     bestAlignment = alignment
                     bestIndex = index
@@ -1481,7 +1523,7 @@ local function getVisualEffectBaseTransform(spec, node)
         scaleX = scaleX,
         scaleY = scaleY,
         scaleZ = scaleZ,
-        scaleAxis = getWidthAlignedScaleAxis(spec, node)
+        scaleAxis = getWidthAlignedScaleAxis(spec, node),
     }
     spec.visualEffectBaseTransforms[node] = base
     return base
@@ -1693,8 +1735,7 @@ local function applyShovelWidth(vehicle, spec, factor)
         end
 
         local baseFillLitersPerSecond = shovelNode.AWWBaseFillLitersPerSecond
-        if baseFillLitersPerSecond ~= nil and baseFillLitersPerSecond > 0
-            and baseFillLitersPerSecond < math.huge then
+        if baseFillLitersPerSecond ~= nil and baseFillLitersPerSecond > 0 and baseFillLitersPerSecond < math.huge then
             shovelNode.fillLitersPerSecond = baseFillLitersPerSecond * factor
         end
     end
@@ -1727,8 +1768,7 @@ local function sprayTypeMatchesCurrentConfiguration(vehicle, sprayType)
 
     if sprayType.foldMinLimit ~= nil and sprayType.foldMaxLimit ~= nil then
         local foldAnimTime = vehicle.spec_foldable ~= nil and vehicle.spec_foldable.foldAnimTime or nil
-        if foldAnimTime ~= nil
-            and (foldAnimTime < sprayType.foldMinLimit or foldAnimTime > sprayType.foldMaxLimit) then
+        if foldAnimTime ~= nil and (foldAnimTime < sprayType.foldMinLimit or foldAnimTime > sprayType.foldMaxLimit) then
             return false
         end
     end
@@ -1761,7 +1801,7 @@ local function getDisplayWidths(vehicle, spec)
     end
 
     if #widths < 2 then
-        return {getCurrentDisplayWidth(vehicle, spec)}
+        return { getCurrentDisplayWidth(vehicle, spec) }
     end
 
     table.sort(widths)
@@ -1800,8 +1840,12 @@ local function applyWidth(vehicle)
     configureSingleWindrowDropArea(vehicle, spec)
     local appliedNodes = {}
     local areaFactor = factor
-    if vehicle.spec_tedder ~= nil and not spec.isBase
-        and spec.measuredBaseWidth ~= nil and spec.measuredBaseWidth > 0 then
+    if
+        vehicle.spec_tedder ~= nil
+        and not spec.isBase
+        and spec.measuredBaseWidth ~= nil
+        and spec.measuredBaseWidth > 0
+    then
         areaFactor = spec.currentWidth / spec.measuredBaseWidth
     end
 
@@ -1819,8 +1863,10 @@ local function applyWidth(vehicle)
                 end
             end
         else
-            if spec.sharedWindrowDropAreaConfigured ~= true
-                or not scaleWindrowerAreasAroundCenterGap(spec, spec.areas, areaFactor, appliedNodes) then
+            if
+                spec.sharedWindrowDropAreaConfigured ~= true
+                or not scaleWindrowerAreasAroundCenterGap(spec, spec.areas, areaFactor, appliedNodes)
+            then
                 scaleAreaNodes(spec, spec.areas, areaFactor, appliedNodes)
             end
         end
@@ -1837,9 +1883,11 @@ local function applyWidth(vehicle)
         applySyntheticMowerMode(vehicle, vehicle.spec_mower.useWindrowDropAreas)
     elseif not spec.isBase and hasNativeMowerModes(vehicle) and configureNativeMowerDropAreas(vehicle, spec) then
         applyNativeMowerDropMode(vehicle, spec, nil, appliedNodes)
-    elseif not spec.isBase
+    elseif
+        not spec.isBase
         and (vehicle.spec_windrower == nil or spec.singleWindrowDropAreaConfigured ~= true)
-        and not sharedTedderDropArea then
+        and not sharedTedderDropArea
+    then
         local dropAreas = spec.dropAreas
         local dropAreaFactor = areaFactor
         local dropAreaCenter = nil
@@ -1881,7 +1929,11 @@ function AWW.prerequisitesPresent(specializations)
 end
 
 function AWW.initSpecialization()
-    Vehicle.xmlSchemaSavegame:register(XMLValueType.BOOL, "vehicles.vehicle(?).FS25_AdjustSuite.AWW#useWindrowDropAreas", "AWW generated mower drop mode")
+    Vehicle.xmlSchemaSavegame:register(
+        XMLValueType.BOOL,
+        "vehicles.vehicle(?).FS25_AdjustSuite.AWW#useWindrowDropAreas",
+        "AWW generated mower drop mode"
+    )
 end
 
 function AWW.registerEventListeners(vehicleType)
@@ -1909,7 +1961,11 @@ function AWW.registerOverwrittenFunctions(vehicleType)
         SpecializationUtil.registerOverwrittenFunction(vehicleType, "processCultivatorArea", AWW.processCultivatorArea)
     end
     if Mower ~= nil and SpecializationUtil.hasSpecialization(Mower, vehicleType.specializations) then
-        SpecializationUtil.registerOverwrittenFunction(vehicleType, "setUseMowerWindrowDropAreas", AWW.setUseMowerWindrowDropAreas)
+        SpecializationUtil.registerOverwrittenFunction(
+            vehicleType,
+            "setUseMowerWindrowDropAreas",
+            AWW.setUseMowerWindrowDropAreas
+        )
         SpecializationUtil.registerOverwrittenFunction(vehicleType, "getDropArea", AWW.getDropArea)
     end
     if WorkMode ~= nil and SpecializationUtil.hasSpecialization(WorkMode, vehicleType.specializations) then
@@ -2017,7 +2073,6 @@ function AWW:onPostLoad(savegame)
     if AdjustSuiteCourseplay ~= nil then
         AdjustSuiteCourseplay.update(self)
     end
-
 end
 
 local function getMowerDropModeText(useWindrowDropAreas)
@@ -2042,9 +2097,7 @@ end
 
 local function updateNativeMowerModeAction(vehicle)
     local workModeSpec = vehicle.spec_workMode
-    if workModeSpec == nil
-        or (tonumber(workModeSpec.stateMax) or 0) <= 1
-        or workModeSpec.actionEvents == nil then
+    if workModeSpec == nil or (tonumber(workModeSpec.stateMax) or 0) <= 1 or workModeSpec.actionEvents == nil then
         return
     end
 
@@ -2129,9 +2182,29 @@ function AWW:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSele
 
     local _, actionEventId
     if self.addPoweredActionEvent ~= nil then
-        _, actionEventId = self:addPoweredActionEvent(spec.actionEvents, InputAction.TOGGLE_WORKMODE, self, AWW.actionEventToggleMowerDropMode, false, true, false, true, nil)
+        _, actionEventId = self:addPoweredActionEvent(
+            spec.actionEvents,
+            InputAction.TOGGLE_WORKMODE,
+            self,
+            AWW.actionEventToggleMowerDropMode,
+            false,
+            true,
+            false,
+            true,
+            nil
+        )
     else
-        _, actionEventId = self:addActionEvent(spec.actionEvents, InputAction.TOGGLE_WORKMODE, self, AWW.actionEventToggleMowerDropMode, false, true, false, true, nil)
+        _, actionEventId = self:addActionEvent(
+            spec.actionEvents,
+            InputAction.TOGGLE_WORKMODE,
+            self,
+            AWW.actionEventToggleMowerDropMode,
+            false,
+            true,
+            false,
+            true,
+            nil
+        )
     end
 
     if actionEventId ~= nil then
@@ -2154,8 +2227,7 @@ function AWW:onReadStream(streamId, connection)
     local useWindrowDropAreas = streamReadBool(streamId)
     spec.requestedUseWindrowDropAreas = useWindrowDropAreas
 
-    if Suite.getIsModuleEnabled("AWW")
-        and spec.syntheticMowerModes == true and self.spec_mower ~= nil then
+    if Suite.getIsModuleEnabled("AWW") and spec.syntheticMowerModes == true and self.spec_mower ~= nil then
         applySyntheticMowerMode(self, useWindrowDropAreas)
     end
 
@@ -2166,8 +2238,7 @@ end
 
 function AWW:saveToXMLFile(xmlFile, key, usedModNames)
     local spec = getSpec(self)
-    if Suite.getIsModuleEnabled("AWW")
-        and spec.syntheticMowerModes == true and self.spec_mower ~= nil then
+    if Suite.getIsModuleEnabled("AWW") and spec.syntheticMowerModes == true and self.spec_mower ~= nil then
         xmlFile:setValue(key .. "#useWindrowDropAreas", self.spec_mower.useWindrowDropAreas == true)
     end
 end
@@ -2183,9 +2254,12 @@ function AWW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isS
         or self.spec_foldable == nil
         or not hasNativeMowerModes(self)
         or getIsLoweredForWork(self)
-    if canApply and getSelectedOffset(self) ~= 0
+    if
+        canApply
+        and getSelectedOffset(self) ~= 0
         and (self.spec_windrower ~= nil or self.spec_tedder ~= nil)
-        and self.spec_foldable ~= nil then
+        and self.spec_foldable ~= nil
+    then
         canApply = getVisualEffectPoseIsReady(self)
     end
 
@@ -2208,7 +2282,6 @@ function AWW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isS
     if spec.syntheticMowerModes ~= true and hasNativeMowerModes(self) then
         updateNativeMowerModeAction(self)
     end
-
 end
 
 function AWW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
@@ -2228,9 +2301,22 @@ function AWW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     local offset = spec.currentOffset or 0
     local mowerModeText = ""
     if spec.syntheticMowerModes == true and self.spec_mower ~= nil then
-        mowerModeText = string.format(" - %s: %.2f %s", getMowerDropModeText(self.spec_mower.useWindrowDropAreas), spec.currentDropWidth or 0, g_i18n:getText("CONFIG_AS_M"))
+        mowerModeText = string.format(
+            " - %s: %.2f %s",
+            getMowerDropModeText(self.spec_mower.useWindrowDropAreas),
+            spec.currentDropWidth or 0,
+            g_i18n:getText("CONFIG_AS_M")
+        )
     end
-    Suite.addHelpText(string.format("AWW: %s [%s] - %s%s", Suite.getOffsetText(offset), Suite.getStatusText(offset), formatDisplayWidths(self, spec), mowerModeText))
+    Suite.addHelpText(
+        string.format(
+            "AWW: %s [%s] - %s%s",
+            Suite.getOffsetText(offset),
+            Suite.getStatusText(offset),
+            formatDisplayWidths(self, spec),
+            mowerModeText
+        )
+    )
 end
 
 function AWW:onUpdateTick(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
