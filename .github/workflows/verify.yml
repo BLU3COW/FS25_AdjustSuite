@@ -48,3 +48,15 @@ jobs:
         run: |
           & "$env:GITHUB_WORKSPACE\source\Checks\lua-ls\Invoke-LuaLsCheck.ps1" -Mod "$env:MOD_NAME" -WorkspacePath "$env:GITHUB_WORKSPACE\mod"
           exit $LASTEXITCODE
+
+      - name: XML-Validierung (modDesc.xsd u.a. FS25-Basisspiel-Schemas)
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\mod" -Recurse -Filter "*.xml" |
+              Select-Object -ExpandProperty FullName
+          if ($files.Count -eq 0) {
+              Write-Host "Keine XML-Dateien gefunden."
+              exit 0
+          }
+          & "$env:GITHUB_WORKSPACE\source\Checks\xml\Invoke-XmlCheck.ps1" -Mod "$env:MOD_NAME" -Files $files
+          exit $LASTEXITCODE

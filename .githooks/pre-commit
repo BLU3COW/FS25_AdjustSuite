@@ -60,4 +60,33 @@ EOF
     fi
 fi
 
+# Schritt 2 (XML-Validierung): prueft staged *.xml-Dateien gegen die
+# FS25-Basisspiel-XSDs (modDesc.xml blockierend, alles andere nur als
+# Hinweis, siehe Invoke-XmlCheck.ps1) bzw. auf reine Wohlgeformtheit, wo kein
+# Basisspiel-Schema existiert.
+staged_xml=$(git diff --cached --name-only --diff-filter=ACM -- '*.xml')
+
+if [ -n "$staged_xml" ]; then
+    xml_list_file="$repo_root/.git/pre-commit-xml-files.txt"
+    : > "$xml_list_file"
+    while IFS= read -r f; do
+        [ -z "$f" ] && continue
+        printf '%s/%s\n' "$win_root" "$f" >> "$xml_list_file"
+    done <<EOF
+$staged_xml
+EOF
+    win_xml_list_file=$(printf '%s' "$xml_list_file" | sed -E 's#^/([a-zA-Z])/#\1:/#')
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:/FS25/main/Source/Checks/xml/Invoke-XmlCheck.ps1" -Mod "$mod_name" -FileListPath "$win_xml_list_file"
+    xml_status=$?
+
+    rm -f "$xml_list_file"
+
+    if [ $xml_status -ne 0 ]; then
+        echo ""
+        echo "pre-commit: XML-Check fehlgeschlagen (siehe Ausgabe oben). Commit abgebrochen."
+        exit 1
+    fi
+fi
+
 exit 0
