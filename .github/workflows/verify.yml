@@ -60,3 +60,9 @@ jobs:
           }
           & "$env:GITHUB_WORKSPACE\source\Checks\xml\Invoke-XmlCheck.ps1" -Mod "$env:MOD_NAME" -Files $files
           exit $LASTEXITCODE
+
+      - name: Asset-Pfad-Check (Existenz + Gross-/Kleinschreibung)
+        shell: pwsh
+        run: |
+          & "$env:GITHUB_WORKSPACE\source\Checks\assets\Invoke-AssetPathCheck.ps1" -Mod "$env:MOD_NAME" -ModRoot "$env:GITHUB_WORKSPACE\mod"
+          exit $LASTEXITCODE

@@ -87,6 +87,32 @@ EOF
         echo "pre-commit: XML-Check fehlgeschlagen (siehe Ausgabe oben). Commit abgebrochen."
         exit 1
     fi
+
+    # Schritt 3 (Asset-Pfad-Check): loest jedes Pfad-Attribut/-Element in den
+    # staged XML-Dateien gegen den Mod-Ordner auf und prueft Existenz +
+    # exakte Gross-/Kleinschreibung (Windows ist case-insensitive, ein
+    # dedizierter Linux-Server nicht). Immer blockierend, siehe
+    # Invoke-AssetPathCheck.ps1.
+    xml_list_file2="$repo_root/.git/pre-commit-xml-files.txt"
+    : > "$xml_list_file2"
+    while IFS= read -r f; do
+        [ -z "$f" ] && continue
+        printf '%s/%s\n' "$win_root" "$f" >> "$xml_list_file2"
+    done <<EOF
+$staged_xml
+EOF
+    win_xml_list_file2=$(printf '%s' "$xml_list_file2" | sed -E 's#^/([a-zA-Z])/#\1:/#')
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:/FS25/main/Source/Checks/assets/Invoke-AssetPathCheck.ps1" -Mod "$mod_name" -ModRoot "$win_root" -FileListPath "$win_xml_list_file2"
+    asset_status=$?
+
+    rm -f "$xml_list_file2"
+
+    if [ $asset_status -ne 0 ]; then
+        echo ""
+        echo "pre-commit: Asset-Pfad-Check fehlgeschlagen (siehe Ausgabe oben). Commit abgebrochen."
+        exit 1
+    fi
 fi
 
 exit 0
