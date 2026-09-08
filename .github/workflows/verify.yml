@@ -66,3 +66,9 @@ jobs:
         run: |
           & "$env:GITHUB_WORKSPACE\source\Checks\assets\Invoke-AssetPathCheck.ps1" -Mod "$env:MOD_NAME" -ModRoot "$env:GITHUB_WORKSPACE\mod"
           exit $LASTEXITCODE
+
+      - name: l10n-Check (Keys in Lua/XML gegen Sprachdateien)
+        shell: pwsh
+        run: |
+          & "$env:GITHUB_WORKSPACE\source\Checks\l10n\Invoke-L10nCheck.ps1" -Mod "$env:MOD_NAME" -ModRoot "$env:GITHUB_WORKSPACE\mod"
+          exit $LASTEXITCODE

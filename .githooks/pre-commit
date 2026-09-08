@@ -115,4 +115,23 @@ EOF
     fi
 fi
 
+# Schritt 4 (l10n-Check): gleicht in Lua (getText(...)) und XML ($l10n_xxx)
+# verwendete Schluessel gegen alle l10n_*.xml-Sprachdateien ab, in beide
+# Richtungen. Blockiert nur, wenn ein in einer Sprachdatei definierter Key in
+# einer anderen fehlt (voll durch den Mod selbst kontrollierbar); alles
+# andere (verwendet-aber-nirgends-definiert, definiert-aber-unbenutzt) ist
+# nur ein Hinweis, siehe Invoke-L10nCheck.ps1. Laeuft immer ueber den ganzen
+# Workspace (keine sinnvolle Datei-Teilmenge moeglich), wenn Lua- oder
+# XML-Dateien staged sind.
+if [ -n "$staged_lua" ] || [ -n "$staged_xml" ]; then
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:/FS25/main/Source/Checks/l10n/Invoke-L10nCheck.ps1" -Mod "$mod_name" -ModRoot "$win_root"
+    l10n_status=$?
+
+    if [ $l10n_status -ne 0 ]; then
+        echo ""
+        echo "pre-commit: l10n-Check fehlgeschlagen (siehe Ausgabe oben). Commit abgebrochen."
+        exit 1
+    fi
+fi
+
 exit 0
