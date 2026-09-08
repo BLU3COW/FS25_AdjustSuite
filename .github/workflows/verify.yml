@@ -13,21 +13,32 @@ env:
 
 jobs:
   lua-lint-format:
-    # Self-hosted Runner auf dem Entwicklungsrechner: hat direkten Zugriff auf
-    # C:\FS25\main\Source (privates Repo mit den Check-Skripten/Configs), kein
-    # PAT-Secret noetig. Registrierung: siehe Source\Checks\README.md.
-    runs-on: [self-hosted, Windows, fs25]
+    # GitHub-hosted Runner. Das private Source-Repo (Check-Skripte, selene/
+    # StyLua-Binaries, Configs) wird zusaetzlich ausgecheckt, dafuer noetig:
+    # Secret SOURCE_REPO_PAT (bestehender gh-CLI-Token von BLU3COW, Scope
+    # 'repo') in den Repo-Settings hinterlegt.
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Mod-Repo auschecken
+        uses: actions/checkout@v4
+        with:
+          path: mod
+
+      - name: Source-Repo auschecken
+        uses: actions/checkout@v4
+        with:
+          repository: BLU3COW/FS25_Source
+          token: ${{ secrets.SOURCE_REPO_PAT }}
+          path: source
 
       - name: Lua-Lint (selene) + Format-Check (StyLua)
         shell: pwsh
         run: |
-          $files = Get-ChildItem -Path "$env:GITHUB_WORKSPACE" -Recurse -Filter "*.lua" |
+          $files = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\mod" -Recurse -Filter "*.lua" |
               Select-Object -ExpandProperty FullName
           if ($files.Count -eq 0) {
               Write-Host "Keine Lua-Dateien gefunden."
               exit 0
           }
-          & "C:\FS25\main\Source\Checks\lua\Invoke-LuaCheck.ps1" -Mod "$env:MOD_NAME" -Files $files
+          & "$env:GITHUB_WORKSPACE\source\Checks\lua\Invoke-LuaCheck.ps1" -Mod "$env:MOD_NAME" -Files $files
           exit $LASTEXITCODE
