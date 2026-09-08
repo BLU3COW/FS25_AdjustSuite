@@ -1,0 +1,49 @@
+#!/bin/sh
+# FS25 pre-commit-Hook. Wird ueber `git config core.hooksPath .githooks`
+# aktiviert (einmalig pro Repo, siehe Source\Checks\Setup-Hooks.ps1).
+#
+# Schritt 1 (Lua-Lint + Format): prueft/formatiert alle staged *.lua-Dateien
+# mit selene + StyLua ueber das zentrale Skript in
+# C:\FS25\main\Source\Checks\lua\Invoke-LuaCheck.ps1. Weitere Schritte
+# (XML-Validierung, Asset-Pfad-Check, l10n-Check) haengen sich unten an,
+# sobald sie existieren - nicht diesen Kommentar-Block loeschen, sondern
+# ergaenzen.
+
+repo_root=$(git rev-parse --show-toplevel)
+mod_name=$(basename "$repo_root")
+win_root=$(printf '%s' "$repo_root" | sed -E 's#^/([a-zA-Z])/#\1:/#')
+
+staged_lua=$(git diff --cached --name-only --diff-filter=ACM -- '*.lua')
+
+if [ -n "$staged_lua" ]; then
+    list_file="$repo_root/.git/pre-commit-lua-files.txt"
+    : > "$list_file"
+    while IFS= read -r f; do
+        [ -z "$f" ] && continue
+        printf '%s/%s\n' "$win_root" "$f" >> "$list_file"
+    done <<EOF
+$staged_lua
+EOF
+    win_list_file=$(printf '%s' "$list_file" | sed -E 's#^/([a-zA-Z])/#\1:/#')
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:/FS25/main/Source/Checks/lua/Invoke-LuaCheck.ps1" -Mod "$mod_name" -Fix -FileListPath "$win_list_file"
+    lua_status=$?
+
+    rm -f "$list_file"
+
+    if [ $lua_status -ne 0 ]; then
+        echo ""
+        echo "pre-commit: Lua-Check fehlgeschlagen (siehe Ausgabe oben). Commit abgebrochen."
+        exit 1
+    fi
+
+    # StyLua kann Dateien umgeschrieben haben -> erneut stagen.
+    while IFS= read -r f; do
+        [ -z "$f" ] && continue
+        git add -- "$f"
+    done <<EOF
+$staged_lua
+EOF
+fi
+
+exit 0

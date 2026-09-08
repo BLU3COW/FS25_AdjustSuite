@@ -1,0 +1,33 @@
+name: Verify
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+  workflow_dispatch:
+
+env:
+  # Kurzname wie in C:\FS25\dev\<Mod> und Source\Checks\lua\<Mod>-selene.toml.
+  MOD_NAME: AdjustSuite
+
+jobs:
+  lua-lint-format:
+    # Self-hosted Runner auf dem Entwicklungsrechner: hat direkten Zugriff auf
+    # C:\FS25\main\Source (privates Repo mit den Check-Skripten/Configs), kein
+    # PAT-Secret noetig. Registrierung: siehe Source\Checks\README.md.
+    runs-on: [self-hosted, Windows, fs25]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lua-Lint (selene) + Format-Check (StyLua)
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path "$env:GITHUB_WORKSPACE" -Recurse -Filter "*.lua" |
+              Select-Object -ExpandProperty FullName
+          if ($files.Count -eq 0) {
+              Write-Host "Keine Lua-Dateien gefunden."
+              exit 0
+          }
+          & "C:\FS25\main\Source\Checks\lua\Invoke-LuaCheck.ps1" -Mod "$env:MOD_NAME" -Files $files
+          exit $LASTEXITCODE
