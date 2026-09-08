@@ -44,6 +44,20 @@ EOF
     done <<EOF
 $staged_lua
 EOF
+
+    # Schritt 1b (lua-language-server): prueft das gesamte Mod-Arbeitsverzeichnis
+    # auf erfundene/unbekannte Methoden und Globals (undefined-field wird nur
+    # als Hinweis ausgegeben, siehe Invoke-LuaLsCheck.ps1). Laeuft nur, wenn
+    # staged Lua-Dateien vorliegen, prueft dabei aber immer den ganzen
+    # Workspace (lua-language-server braucht ein Verzeichnis, keine Dateiliste).
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:/FS25/main/Source/Checks/lua-ls/Invoke-LuaLsCheck.ps1" -Mod "$mod_name" -WorkspacePath "$win_root"
+    lua_ls_status=$?
+
+    if [ $lua_ls_status -ne 0 ]; then
+        echo ""
+        echo "pre-commit: lua-language-server-Check fehlgeschlagen (siehe Ausgabe oben). Commit abgebrochen."
+        exit 1
+    fi
 fi
 
 exit 0
