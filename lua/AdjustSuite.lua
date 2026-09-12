@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuite = AdjustSuite or {}
 
 local Suite = AdjustSuite
@@ -39,7 +40,7 @@ function Suite.fillTypeIsAir(fillTypeIndex)
     end
 
     if fillTypeIndex ~= nil and g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
-        local ok, name = pcall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
+        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
         if ok and string.upper(tostring(name or "")) == "AIR" then
             return true
         end
@@ -365,7 +366,7 @@ function Suite.getNodePosition(node, referenceNode)
         return nil
     end
 
-    local ok, x, y, z = pcall(localToLocal, node, referenceNode, 0, 0, 0)
+    local ok, x, y, z = safeCall(localToLocal, node, referenceNode, 0, 0, 0)
     if ok and type(x) == "number" and type(y) == "number" and type(z) == "number" then
         return x, y, z
     end
@@ -385,16 +386,16 @@ function Suite.setNodePosition(node, referenceNode, x, y, z)
         return false
     end
 
-    local okParent, parent = pcall(getParent, node)
+    local okParent, parent = safeCall(getParent, node)
     if not okParent or type(parent) ~= "number" or parent == 0 then
         return false
     end
 
-    local okPosition, px, py, pz = pcall(localToLocal, referenceNode, parent, x, y, z)
+    local okPosition, px, py, pz = safeCall(localToLocal, referenceNode, parent, x, y, z)
     if not okPosition or type(px) ~= "number" or type(py) ~= "number" or type(pz) ~= "number" then
         return false
     end
-    return pcall(setTranslation, node, px, py, pz)
+    return safeCall(setTranslation, node, px, py, pz)
 end
 
 function Suite.getIsLoweredForWork(vehicle)
@@ -403,7 +404,7 @@ function Suite.getIsLoweredForWork(vehicle)
     end
 
     if vehicle.spec_turnOnVehicle ~= nil and vehicle.doCheckSpeedLimit ~= nil then
-        local ok, isWorking = pcall(vehicle.doCheckSpeedLimit, vehicle)
+        local ok, isWorking = safeCall(vehicle.doCheckSpeedLimit, vehicle)
         if ok and isWorking ~= nil then
             return isWorking == true
         end
@@ -412,7 +413,7 @@ function Suite.getIsLoweredForWork(vehicle)
     local specLowerable = vehicle.spec_lowerable
     local hasLoweringState = specLowerable ~= nil or vehicle.spec_foldable ~= nil or vehicle.spec_pickup ~= nil
     if hasLoweringState and vehicle.getIsLowered ~= nil then
-        local ok, lowered = pcall(vehicle.getIsLowered, vehicle)
+        local ok, lowered = safeCall(vehicle.getIsLowered, vehicle)
         if ok and lowered ~= nil then
             return lowered == true
         end
@@ -712,7 +713,7 @@ local function applyModuleSettings(moduleId, values)
     Suite.selectionSettings[moduleId] = settings
 
     if Suite.refreshStoreConfigurations ~= nil then
-        local ok, message = pcall(Suite.refreshStoreConfigurations, moduleId)
+        local ok, message = safeCall(Suite.refreshStoreConfigurations, moduleId)
         if not ok then
             print(
                 string.format("Warning: %s - could not refresh store configurations: %s", moduleId, tostring(message))

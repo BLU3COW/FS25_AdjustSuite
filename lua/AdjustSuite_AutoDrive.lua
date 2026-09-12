@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuiteAutoDrive = AdjustSuiteAutoDrive or {}
 
 local Compatibility = AdjustSuiteAutoDrive
@@ -17,7 +18,7 @@ function Compatibility.getBunkerSiloSpeed(trailerModule, superFunc)
     end
 
     dischargeNode.emptySpeed = baseEmptySpeed * factor
-    local ok, speed = pcall(superFunc, trailerModule)
+    local ok, speed = safeCall(superFunc, trailerModule)
     dischargeNode.emptySpeed = baseEmptySpeed
     if not ok then
         error(speed, 0)

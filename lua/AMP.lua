@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuiteAMP = AdjustSuiteAMP or {}
 local AMP = AdjustSuiteAMP
 
@@ -70,7 +71,7 @@ function AMP:loadMotor(superFunc, xmlFile, motorId)
         end
     end
 
-    local ok, motor = pcall(superFunc, self, xmlFile, motorId)
+    local ok, motor = safeCall(superFunc, self, xmlFile, motorId)
 
     if torqueScalePath ~= nil and math.abs(offset) > 0.001 then
         if originalTorqueScale == nil then

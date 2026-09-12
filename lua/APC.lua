@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuiteAPC = AdjustSuiteAPC or {}
 local APC = AdjustSuiteAPC
 
@@ -11,7 +12,7 @@ local function getFillTypeName(fillTypeIndex)
     end
 
     if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
-        local ok, name = pcall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
+        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
         if ok then
             return name
         end
@@ -202,7 +203,7 @@ function APC:addFillUnitFillLevel(
     local ignoreFillLimit = fillUnit.ignoreFillLimit
     fillUnit.ignoreFillLimit = true
     local ok, appliedDelta =
-        pcall(superFunc, self, farmId, fillUnitIndex, adjustedDelta, fillTypeIndex, toolType, fillPositionData)
+        safeCall(superFunc, self, farmId, fillUnitIndex, adjustedDelta, fillTypeIndex, toolType, fillPositionData)
     fillUnit.ignoreFillLimit = ignoreFillLimit
     if not ok then
         error(appliedDelta, 0)

@@ -1,3 +1,4 @@
+local safeCall = pcall
 local Suite = AdjustSuite
 local MOD_DIRECTORY = g_currentModDirectory
 local MOD_NAME = g_currentModName
@@ -996,7 +997,7 @@ function AdjustSuitePlaceableConfigurationItem:onPreLoad(placeable, configId)
 
     local module = _G[getModuleClassName(self.configName)]
     if module ~= nil and module.applyToPlaceableXML ~= nil then
-        local ok, message = pcall(module.applyToPlaceableXML, placeable, Suite.getOffsetFromConfigId(configId))
+        local ok, message = safeCall(module.applyToPlaceableXML, placeable, Suite.getOffsetFromConfigId(configId))
         if not ok then
             Logging.xmlError(
                 placeable.xmlFile,

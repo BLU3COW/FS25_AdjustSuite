@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuitePrecisionFarming = AdjustSuitePrecisionFarming or {}
 
 local Compatibility = AdjustSuitePrecisionFarming
@@ -44,7 +45,7 @@ local function getActiveSprayType(vehicle)
         return nil
     end
 
-    local ok, sprayType = pcall(vehicle.getActiveSprayType, vehicle)
+    local ok, sprayType = safeCall(vehicle.getActiveSprayType, vehicle)
     return ok and sprayType or nil
 end
 
@@ -54,14 +55,14 @@ local function getSprayerFillType(vehicle)
         return nil
     end
 
-    local indexOk, fillUnitIndex = pcall(vehicle.getSprayerFillUnitIndex, vehicle)
+    local indexOk, fillUnitIndex = safeCall(vehicle.getSprayerFillUnitIndex, vehicle)
     if not indexOk or fillUnitIndex == nil then
         return nil
     end
 
     local fillType
     if vehicle.getFillUnitLastValidFillType ~= nil then
-        local ok, value = pcall(vehicle.getFillUnitLastValidFillType, vehicle, fillUnitIndex)
+        local ok, value = safeCall(vehicle.getFillUnitLastValidFillType, vehicle, fillUnitIndex)
         fillType = ok and value or nil
     end
 
@@ -69,7 +70,7 @@ local function getSprayerFillType(vehicle)
         (fillType == nil or (FillType ~= nil and fillType == FillType.UNKNOWN))
         and vehicle.getFillUnitFirstSupportedFillType ~= nil
     then
-        local ok, value = pcall(vehicle.getFillUnitFirstSupportedFillType, vehicle, fillUnitIndex)
+        local ok, value = safeCall(vehicle.getFillUnitFirstSupportedFillType, vehicle, fillUnitIndex)
         fillType = ok and value or fillType
     end
 
@@ -81,7 +82,7 @@ local function effectsAreRunning(effects)
     for _, effect in pairs(effects or {}) do
         if type(effect) == "table" and type(effect.isRunning) == "function" then
             found = true
-            local ok, isRunning = pcall(effect.isRunning, effect)
+            local ok, isRunning = safeCall(effect.isRunning, effect)
             if not ok or isRunning ~= true then
                 return false
             end
@@ -123,7 +124,7 @@ local function synchronizeSprayerMode(vehicle, extendedSpec)
         return
     end
 
-    local ok, isLiming, isFertilizing = pcall(vehicle.getCurrentSprayerMode, vehicle)
+    local ok, isLiming, isFertilizing = safeCall(vehicle.getCurrentSprayerMode, vehicle)
     if ok then
         extendedSpec.isLiming = isLiming
         extendedSpec.isFertilizing = isFertilizing
@@ -179,8 +180,8 @@ function Compatibility.updateLimeFallback(vehicle, spec)
         return
     end
 
-    local turnedOnOk, isTurnedOn = pcall(vehicle.getIsTurnedOn, vehicle)
-    local visibleOk, effectsVisible = pcall(vehicle.getAreEffectsVisible, vehicle)
+    local turnedOnOk, isTurnedOn = safeCall(vehicle.getIsTurnedOn, vehicle)
+    local visibleOk, effectsVisible = safeCall(vehicle.getAreEffectsVisible, vehicle)
     if not turnedOnOk or not visibleOk or isTurnedOn ~= true or effectsVisible ~= true then
         Compatibility.stopLimeFallback(vehicle, spec)
         return
@@ -188,7 +189,7 @@ function Compatibility.updateLimeFallback(vehicle, spec)
 
     synchronizeSprayerMode(vehicle, extendedSpec)
     if vehicle.getIsPrecisionSprayingRequired ~= nil then
-        local ok, required = pcall(vehicle.getIsPrecisionSprayingRequired, vehicle)
+        local ok, required = safeCall(vehicle.getIsPrecisionSprayingRequired, vehicle)
         if ok and required == false then
             Compatibility.stopLimeFallback(vehicle, spec)
             return

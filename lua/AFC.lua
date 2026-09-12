@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuiteAFC = AdjustSuiteAFC or {}
 local AFC = AdjustSuiteAFC
 
@@ -24,7 +25,7 @@ local function getFillTypeName(fillTypeIndex)
     end
 
     if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
-        local ok, name = pcall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
+        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
         if ok then
             return name
         end
@@ -43,7 +44,7 @@ end
 
 local function getFillTypeTitle(fillTypeIndex)
     if fillTypeIndex ~= nil and g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeByIndex ~= nil then
-        local ok, fillType = pcall(g_fillTypeManager.getFillTypeByIndex, g_fillTypeManager, fillTypeIndex)
+        local ok, fillType = safeCall(g_fillTypeManager.getFillTypeByIndex, g_fillTypeManager, fillTypeIndex)
         if ok and fillType ~= nil and fillType.title ~= nil then
             return fillType.title
         end
@@ -139,7 +140,7 @@ local function clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity, fillTy
     if vehicle.addFillUnitFillLevel ~= nil and fillType ~= nil then
         local farmId = vehicle.getOwnerFarmId ~= nil and vehicle:getOwnerFarmId() or nil
         local toolType = ToolType ~= nil and ToolType.UNDEFINED or nil
-        applied = pcall(
+        applied = safeCall(
             vehicle.addFillUnitFillLevel,
             vehicle,
             farmId,
@@ -160,7 +161,7 @@ local function clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity, fillTy
     end
     if tonumber(fillUnit.fillLevelToDisplay) ~= nil and fillUnit.fillLevelToDisplay > capacity then
         if vehicle.setFillUnitFillLevelToDisplay ~= nil then
-            pcall(
+            safeCall(
                 vehicle.setFillUnitFillLevelToDisplay,
                 vehicle,
                 fillUnitIndex,
@@ -179,7 +180,7 @@ local function applyCapacity(vehicle, entry, capacity)
 
     local applied = false
     if vehicle.setFillUnitCapacity ~= nil then
-        applied = pcall(vehicle.setFillUnitCapacity, vehicle, entry.index, capacity, true)
+        applied = safeCall(vehicle.setFillUnitCapacity, vehicle, entry.index, capacity, true)
     end
     if not applied then
         fillUnit.capacity = capacity
@@ -187,7 +188,7 @@ local function applyCapacity(vehicle, entry, capacity)
 
     if fillUnit.capacityToDisplay ~= nil then
         if vehicle.setFillUnitCapacityToDisplay ~= nil then
-            pcall(vehicle.setFillUnitCapacityToDisplay, vehicle, entry.index, capacity)
+            safeCall(vehicle.setFillUnitCapacityToDisplay, vehicle, entry.index, capacity)
         else
             fillUnit.capacityToDisplay = capacity
         end
@@ -291,7 +292,7 @@ local function restoreSavedFillLevels(vehicle, spec)
                 if vehicle.addFillUnitFillLevel ~= nil and entry.fillType ~= nil then
                     local farmId = vehicle.getOwnerFarmId ~= nil and vehicle:getOwnerFarmId() or nil
                     local toolType = ToolType ~= nil and ToolType.UNDEFINED or nil
-                    applied = pcall(
+                    applied = safeCall(
                         vehicle.addFillUnitFillLevel,
                         vehicle,
                         farmId,

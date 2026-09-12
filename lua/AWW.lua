@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuiteAWW = AdjustSuiteAWW or {}
 local AWW = AdjustSuiteAWW
 
@@ -161,7 +162,7 @@ local function getWidthAxis(vehicle, areas, referenceNode, usePlowAxis)
     end
 
     if vehicle.getAIMarkers ~= nil then
-        local ok, leftMarker, rightMarker = pcall(vehicle.getAIMarkers, vehicle)
+        local ok, leftMarker, rightMarker = safeCall(vehicle.getAIMarkers, vehicle)
         if ok then
             local ax, ay, az = getAxisFromNodes(leftMarker, rightMarker, referenceNode)
             if ax ~= nil then
@@ -285,7 +286,7 @@ local function updateChangedWorkAreas(vehicle, areas)
     for _, area in ipairs(areas) do
         local workAreaIndex = area.workAreaIndex
         if workAreaIndex ~= nil and updated[workAreaIndex] ~= true then
-            pcall(vehicle.updateWorkAreaWidth, vehicle, workAreaIndex)
+            safeCall(vehicle.updateWorkAreaWidth, vehicle, workAreaIndex)
             updated[workAreaIndex] = true
         end
     end
@@ -1277,13 +1278,13 @@ local function refreshAIMarkerCaches(vehicle, aiSpec)
     end
 
     if vehicle.updateAIMarkerWidth ~= nil then
-        pcall(vehicle.updateAIMarkerWidth, vehicle)
+        safeCall(vehicle.updateAIMarkerWidth, vehicle)
     end
 
     aiSpec.inputAttacherJointToMarkerOffset = {}
     if vehicle.calcAIMarkerAttacherJointOffset ~= nil then
         if aiSpec.leftMarker ~= nil and aiSpec.rightMarker ~= nil and aiSpec.backMarker ~= nil then
-            pcall(
+            safeCall(
                 vehicle.calcAIMarkerAttacherJointOffset,
                 vehicle,
                 aiSpec.leftMarker,
@@ -1295,7 +1296,7 @@ local function refreshAIMarkerCaches(vehicle, aiSpec)
         if aiSpec.aiBaseSetups ~= nil then
             for _, aiSetup in ipairs(aiSpec.aiBaseSetups) do
                 if aiSetup.leftMarker ~= nil and aiSetup.rightMarker ~= nil and aiSetup.backMarker ~= nil then
-                    pcall(
+                    safeCall(
                         vehicle.calcAIMarkerAttacherJointOffset,
                         vehicle,
                         aiSetup.leftMarker,
@@ -1308,7 +1309,7 @@ local function refreshAIMarkerCaches(vehicle, aiSpec)
     end
 
     if vehicle.updateFieldCropsQuery ~= nil then
-        pcall(vehicle.updateFieldCropsQuery, vehicle)
+        safeCall(vehicle.updateFieldCropsQuery, vehicle)
     end
 end
 
@@ -1378,7 +1379,7 @@ local function isValidEffectNode(node)
     end
 
     if entityExists ~= nil then
-        local ok, exists = pcall(entityExists, node)
+        local ok, exists = safeCall(entityExists, node)
         if ok and exists ~= true then
             return false
         end
@@ -1392,7 +1393,7 @@ local function effectIsA(effect, effectClass)
         return false
     end
 
-    local ok, result = pcall(effect.isa, effect, effectClass)
+    local ok, result = safeCall(effect.isa, effect, effectClass)
     return ok and result == true
 end
 
@@ -1431,7 +1432,7 @@ local function getActiveSprayType(vehicle)
         return nil
     end
 
-    local ok, sprayType = pcall(vehicle.getActiveSprayType, vehicle)
+    local ok, sprayType = safeCall(vehicle.getActiveSprayType, vehicle)
     return ok and sprayType or nil
 end
 
@@ -1467,7 +1468,7 @@ local function getNodeScaleSafe(node)
         return nil
     end
 
-    local ok, x, y, z = pcall(getScale, node)
+    local ok, x, y, z = safeCall(getScale, node)
     if ok and type(x) == "number" and type(y) == "number" and type(z) == "number" then
         return x, y, z
     end
@@ -1485,7 +1486,7 @@ local function getWidthAlignedScaleAxis(spec, node)
     local bestAlignment = -1
 
     for index, axis in ipairs(axes) do
-        local ok, x, y, z = pcall(localDirectionToLocal, node, spec.referenceNode, axis[1], axis[2], axis[3])
+        local ok, x, y, z = safeCall(localDirectionToLocal, node, spec.referenceNode, axis[1], axis[2], axis[3])
         if ok and type(x) == "number" and type(y) == "number" and type(z) == "number" then
             local length = distance3(0, 0, 0, x, y, z)
             if length > 0.0001 then
@@ -1548,7 +1549,7 @@ local function scaleEffectNodeGeometry(node, factor, base)
         scaleZ = scaleZ * factor
     end
 
-    local ok = pcall(setScale, node, scaleX, scaleY, scaleZ)
+    local ok = safeCall(setScale, node, scaleX, scaleY, scaleZ)
     return ok == true
 end
 
@@ -1577,7 +1578,7 @@ local function resetExtendedEffectPosition(effectData)
         return
     end
 
-    local ok, x, y, z = pcall(getWorldTranslation, effectData.effectNode)
+    local ok, x, y, z = safeCall(getWorldTranslation, effectData.effectNode)
     if ok and type(x) == "number" and type(y) == "number" and type(z) == "number" then
         effectData.lastWorldTranslation = effectData.lastWorldTranslation or {}
         effectData.lastWorldTranslation[1] = x
@@ -1597,7 +1598,7 @@ local function getVisualEffectPoseIsReady(vehicle)
     end
 
     if vehicle.getIsUnfolded ~= nil then
-        local ok, isUnfolded = pcall(vehicle.getIsUnfolded, vehicle)
+        local ok, isUnfolded = safeCall(vehicle.getIsUnfolded, vehicle)
         if ok then
             return isUnfolded == true
         end
@@ -1631,7 +1632,7 @@ local function getCurrentDisplayWidth(vehicle, spec)
     end
 
     if vehicle.getAIMarkers ~= nil then
-        local ok, leftMarker, rightMarker, _, _, markerWidth = pcall(vehicle.getAIMarkers, vehicle)
+        local ok, leftMarker, rightMarker, _, _, markerWidth = safeCall(vehicle.getAIMarkers, vehicle)
         if ok then
             markerWidth = tonumber(markerWidth)
             if markerWidth ~= nil and markerWidth > 0 then
@@ -1750,7 +1751,7 @@ local function getSprayTypeDisplayWidth(vehicle, sprayType)
     end
 
     if usageScale.workAreaIndex ~= nil and vehicle.getWorkAreaWidth ~= nil then
-        local ok, width = pcall(vehicle.getWorkAreaWidth, vehicle, usageScale.workAreaIndex)
+        local ok, width = safeCall(vehicle.getWorkAreaWidth, vehicle, usageScale.workAreaIndex)
         width = ok and tonumber(width) or nil
         if width ~= nil and width > 0 then
             return round2(width)
@@ -2108,7 +2109,7 @@ local function updateNativeMowerModeAction(vehicle)
 
     local isAllowed = true
     if vehicle.getIsWorkModeChangeAllowed ~= nil then
-        local ok, result = pcall(vehicle.getIsWorkModeChangeAllowed, vehicle)
+        local ok, result = safeCall(vehicle.getIsWorkModeChangeAllowed, vehicle)
         isAllowed = ok and result == true
     end
 
