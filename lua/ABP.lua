@@ -39,8 +39,7 @@ function ABP:getBrakeForce(superFunc)
 end
 
 function ABP:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
-    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
-        or not hasSelectedConfiguration(self) then
+    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or not hasSelectedConfiguration(self) then
         return
     end
 
@@ -50,11 +49,13 @@ function ABP:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     end
 
     local spec = getSpec(self)
-    Suite.addHelpText(string.format(
-        "ABP: %s [%s] - %.1f %s",
-        Suite.getOffsetText(spec.currentOffset or 0),
-        Suite.getStatusText(spec.currentOffset or 0),
-        brakeForce,
-        g_i18n:getText("CONFIG_AS_KN")
-    ))
+    Suite.addHelpText(
+        string.format(
+            "ABP: %s [%s] - %.1f %s",
+            Suite.getOffsetText(spec.currentOffset or 0),
+            Suite.getStatusText(spec.currentOffset or 0),
+            brakeForce,
+            g_i18n:getText("CONFIG_AS_KN")
+        )
+    )
 end

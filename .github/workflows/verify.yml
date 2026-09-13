@@ -1,0 +1,74 @@
+name: Verify
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+  workflow_dispatch:
+
+env:
+  # Kurzname wie in C:\FS25\dev\<Mod> und Source\Checks\lua\<Mod>-selene.toml.
+  MOD_NAME: AdjustSuite
+
+jobs:
+  lua-lint-format:
+    # GitHub-hosted Runner. Das private Source-Repo (Check-Skripte, selene/
+    # StyLua/lua-language-server-Binaries, Configs) wird zusaetzlich
+    # ausgecheckt, dafuer noetig: Secret SOURCE_REPO_PAT (bestehender
+    # gh-CLI-Token von BLU3COW, Scope 'repo') in den Repo-Settings hinterlegt.
+    runs-on: windows-latest
+    steps:
+      - name: Mod-Repo auschecken
+        uses: actions/checkout@v4
+        with:
+          path: mod
+
+      - name: Source-Repo auschecken
+        uses: actions/checkout@v4
+        with:
+          repository: BLU3COW/FS25_Source
+          token: ${{ secrets.SOURCE_REPO_PAT }}
+          path: source
+
+      - name: Lua-Lint (selene) + Format-Check (StyLua)
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\mod" -Recurse -Filter "*.lua" |
+              Select-Object -ExpandProperty FullName
+          if ($files.Count -eq 0) {
+              Write-Host "Keine Lua-Dateien gefunden."
+              exit 0
+          }
+          & "$env:GITHUB_WORKSPACE\source\Checks\lua\Invoke-LuaCheck.ps1" -Mod "$env:MOD_NAME" -Files $files
+          exit $LASTEXITCODE
+
+      - name: lua-language-server (erfundene Methoden/Globals)
+        shell: pwsh
+        run: |
+          & "$env:GITHUB_WORKSPACE\source\Checks\lua-ls\Invoke-LuaLsCheck.ps1" -Mod "$env:MOD_NAME" -WorkspacePath "$env:GITHUB_WORKSPACE\mod"
+          exit $LASTEXITCODE
+
+      - name: XML-Validierung (modDesc.xsd u.a. FS25-Basisspiel-Schemas)
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\mod" -Recurse -Filter "*.xml" |
+              Select-Object -ExpandProperty FullName
+          if ($files.Count -eq 0) {
+              Write-Host "Keine XML-Dateien gefunden."
+              exit 0
+          }
+          & "$env:GITHUB_WORKSPACE\source\Checks\xml\Invoke-XmlCheck.ps1" -Mod "$env:MOD_NAME" -Files $files
+          exit $LASTEXITCODE
+
+      - name: Asset-Pfad-Check (Existenz + Gross-/Kleinschreibung)
+        shell: pwsh
+        run: |
+          & "$env:GITHUB_WORKSPACE\source\Checks\assets\Invoke-AssetPathCheck.ps1" -Mod "$env:MOD_NAME" -ModRoot "$env:GITHUB_WORKSPACE\mod"
+          exit $LASTEXITCODE
+
+      - name: l10n-Check (Keys in Lua/XML gegen Sprachdateien)
+        shell: pwsh
+        run: |
+          & "$env:GITHUB_WORKSPACE\source\Checks\l10n\Invoke-L10nCheck.ps1" -Mod "$env:MOD_NAME" -ModRoot "$env:GITHUB_WORKSPACE\mod"
+          exit $LASTEXITCODE

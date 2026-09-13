@@ -1,9 +1,10 @@
+local safeCall = pcall
 AdjustSuiteCourseplay = AdjustSuiteCourseplay or {}
 
 local Compatibility = AdjustSuiteCourseplay
 local Suite = AdjustSuite
 local UPDATE_INTERVAL_MS = 250
-local states = setmetatable({}, {__mode = "k"})
+local states = setmetatable({}, { __mode = "k" })
 
 local function getState(rootVehicle)
     local state = states[rootVehicle]
@@ -20,7 +21,7 @@ local function getRootVehicle(object)
     end
 
     if object.getRootVehicle ~= nil then
-        local ok, rootVehicle = pcall(object.getRootVehicle, object)
+        local ok, rootVehicle = safeCall(object.getRootVehicle, object)
         if ok and rootVehicle ~= nil then
             return rootVehicle
         end
@@ -44,7 +45,7 @@ local function getVehicleTree(rootVehicle, source)
     add(source)
 
     if rootVehicle ~= nil and rootVehicle.getChildVehicles ~= nil then
-        local ok, childVehicles = pcall(rootVehicle.getChildVehicles, rootVehicle)
+        local ok, childVehicles = safeCall(rootVehicle.getChildVehicles, rootVehicle)
         if ok then
             for _, object in ipairs(childVehicles or {}) do
                 add(object)
@@ -77,21 +78,21 @@ local function getCourseplayDischargeTarget(vehicle)
         return nil
     end
 
-    local strategyOk, strategy = pcall(getStrategy, vehicle)
+    local strategyOk, strategy = safeCall(getStrategy, vehicle)
     if not strategyOk or strategy == nil then
         return nil
     end
 
     local pipeController = strategy.pipeController
     if pipeController ~= nil and pipeController.getDischargeObject ~= nil then
-        local targetOk, target = pcall(pipeController.getDischargeObject, pipeController)
+        local targetOk, target = safeCall(pipeController.getDischargeObject, pipeController)
         if targetOk and target ~= nil and target ~= false then
             return target, strategy
         end
     end
 
     if pipeController ~= nil and pipeController.isFillableTrailerInRange ~= nil then
-        local rangeOk, inRange, target = pcall(pipeController.isFillableTrailerInRange, pipeController)
+        local rangeOk, inRange, target = safeCall(pipeController.isFillableTrailerInRange, pipeController)
         if rangeOk and inRange == true and target ~= nil then
             return target, strategy
         end
@@ -102,14 +103,16 @@ end
 
 function Compatibility.ignoreDischargeTarget(vehicle, object, detectedVehicle, moveForwards, hitTerrain)
     local rootVehicle = getRootVehicle(vehicle)
-    if moveForwards ~= true
+    if
+        moveForwards ~= true
         or hitTerrain == true
         or rootVehicle == nil
         or getPositiveAwwWidth(rootVehicle, vehicle) == nil
         or rootVehicle.spec_combine == nil
         or rootVehicle.getIsTurnedOn == nil
         or rootVehicle:getIsTurnedOn() ~= true
-        or not Suite.getIsLoweredForWork(rootVehicle) then
+        or not Suite.getIsLoweredForWork(rootVehicle)
+    then
         return false
     end
 
@@ -119,8 +122,7 @@ function Compatibility.ignoreDischargeTarget(vehicle, object, detectedVehicle, m
         return false
     end
 
-    return getRootVehicle(detectedVehicle) == targetRoot
-        or getRootVehicle(object) == targetRoot
+    return getRootVehicle(detectedVehicle) == targetRoot or getRootVehicle(object) == targetRoot
 end
 
 local function registerProximityFilter(rootVehicle)

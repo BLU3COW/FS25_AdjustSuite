@@ -3,20 +3,19 @@ local AFVP = AdjustSuiteAFVP
 
 local Suite = AdjustSuite
 local STORAGE_PATHS = {
-    {path = "placeable.silo.storages.storage", isList = true},
-    {path = "placeable.siloExtension.storage"},
-    {path = "placeable.husbandry.storage"},
-    {path = "placeable.factory.storage"},
-    {path = "placeable.constructible.storage"}
+    { path = "placeable.silo.storages.storage", isList = true },
+    { path = "placeable.siloExtension.storage" },
+    { path = "placeable.husbandry.storage" },
+    { path = "placeable.factory.storage" },
+    { path = "placeable.constructible.storage" },
 }
 local PRODUCTION_PATH = "placeable.productionPoint"
-local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH
-    .. ".productionPointConfigurations.productionPointConfiguration"
+local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfigurations.productionPointConfiguration"
 local HUSBANDRY_FOOD_CAPACITY_PATH = "placeable.husbandry.food#capacity"
 local HUSBANDRY_FOOD_PLANE_CAPACITY_PATH = "placeable.husbandry.food.dynamicFoodPlane#capacity"
 local MANURE_HEAP_CAPACITY_PATH = "placeable.manureHeap#capacity"
 
-AFVP.visualFillVolumes = AFVP.visualFillVolumes or setmetatable({}, {__mode = "v"})
+AFVP.visualFillVolumes = AFVP.visualFillVolumes or setmetatable({}, { __mode = "v" })
 AFVP.baseFillPlaneAdd = AFVP.baseFillPlaneAdd or fillPlaneAdd
 if AFVP.fillPlaneHookInstalled ~= true and AFVP.baseFillPlaneAdd ~= nil then
     AFVP.fillPlaneHookInstalled = true
@@ -48,9 +47,13 @@ local function recreateFillVolume(fillVolume, capacity, fillLevel, fillTypeIndex
     end
 
     fillVolume.capacity = capacity
-    if fillVolume.volume == nil or fillVolume.volume == 0
-        or fillVolume.baseNode == nil or fillVolume.baseNode == 0
-        or createFillPlaneShape == nil then
+    if
+        fillVolume.volume == nil
+        or fillVolume.volume == 0
+        or fillVolume.baseNode == nil
+        or fillVolume.baseNode == 0
+        or createFillPlaneShape == nil
+    then
         return
     end
 
@@ -117,19 +120,7 @@ local function recreateFillVolume(fillVolume, capacity, fillLevel, fillTypeIndex
         local d2x, d2y, d2z = localDirectionToWorld(newVolume, 0, 0, loadSize)
         local steps = math.min(math.max(math.floor(visualFillLevel / 400), 1), 50)
         for _ = 1, steps do
-            AFVP.baseFillPlaneAdd(
-                newVolume,
-                visualFillLevel / steps,
-                x,
-                y,
-                z,
-                d1x,
-                d1y,
-                d1z,
-                d2x,
-                d2y,
-                d2z
-            )
+            AFVP.baseFillPlaneAdd(newVolume, visualFillLevel / steps, x, y, z, d1x, d1y, d1z, d2x, d2y, d2z)
         end
     end
 
@@ -145,9 +136,7 @@ local function storageIsUsable(xmlFile, key)
     local fillTypes = handle ~= nil and getXMLString(handle, key .. "#fillTypes") or nil
     local fillTypeCategories = handle ~= nil and getXMLString(handle, key .. "#fillTypeCategories") or nil
     return xmlFile:hasProperty(key)
-        and (fillTypes ~= nil
-            or fillTypeCategories ~= nil
-            or xmlFile:hasProperty(key .. ".capacity(0)"))
+        and (fillTypes ~= nil or fillTypeCategories ~= nil or xmlFile:hasProperty(key .. ".capacity(0)"))
 end
 
 local function visitStorageKeys(xmlFile, callback)
@@ -186,8 +175,10 @@ local function scaleStorage(xmlFile, key, factor)
 
     local handle = xmlFile.handle
     local hasGenericFillTypes = handle ~= nil
-        and (getXMLString(handle, key .. "#fillTypes") ~= nil
-            or getXMLString(handle, key .. "#fillTypeCategories") ~= nil)
+        and (
+            getXMLString(handle, key .. "#fillTypes") ~= nil
+            or getXMLString(handle, key .. "#fillTypeCategories") ~= nil
+        )
     local hasCustomCapacities = xmlFile:hasProperty(key .. ".capacity(0)")
     if xmlFile:hasProperty(key .. "#capacity") or (hasGenericFillTypes and not hasCustomCapacities) then
         local capacity = tonumber(xmlFile:getValue(key .. "#capacity", 100000)) or 100000
@@ -210,7 +201,7 @@ function AFVP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, 
         return nil
     end
 
-    return {basePrice = Suite.getStoreItemPrice(storeItem, xmlFile)}
+    return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
 function AFVP.applyToPlaceableXML(placeable, offset)
@@ -280,14 +271,14 @@ function AFVP.onFeedingRobotDelete(robot)
     end
 end
 
-if PlaceableHusbandryFeedingRobot ~= nil
+if
+    PlaceableHusbandryFeedingRobot ~= nil
     and PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded ~= nil
-    and AFVP.feedingRobotHookInstalled ~= true then
+    and AFVP.feedingRobotHookInstalled ~= true
+then
     AFVP.feedingRobotHookInstalled = true
-    PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded = Utils.appendedFunction(
-        PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded,
-        AFVP.onFeedingRobotLoaded
-    )
+    PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded =
+        Utils.appendedFunction(PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded, AFVP.onFeedingRobotLoaded)
 end
 
 if FeedingRobot ~= nil and FeedingRobot.delete ~= nil and AFVP.feedingRobotDeleteHookInstalled ~= true then

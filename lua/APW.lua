@@ -5,7 +5,7 @@ local Suite = AdjustSuite
 
 local pickupWorkAreaFunctions = {
     processBalerArea = true,
-    processForageWagonArea = true
+    processForageWagonArea = true,
 }
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("APW")
 
@@ -20,7 +20,8 @@ local function getAreaNodes(workArea)
 
     local startNode = getNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
     local widthNode = getNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
-    local heightNode = getNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
+    local heightNode =
+        getNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
     if startNode ~= nil and widthNode ~= nil and startNode ~= 0 and widthNode ~= 0 then
         return startNode, widthNode, heightNode
     end
@@ -46,10 +47,10 @@ local function collectPickupAreas(vehicle)
                     index = workArea.index or index,
                     startNode = startNode,
                     widthNode = widthNode,
-                    heightNode = heightNode
+                    heightNode = heightNode,
                 })
 
-                for _, node in ipairs({startNode, widthNode, heightNode}) do
+                for _, node in ipairs({ startNode, widthNode, heightNode }) do
                     if uniqueNodes[node] ~= true then
                         uniqueNodes[node] = true
                         table.insert(nodes, node)
@@ -64,9 +65,7 @@ end
 
 local function applyPickupWidth(vehicle)
     local spec = getSpec(vehicle)
-    local referenceNode = vehicle.components ~= nil
-        and vehicle.components[1] ~= nil
-        and vehicle.components[1].node
+    local referenceNode = vehicle.components ~= nil and vehicle.components[1] ~= nil and vehicle.components[1].node
         or vehicle.rootNode
     if type(referenceNode) ~= "number" or referenceNode == 0 then
         return false
@@ -105,7 +104,7 @@ local function applyPickupWidth(vehicle)
         end
 
         local projection = x * axisX + y * axisY + z * axisZ
-        positions[node] = {x = x, y = y, z = z, projection = projection}
+        positions[node] = { x = x, y = y, z = z, projection = projection }
         minProjection = math.min(minProjection, projection)
         maxProjection = math.max(maxProjection, projection)
     end
@@ -122,13 +121,15 @@ local function applyPickupWidth(vehicle)
     for node, position in pairs(positions) do
         local targetProjection = centerProjection + (position.projection - centerProjection) * factor
         local delta = targetProjection - position.projection
-        if not setNodePosition(
-            node,
-            referenceNode,
-            position.x + axisX * delta,
-            position.y + axisY * delta,
-            position.z + axisZ * delta
-        ) then
+        if
+            not setNodePosition(
+                node,
+                referenceNode,
+                position.x + axisX * delta,
+                position.y + axisY * delta,
+                position.z + axisZ * delta
+            )
+        then
             return false
         end
     end
@@ -183,18 +184,21 @@ end
 
 function APW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
     local spec = getSpec(self)
-    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
+    if
+        not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
         or spec.currentWidth == nil
         or not Suite.getIsLoweredForWork(self)
-        then
+    then
         return
     end
 
-    Suite.addHelpText(string.format(
-        "APW: %s [%s] - %.2f %s",
-        Suite.getOffsetText(spec.currentOffset or 0),
-        Suite.getStatusText(spec.currentOffset or 0),
-        spec.currentWidth,
-        g_i18n:getText("CONFIG_AS_M")
-    ))
+    Suite.addHelpText(
+        string.format(
+            "APW: %s [%s] - %.2f %s",
+            Suite.getOffsetText(spec.currentOffset or 0),
+            Suite.getStatusText(spec.currentOffset or 0),
+            spec.currentWidth,
+            g_i18n:getText("CONFIG_AS_M")
+        )
+    )
 end

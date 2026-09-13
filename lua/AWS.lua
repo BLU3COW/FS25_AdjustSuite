@@ -43,8 +43,7 @@ local function isValidTool(vehicle)
     end
 
     local isMotorVehicle = vehicle.spec_motorized ~= nil or vehicle.spec_enterable ~= nil
-    local isSelfPropelledWorkMachine = isMotorVehicle
-        and vehicle.spec_workArea ~= nil
+    local isSelfPropelledWorkMachine = isMotorVehicle and vehicle.spec_workArea ~= nil
     if isMotorVehicle and not isSelfPropelledWorkMachine then
         return false
     end
@@ -125,6 +124,14 @@ function AWS:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
             displayUnit = g_i18n:getText("CONFIG_AS_MPH")
         end
         local offset = getSpec(self).currentOffset or getSelectedOffset(self)
-        Suite.addHelpText(string.format("AWS: %s [%s] - %s %s", Suite.getOffsetText(offset), Suite.getStatusText(offset), tostring(displaySpeed), displayUnit))
+        Suite.addHelpText(
+            string.format(
+                "AWS: %s [%s] - %s %s",
+                Suite.getOffsetText(offset),
+                Suite.getStatusText(offset),
+                tostring(displaySpeed),
+                displayUnit
+            )
+        )
     end
 end

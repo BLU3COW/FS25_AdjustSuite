@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuiteAFC = AdjustSuiteAFC or {}
 local AFC = AdjustSuiteAFC
 
@@ -24,7 +25,7 @@ local function getFillTypeName(fillTypeIndex)
     end
 
     if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
-        local ok, name = pcall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
+        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
         if ok then
             return name
         end
@@ -43,7 +44,7 @@ end
 
 local function getFillTypeTitle(fillTypeIndex)
     if fillTypeIndex ~= nil and g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeByIndex ~= nil then
-        local ok, fillType = pcall(g_fillTypeManager.getFillTypeByIndex, g_fillTypeManager, fillTypeIndex)
+        local ok, fillType = safeCall(g_fillTypeManager.getFillTypeByIndex, g_fillTypeManager, fillTypeIndex)
         if ok and fillType ~= nil and fillType.title ~= nil then
             return fillType.title
         end
@@ -77,10 +78,8 @@ local function getFillUnitXMLKey(vehicle, fillUnitIndex)
 
     local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
     configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
-    local configurationKey = string.format(
-        "vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)",
-        configurationId - 1
-    )
+    local configurationKey =
+        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
     local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
 
     if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
@@ -105,9 +104,7 @@ local function resolveUnitText(value)
 end
 
 local function getUnitText(vehicle, fillUnitIndex, fillUnit)
-    local unitText = resolveUnitText(
-        fillUnit.unitTextOverride or fillUnit.customUnitText or fillUnit.unitText
-    )
+    local unitText = resolveUnitText(fillUnit.unitTextOverride or fillUnit.customUnitText or fillUnit.unitText)
     if unitText ~= nil then
         return unitText
     end
@@ -128,8 +125,7 @@ local function formatCapacity(capacity, unitText)
 
     local nearestInteger = math.floor(capacity + 0.5)
     local decimals = math.abs(capacity - nearestInteger) > 0.001 and 2 or 0
-    local value = g_i18n ~= nil and g_i18n.formatNumber ~= nil
-        and g_i18n:formatNumber(capacity, decimals, true)
+    local value = g_i18n ~= nil and g_i18n.formatNumber ~= nil and g_i18n:formatNumber(capacity, decimals, true)
         or string.format(decimals == 0 and "%.0f" or "%.2f", capacity)
     return string.format("%s %s", value, unitText)
 end
@@ -144,7 +140,7 @@ local function clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity, fillTy
     if vehicle.addFillUnitFillLevel ~= nil and fillType ~= nil then
         local farmId = vehicle.getOwnerFarmId ~= nil and vehicle:getOwnerFarmId() or nil
         local toolType = ToolType ~= nil and ToolType.UNDEFINED or nil
-        applied = pcall(
+        applied = safeCall(
             vehicle.addFillUnitFillLevel,
             vehicle,
             farmId,
@@ -165,7 +161,7 @@ local function clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity, fillTy
     end
     if tonumber(fillUnit.fillLevelToDisplay) ~= nil and fillUnit.fillLevelToDisplay > capacity then
         if vehicle.setFillUnitFillLevelToDisplay ~= nil then
-            pcall(
+            safeCall(
                 vehicle.setFillUnitFillLevelToDisplay,
                 vehicle,
                 fillUnitIndex,
@@ -184,7 +180,7 @@ local function applyCapacity(vehicle, entry, capacity)
 
     local applied = false
     if vehicle.setFillUnitCapacity ~= nil then
-        applied = pcall(vehicle.setFillUnitCapacity, vehicle, entry.index, capacity, true)
+        applied = safeCall(vehicle.setFillUnitCapacity, vehicle, entry.index, capacity, true)
     end
     if not applied then
         fillUnit.capacity = capacity
@@ -192,7 +188,7 @@ local function applyCapacity(vehicle, entry, capacity)
 
     if fillUnit.capacityToDisplay ~= nil then
         if vehicle.setFillUnitCapacityToDisplay ~= nil then
-            pcall(vehicle.setFillUnitCapacityToDisplay, vehicle, entry.index, capacity)
+            safeCall(vehicle.setFillUnitCapacityToDisplay, vehicle, entry.index, capacity)
         else
             fillUnit.capacityToDisplay = capacity
         end
@@ -234,7 +230,7 @@ local function collectOperatingUnits(vehicle, force)
                     fillType = fillType,
                     fillTypeTitle = getFillTypeTitle(fillType),
                     baseCapacity = baseCapacity,
-                    unitText = getUnitText(vehicle, fillUnitIndex, fillUnit)
+                    unitText = getUnitText(vehicle, fillUnitIndex, fillUnit),
                 }
                 unitsByIndex[fillUnitIndex] = entry
                 table.insert(spec.units, entry)
@@ -296,7 +292,7 @@ local function restoreSavedFillLevels(vehicle, spec)
                 if vehicle.addFillUnitFillLevel ~= nil and entry.fillType ~= nil then
                     local farmId = vehicle.getOwnerFarmId ~= nil and vehicle:getOwnerFarmId() or nil
                     local toolType = ToolType ~= nil and ToolType.UNDEFINED or nil
-                    applied = pcall(
+                    applied = safeCall(
                         vehicle.addFillUnitFillLevel,
                         vehicle,
                         farmId,
@@ -327,8 +323,24 @@ local function applyOffset(vehicle)
     spec.currentFactor = factor
 
     for _, entry in ipairs(spec.units) do
-        entry.adjustedCapacity = math.max(entry.baseCapacity * factor, 0.001)
-        applyCapacity(vehicle, entry, entry.adjustedCapacity)
+        local fillUnit = entry.fillUnit
+        local computedCapacity = math.max(entry.baseCapacity * factor, 0.001)
+        local lastApplied = tonumber(fillUnit.AFCLastAppliedCapacity)
+        local currentCapacity = tonumber(fillUnit.capacity)
+
+        if
+            Suite.respectExternalCapacityOverrides == true
+            and lastApplied ~= nil
+            and currentCapacity ~= nil
+            and math.abs(currentCapacity - lastApplied) > 0.5
+        then
+            entry.adjustedCapacity = currentCapacity
+            fillUnit.AFCLastAppliedCapacity = currentCapacity
+        else
+            entry.adjustedCapacity = computedCapacity
+            fillUnit.AFCLastAppliedCapacity = computedCapacity
+            applyCapacity(vehicle, entry, computedCapacity)
+        end
     end
 
     return true
@@ -367,10 +379,7 @@ function AFC:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     local offset = Utils.getNoNil(tonumber(spec.currentOffset), getSelectedOffset(self))
     local helpText = string.format("AFC: %s [%s]", Suite.getOffsetText(offset), Suite.getStatusText(offset))
     for _, entry in ipairs(spec.units) do
-        local capacityText = formatCapacity(
-            entry.adjustedCapacity or entry.fillUnit.capacity,
-            entry.unitText
-        )
+        local capacityText = formatCapacity(entry.adjustedCapacity or entry.fillUnit.capacity, entry.unitText)
         if capacityText ~= nil then
             if entry.fillTypeTitle ~= nil and entry.fillTypeTitle ~= "" then
                 capacityText = string.format("%s: %s", entry.fillTypeTitle, capacityText)

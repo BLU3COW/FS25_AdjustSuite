@@ -3,7 +3,7 @@ local ADR = AdjustSuiteADR
 
 local Suite = AdjustSuite
 local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ADR")
-local WIDTH_CONFIGURATION_NAMES = {"AWW", "APW"}
+local WIDTH_CONFIGURATION_NAMES = { "AWW", "APW" }
 
 local function getIsBufferCombine(vehicle)
     local combineSpec = vehicle ~= nil and vehicle.spec_combine or nil
@@ -15,8 +15,7 @@ local function getIsBufferCombine(vehicle)
         return true
     end
 
-    local capacity = vehicle.getFillUnitCapacity ~= nil
-        and vehicle:getFillUnitCapacity(combineSpec.fillUnitIndex)
+    local capacity = vehicle.getFillUnitCapacity ~= nil and vehicle:getFillUnitCapacity(combineSpec.fillUnitIndex)
         or nil
     return capacity == math.huge
 end
@@ -33,17 +32,12 @@ local function getBufferFlowFactor(vehicle)
         if configurations ~= nil then
             for _, moduleId in ipairs(WIDTH_CONFIGURATION_NAMES) do
                 if configurations[moduleId] ~= nil then
-                    widthFactor = math.max(
-                        widthFactor,
-                        Suite.getFactorFromOffset(Suite.getSelectedOffset(tool, moduleId))
-                    )
+                    widthFactor =
+                        math.max(widthFactor, Suite.getFactorFromOffset(Suite.getSelectedOffset(tool, moduleId)))
                 end
             end
             if configurations.AWS ~= nil then
-                speedFactor = math.max(
-                    speedFactor,
-                    Suite.getFactorFromOffset(Suite.getSelectedOffset(tool, "AWS"))
-                )
+                speedFactor = math.max(speedFactor, Suite.getFactorFromOffset(Suite.getSelectedOffset(tool, "AWS")))
             end
         end
     end
@@ -143,8 +137,7 @@ local function formatRate(rate)
 end
 
 function ADR.prerequisitesPresent(specializations)
-    return Dischargeable ~= nil
-        and SpecializationUtil.hasSpecialization(Dischargeable, specializations)
+    return Dischargeable ~= nil and SpecializationUtil.hasSpecialization(Dischargeable, specializations)
 end
 
 function ADR.registerOverwrittenFunctions(vehicleType)
@@ -195,8 +188,7 @@ function ADR:getDischargeNodeEmptyFactor(superFunc, dischargeNode)
 end
 
 function ADR:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
-    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
-        or not hasSelectedConfiguration(self) then
+    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or not hasSelectedConfiguration(self) then
         return
     end
 
@@ -211,10 +203,12 @@ function ADR:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     end
 
     local spec = getSpec(self)
-    Suite.addHelpText(string.format(
-        "ADR: %s [%s] - %s",
-        Suite.getOffsetText(spec.currentOffset or 0),
-        Suite.getStatusText(spec.currentOffset or 0),
-        table.concat(values, " - ")
-    ))
+    Suite.addHelpText(
+        string.format(
+            "ADR: %s [%s] - %s",
+            Suite.getOffsetText(spec.currentOffset or 0),
+            Suite.getStatusText(spec.currentOffset or 0),
+            table.concat(values, " - ")
+        )
+    )
 end

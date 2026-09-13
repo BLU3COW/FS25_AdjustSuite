@@ -65,16 +65,8 @@ local function applyAdditionalMassConfiguration(vehicle, configurationKey, facto
     local appliedMass = 0
 
     for _, componentKey in vehicle.xmlFile:iterator(configurationKey .. ".component") do
-        local mass = math.max(
-            tonumber(vehicle.xmlFile:getValue(componentKey .. "#additionalMass", 0)) or 0,
-            0
-        ) * 0.001
-        local node = vehicle.xmlFile:getValue(
-            componentKey .. "#node",
-            nil,
-            vehicle.components,
-            vehicle.i3dMappings
-        )
+        local mass = math.max(tonumber(vehicle.xmlFile:getValue(componentKey .. "#additionalMass", 0)) or 0, 0) * 0.001
+        local node = vehicle.xmlFile:getValue(componentKey .. "#node", nil, vehicle.components, vehicle.i3dMappings)
         local component = getComponent(vehicle, node)
         if mass > 0 and component ~= nil then
             local massNode = vehicle.xmlFile:getValue(
@@ -85,12 +77,7 @@ local function applyAdditionalMassConfiguration(vehicle, configurationKey, facto
             )
             local massOffset = vehicle.xmlFile:getValue(componentKey .. "#additionalMassOffset", nil, true)
             standardMass = standardMass + mass
-            appliedMass = appliedMass + addMassAtPosition(
-                component,
-                mass * (factor - 1),
-                massNode,
-                massOffset
-            )
+            appliedMass = appliedMass + addMassAtPosition(component, mass * (factor - 1), massNode, massOffset)
         end
     end
 
@@ -106,19 +93,11 @@ local function applyObjectChangeConfiguration(
 )
     local standardMass = 0
     local appliedMass = 0
-    local entries = Suite.getBallastObjectChanges(
-        vehicle.xmlFile,
-        configurationKey,
-        configurationsKey,
-        configurationBaseKey
-    )
+    local entries =
+        Suite.getBallastObjectChanges(vehicle.xmlFile, configurationKey, configurationsKey, configurationBaseKey)
     for _, entry in ipairs(entries) do
-        local node = vehicle.xmlFile:getValue(
-            entry.objectChangeKey .. "#node",
-            nil,
-            vehicle.components,
-            vehicle.i3dMappings
-        )
+        local node =
+            vehicle.xmlFile:getValue(entry.objectChangeKey .. "#node", nil, vehicle.components, vehicle.i3dMappings)
         local component = getComponent(vehicle, node)
         if component ~= nil then
             local entryMass = entry.mass * 0.001
@@ -143,10 +122,8 @@ local function applyConfiguredBallast(vehicle, factor)
         if configurationName ~= "ABW" then
             local configurationDesc = g_vehicleConfigurationManager:getConfigurationDescByName(configurationName)
             if configurationDesc ~= nil then
-                local configurationKey = string.format(
-                    configurationDesc.configurationKey .. "(%d)",
-                    (tonumber(configurationId) or 1) - 1
-                )
+                local configurationKey =
+                    string.format(configurationDesc.configurationKey .. "(%d)", (tonumber(configurationId) or 1) - 1)
                 local ballastMass = Suite.getBallastConfigurationMass(
                     vehicle.xmlFile,
                     configurationKey,
@@ -154,11 +131,8 @@ local function applyConfiguredBallast(vehicle, factor)
                     configurationDesc.configurationKey
                 )
                 if ballastMass > 0 then
-                    local additionalStandard, additionalApplied = applyAdditionalMassConfiguration(
-                        vehicle,
-                        configurationKey,
-                        factor
-                    )
+                    local additionalStandard, additionalApplied =
+                        applyAdditionalMassConfiguration(vehicle, configurationKey, factor)
                     standardMass = standardMass + additionalStandard
                     appliedMass = appliedMass + additionalApplied
 
@@ -229,17 +203,21 @@ end
 
 function ABW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
     local spec = getSpec(self)
-    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
+    if
+        not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
         or not hasSelectedConfiguration(self)
-        or (spec.standardBallastMass or 0) <= 0 then
+        or (spec.standardBallastMass or 0) <= 0
+    then
         return
     end
 
     local offset = spec.currentOffset or 0
-    Suite.addHelpText(string.format(
-        "ABW: %s [%s] - %s",
-        Suite.getOffsetText(offset),
-        Suite.getStatusText(offset),
-        g_i18n:formatMass(spec.standardBallastMass * getFactor(self))
-    ))
+    Suite.addHelpText(
+        string.format(
+            "ABW: %s [%s] - %s",
+            Suite.getOffsetText(offset),
+            Suite.getStatusText(offset),
+            g_i18n:formatMass(spec.standardBallastMass * getFactor(self))
+        )
+    )
 end
