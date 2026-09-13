@@ -4,6 +4,8 @@ local APC = AdjustSuiteAPC
 
 local Suite = AdjustSuite
 local getSpec, _, hasSelectedConfiguration, getSelectionFactor = Suite.createModuleAccessors("APC")
+local _, getAFVSelectedOffset = Suite.createModuleAccessors("AFV")
+local getFactorFromOffset = Suite.getFactorFromOffset
 local IGNORED_FILLTYPE_NAMES = Suite.ignoredFillTypeNames
 
 local function getFillTypeName(fillTypeIndex)
@@ -44,6 +46,21 @@ end
 local function getPayloadMassFactor(vehicle)
     local selectionFactor = getSelectionFactor(vehicle)
     return selectionFactor > 0 and 1 / selectionFactor or 1
+end
+
+local function capacityLooksExternallyOverridden(vehicle, fillUnit)
+    if Suite.respectExternalCapacityOverrides ~= true then
+        return false
+    end
+
+    local baseCapacity = tonumber(fillUnit.AFVBaseCapacity)
+    local currentCapacity = tonumber(fillUnit.capacity)
+    if baseCapacity == nil or baseCapacity <= 0 or currentCapacity == nil then
+        return false
+    end
+
+    local expectedCapacity = baseCapacity * getFactorFromOffset(getAFVSelectedOffset(vehicle))
+    return math.abs(currentCapacity - expectedCapacity) > 0.5
 end
 
 local function getFillUnitXMLKey(vehicle, fillUnitIndex)
@@ -156,6 +173,7 @@ function APC:getAdditionalComponentMass(superFunc, component)
         if
             fillUnit.fillMassNode == component.node
             and fillUnitIsEligible(self, fillUnitIndex, fillUnit, fillUnit.fillType)
+            and not capacityLooksExternallyOverridden(self, fillUnit)
         then
             local massPerLiter = getFillTypeMassPerLiter(fillUnit.fillType)
             local fillLevel = tonumber(fillUnit.fillLevel) or 0
