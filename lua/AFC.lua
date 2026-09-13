@@ -323,8 +323,24 @@ local function applyOffset(vehicle)
     spec.currentFactor = factor
 
     for _, entry in ipairs(spec.units) do
-        entry.adjustedCapacity = math.max(entry.baseCapacity * factor, 0.001)
-        applyCapacity(vehicle, entry, entry.adjustedCapacity)
+        local fillUnit = entry.fillUnit
+        local computedCapacity = math.max(entry.baseCapacity * factor, 0.001)
+        local lastApplied = tonumber(fillUnit.AFCLastAppliedCapacity)
+        local currentCapacity = tonumber(fillUnit.capacity)
+
+        if
+            Suite.respectExternalCapacityOverrides == true
+            and lastApplied ~= nil
+            and currentCapacity ~= nil
+            and math.abs(currentCapacity - lastApplied) > 0.5
+        then
+            entry.adjustedCapacity = currentCapacity
+            fillUnit.AFCLastAppliedCapacity = currentCapacity
+        else
+            entry.adjustedCapacity = computedCapacity
+            fillUnit.AFCLastAppliedCapacity = computedCapacity
+            applyCapacity(vehicle, entry, computedCapacity)
+        end
     end
 
     return true
