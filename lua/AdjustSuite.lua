@@ -122,6 +122,7 @@ Suite.configurationOffsets = Suite.configurationOffsets
     }
 Suite.selectionSettings = Suite.selectionSettings or {}
 Suite.showHelpMenu = Suite.showHelpMenu ~= false
+Suite.respectExternalCapacityOverrides = Suite.respectExternalCapacityOverrides == true
 
 local function normalizePricePercent(value)
     value = tonumber(value)
@@ -136,6 +137,7 @@ Suite.pricePercent = normalizePricePercent(Suite.pricePercent)
 local SETTINGS_ROOT = "adjustSuiteSettings"
 local SETTINGS_HELP_MENU_KEY = SETTINGS_ROOT .. ".settings.helpmenu"
 local SETTINGS_PRICE_KEY = SETTINGS_ROOT .. ".settings.price"
+local SETTINGS_EXTERNAL_CAPACITY_KEY = SETTINGS_ROOT .. ".settings.externalCapacity"
 local SETTINGS_MODULES_KEY = SETTINGS_ROOT .. ".modules"
 local DEFAULT_MODULE_SETTINGS = {
     module = true,
@@ -735,7 +737,13 @@ local function boolToString(value)
     return value == true and "true" or "false"
 end
 
-local function writeSettingsTemplate(filename, settingsByModule, showHelpMenu, pricePercent)
+local function writeSettingsTemplate(
+    filename,
+    settingsByModule,
+    showHelpMenu,
+    pricePercent,
+    respectExternalCapacityOverrides
+)
     if io == nil or io.open == nil then
         return false
     end
@@ -752,6 +760,12 @@ local function writeSettingsTemplate(filename, settingsByModule, showHelpMenu, p
     file:write("    <settings>\n")
     file:write(string.format('        <helpmenu show="%s"/>\n', boolToString(showHelpMenu ~= false)))
     file:write(string.format('        <price percent="%s"/>\n', tostring(pricePercent)))
+    file:write(
+        string.format(
+            '        <externalCapacity respect="%s"/>\n',
+            boolToString(respectExternalCapacityOverrides == true)
+        )
+    )
     file:write("    </settings>\n")
     file:write("    <modules>\n")
 
@@ -775,9 +789,17 @@ local function writeSettingsTemplate(filename, settingsByModule, showHelpMenu, p
     return true
 end
 
-local function writeSettingsXml(filename, settingsByModule, showHelpMenu, pricePercent)
+local function writeSettingsXml(
+    filename,
+    settingsByModule,
+    showHelpMenu,
+    pricePercent,
+    respectExternalCapacityOverrides
+)
     pricePercent = normalizePricePercent(pricePercent)
-    if writeSettingsTemplate(filename, settingsByModule, showHelpMenu, pricePercent) then
+    if
+        writeSettingsTemplate(filename, settingsByModule, showHelpMenu, pricePercent, respectExternalCapacityOverrides)
+    then
         return
     end
 
@@ -789,6 +811,7 @@ local function writeSettingsXml(filename, settingsByModule, showHelpMenu, priceP
 
     setXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show", showHelpMenu ~= false)
     setXMLFloat(xmlFile, SETTINGS_PRICE_KEY .. "#percent", pricePercent)
+    setXMLBool(xmlFile, SETTINGS_EXTERNAL_CAPACITY_KEY .. "#respect", respectExternalCapacityOverrides == true)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = settingsByModule[moduleId] or getDefaultModuleSettings()
@@ -820,6 +843,7 @@ function Suite.loadSelectionSettings()
     local settingsFileChanged = false
     local showHelpMenu = true
     local pricePercent = 100
+    local respectExternalCapacityOverrides = false
     if settingsFileExists then
         local configuredShowHelpMenu = getXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show")
         if configuredShowHelpMenu == nil then
@@ -836,8 +860,17 @@ function Suite.loadSelectionSettings()
         else
             pricePercent = normalizePricePercent(configuredPricePercent)
         end
+
+        local configuredRespectExternalCapacity = getXMLBool(xmlFile, SETTINGS_EXTERNAL_CAPACITY_KEY .. "#respect")
+        if configuredRespectExternalCapacity == nil then
+            setXMLBool(xmlFile, SETTINGS_EXTERNAL_CAPACITY_KEY .. "#respect", respectExternalCapacityOverrides)
+            settingsFileChanged = true
+        else
+            respectExternalCapacityOverrides = configuredRespectExternalCapacity == true
+        end
     end
     Suite.showHelpMenu = showHelpMenu
+    Suite.respectExternalCapacityOverrides = respectExternalCapacityOverrides
     applyPricePercent(pricePercent, false)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
@@ -868,7 +901,7 @@ function Suite.loadSelectionSettings()
     end
 
     if not settingsFileExists then
-        writeSettingsXml(filename, settingsByModule, showHelpMenu, pricePercent)
+        writeSettingsXml(filename, settingsByModule, showHelpMenu, pricePercent, respectExternalCapacityOverrides)
     end
 end
 
@@ -880,11 +913,12 @@ function AdjustSuiteSettingsEvent.emptyNew()
     return Event.new(AdjustSuiteSettingsEvent_mt)
 end
 
-function AdjustSuiteSettingsEvent.new(settingsByModule, showHelpMenu, pricePercent)
+function AdjustSuiteSettingsEvent.new(settingsByModule, showHelpMenu, pricePercent, respectExternalCapacityOverrides)
     local self = AdjustSuiteSettingsEvent.emptyNew()
     self.settingsByModule = {}
     self.showHelpMenu = showHelpMenu ~= false
     self.pricePercent = normalizePricePercent(pricePercent)
+    self.respectExternalCapacityOverrides = respectExternalCapacityOverrides == true
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         self.settingsByModule[moduleId] = copyModuleSettings(settingsByModule[moduleId])
@@ -897,6 +931,7 @@ function AdjustSuiteSettingsEvent:readStream(streamId, connection)
     self.settingsByModule = {}
     self.showHelpMenu = streamReadBool(streamId)
     self.pricePercent = normalizePricePercent(streamReadFloat32(streamId))
+    self.respectExternalCapacityOverrides = streamReadBool(streamId)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = {}
@@ -912,6 +947,7 @@ end
 function AdjustSuiteSettingsEvent:writeStream(streamId, connection)
     streamWriteBool(streamId, self.showHelpMenu ~= false)
     streamWriteFloat32(streamId, self.pricePercent)
+    streamWriteBool(streamId, self.respectExternalCapacityOverrides == true)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = self.settingsByModule[moduleId]
@@ -924,6 +960,7 @@ end
 function AdjustSuiteSettingsEvent:run(connection)
     if connection ~= nil and connection:getIsServer() then
         Suite.showHelpMenu = self.showHelpMenu ~= false
+        Suite.respectExternalCapacityOverrides = self.respectExternalCapacityOverrides == true
         applyPricePercent(self.pricePercent, false)
         for _, moduleId in ipairs(Suite.moduleIds) do
             applyModuleSettings(moduleId, self.settingsByModule[moduleId])
@@ -934,7 +971,12 @@ end
 local function sendSelectionSettings(baseMission, connection, x, y, z, viewDistanceCoeff)
     if g_server ~= nil and connection ~= nil then
         connection:sendEvent(
-            AdjustSuiteSettingsEvent.new(Suite.selectionSettings, Suite.showHelpMenu, Suite.pricePercent)
+            AdjustSuiteSettingsEvent.new(
+                Suite.selectionSettings,
+                Suite.showHelpMenu,
+                Suite.pricePercent,
+                Suite.respectExternalCapacityOverrides
+            )
         )
     end
 end
