@@ -47,6 +47,9 @@ body:
       description: Which AdjustSuite module is affected? | Welches AdjustSuite Modul ist betroffen?
       options:
         - AFV - Adjust Fill Volume
+        - AFC - Adjust Fuel Capacity
+        - APC - Adjust Payload Compensation
+        - ABW - Adjust Ballast Weight
         - AMP - Adjust Motor Power
         - AWS - Adjust Working Speed
         - AWW - Adjust Working Width
@@ -54,7 +57,12 @@ body:
         - ADS - Adjust Driving Speed
         - ABP - Adjust Brake Power
         - ADR - Adjust Discharge Rate
-        - Core | Settings | Price | Helpmenu
+        - AFV-P - Adjust Fill Volume (Placeables)
+        - ADR-P - Adjust Discharge Rate (Placeables)
+        - ACR-P - Adjust Cycle Rate (Productions)
+        - ACA-P - Adjust Cycle Amount (Productions)
+        - AIP-P - Adjust Income Payments (Placeables)
+        - Core | Settings | Price | Helpmenu | External Capacity
         - Multiple Modules
         - Not sure
     validations:

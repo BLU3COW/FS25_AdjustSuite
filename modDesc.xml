@@ -35,8 +35,9 @@ AIP-P - Income Payments
 
 Source code, help and issue reports: https://github.com/BLU3COW/FS25_AdjustSuite
 
-Changelog 1.0.0.2:
-- Fixed AFC and AFV losing a fill level saved above the vehicle's default capacity after a game restart.]]></en>
+Changelog 1.0.0.3 (Patch 1.23):
+- Updated for Farming Simulator 25 Patch 1.23.
+- Added an optional EXTERNALCAPACITY setting so AFV, AFC, and APC can respect capacity changes made by AdjustStorageCapacity or similar mods instead of overwriting them.]]></en>
         <de><![CDATA[AdjustSuite
 Mit AdjustSuite kannst du die Anzahl zusätzlicher Einzelmods reduzieren, wenn es dir vor allem darum geht, dein Spielerlebnis gezielt anzupassen. Fahrzeuge, Anbaugeräte, platzierbare Objekte und Produktionen in LS25 lassen sich damit ganz nach deinem persönlichen Spielstil verändern. Optimiere Leistung, Arbeitsbreite, Kapazitäten, Fahrverhalten, Produktionswerte und vieles mehr, damit jede Maschine, jedes Anbaugerät, jedes platzierbare Objekt und jede Produktion besser zu deinem Hof, deinen Feldern und deinen Arbeitsabläufen passt.
 Standardmäßig sind die Bereiche REAL und UNREAL aktiviert. Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in modSettings größere Anpassungsbereiche freischalten und den Mod noch genauer auf deinen persönlichen Spielstil abstimmen. Beachte dabei jedoch immer die logischen und physikalischen Grenzen des Spiels, da zu extreme Werte das Fahrverhalten, die Funktion einzelner Geräte oder die Spielbalance beeinflussen können.
@@ -64,8 +65,9 @@ AIP-P - Einkommenszahlungen
 
 Quellcode, Hilfe und Fehlermeldungen: https://github.com/BLU3COW/FS25_AdjustSuite
 
-Changelog 1.0.0.2:
-- Fehler behoben, bei dem AFC und AFV einen über der Standardkapazität liegenden, gespeicherten Füllstand nach einem Spielneustart verloren.]]></de>
+Changelog 1.0.0.3 (Patch 1.23):
+- Aktualisiert für Farming Simulator 25 Patch 1.23.
+- Neue optionale Einstellung EXTERNALCAPACITY hinzugefügt, damit AFV, AFC und APC Kapazitätsänderungen von AdjustStorageCapacity oder ähnlichen Mods respektieren können, statt sie zu überschreiben.]]></de>
         <fr><![CDATA[AdjustSuite
 Avec AdjustSuite, tu peux réduire le besoin de plusieurs mods séparés lorsque ton objectif est surtout d'ajuster et de personnaliser ton expérience de jeu. Personnalise les véhicules, outils, objets plaçables et productions dans FS25 selon ton style de jeu. Optimise la puissance, la largeur de travail, les capacités, le comportement de conduite, les valeurs de production et bien plus encore, afin que chaque machine, outil, objet plaçable et production corresponde mieux à ta ferme, tes champs et tes méthodes de travail.
 Par défaut, les niveaux REAL et UNREAL sont activés. Si tu veux plus de liberté, tu peux débloquer des plages d'ajustement plus larges dans modSettings et adapter le mod encore plus précisément à ton style de jeu. Garde toutefois toujours à l'esprit les limites logiques et physiques du jeu, car des valeurs trop extrêmes peuvent influencer la conduite, le fonctionnement de certains outils ou l'équilibre du jeu.
@@ -93,8 +95,9 @@ AIP-P - Revenus
 
 Code source, aide et signalement des problèmes : https://github.com/BLU3COW/FS25_AdjustSuite
 
-Changelog 1.0.0.2:
-- Correction d'un problème où AFC et AFV perdaient un niveau de remplissage sauvegardé au-dessus de la capacité par défaut du véhicule après un redémarrage du jeu.]]></fr>
+Changelog 1.0.0.3 (Patch 1.23) :
+- Mis à jour pour Farming Simulator 25 Patch 1.23.
+- Ajout d'un réglage optionnel EXTERNALCAPACITY permettant à AFV, AFC et APC de respecter les changements de capacité effectués par AdjustStorageCapacity ou des mods similaires, au lieu de les écraser.]]></fr>
     </description>
 
     <iconFilename>icon_AdjustSuite.dds</iconFilename>
