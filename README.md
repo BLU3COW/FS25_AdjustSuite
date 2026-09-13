@@ -315,7 +315,7 @@ The <strong>“modSettings.xml”</strong> file is created automatically when th
 Updates AdjustSuite for compatibility with Patch 1.23.
 
 ### <strong>EXTERNALCAPACITY</strong> - Respect External Capacity Changes
-Adds an optional setting so AFV, AFC, and APC recognize and keep a capacity changed at runtime by AdjustStorageCapacity or similar mods, instead of overwriting it.
+Adds an optional setting so AFV, AFC, and APC recognize and keep a capacity changed at runtime by AdjustStorageCapacity or similar mods, instead of overwriting it. <code>&lt;externalCapacity respect="false"/&gt;</code> must be changed to <code>"true"</code> in modSettings.
 
 <br>
 
@@ -333,7 +333,7 @@ Adds an optional setting so AFV, AFC, and APC recognize and keep a capacity chan
 Aktualisiert AdjustSuite für die Kompatibilität mit Patch 1.23.
 
 ### <strong>EXTERNALCAPACITY</strong> – Externe Kapazitätsänderungen respektieren
-Fügt eine optionale Einstellung hinzu, mit der AFV, AFC und APC eine von AdjustStorageCapacity oder ähnlichen Mods zur Laufzeit geänderte Kapazität erkennen und beibehalten, statt sie zu überschreiben.
+Fügt eine optionale Einstellung hinzu, mit der AFV, AFC und APC eine von AdjustStorageCapacity oder ähnlichen Mods zur Laufzeit geänderte Kapazität erkennen und beibehalten, statt sie zu überschreiben. Dafür muss <code>&lt;externalCapacity respect="false"/&gt;</code> in der modSettings-Datei auf <code>"true"</code> gesetzt werden.
 
 </div>
 </details>
