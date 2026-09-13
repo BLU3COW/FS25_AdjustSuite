@@ -424,7 +424,6 @@ Du kannst das Projekt auch aktiv unterstützen, indem du Wünsche, Ideen, Verbes
 <div align="center">
 
 <img width="1600" height="900" alt="000" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_000.png" />
-<img width="1600" height="900" alt="update" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_update.png" />
 <img width="1600" height="900" alt="001" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_001.png" />
 <img width="1600" height="900" alt="002" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_002.png" />
 <img width="1600" height="900" alt="003" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_003.png" />
