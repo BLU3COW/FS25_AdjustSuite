@@ -995,7 +995,7 @@ end
 function AdjustSuitePlaceableConfigurationItem:onPreLoad(placeable, configId)
     AdjustSuitePlaceableConfigurationItem:superClass().onPreLoad(self, placeable, configId)
 
-    Suite.loadStoredOffsets(placeable, self.configName, placeable.savegame)
+    Suite.loadStoredOffsets(placeable, self.configName, placeable.savegame, self.configName)
     local effectiveOffset = Suite.resolveConfiguration(placeable, self.configName, placeable.isServer)
     if effectiveOffset == nil then
         effectiveOffset = Suite.getOffsetFromConfigId(configId)
@@ -1848,13 +1848,15 @@ function Suite:update(dt)
     end
 end
 
-Suite.registerPlaceableOffsetSavegamePaths()
-
 if Suite.placeableSaveHookInstalled ~= true and Placeable ~= nil and Placeable.saveToXMLFile ~= nil then
     Suite.placeableSaveHookInstalled = true
     Placeable.saveToXMLFile = Utils.appendedFunction(Placeable.saveToXMLFile, function(self, xmlFile, key)
         Suite.savePlaceableStoredOffsets(self, xmlFile, key)
     end)
+end
+
+function Suite:loadMap()
+    Suite.registerPlaceableOffsetSavegamePaths()
 end
 
 if Suite.modEventListenerInstalled ~= true then

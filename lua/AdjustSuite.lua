@@ -552,22 +552,22 @@ function Suite.registerOffsetSavegamePaths(moduleId)
 
     Vehicle.xmlSchemaSavegame:register(
         XMLValueType.FLOAT,
-        string.format("vehicles.vehicle(?).FS25_AdjustSuite.%s#originalOffset", moduleId),
+        string.format("vehicles.vehicle(?).FS25_AdjustSuite.AdjustSuite%s#originalOffset", moduleId),
         "AdjustSuite selection as chosen by the player"
     )
     Vehicle.xmlSchemaSavegame:register(
         XMLValueType.FLOAT,
-        string.format("vehicles.vehicle(?).FS25_AdjustSuite.%s#effectiveOffset", moduleId),
+        string.format("vehicles.vehicle(?).FS25_AdjustSuite.AdjustSuite%s#effectiveOffset", moduleId),
         "AdjustSuite selection after applying the host rules"
     )
 end
 
-function Suite.loadStoredOffsets(object, moduleId, savegame)
+function Suite.loadStoredOffsets(object, moduleId, savegame, nodeName)
     if object == nil or savegame == nil or savegame.resetVehicles == true or savegame.xmlFile == nil then
         return
     end
 
-    local basePath = string.format("%s.FS25_AdjustSuite.%s", savegame.key, moduleId)
+    local basePath = string.format("%s.FS25_AdjustSuite.%s", savegame.key, nodeName or ("AdjustSuite" .. moduleId))
     local original = tonumber(savegame.xmlFile:getValue(basePath .. "#originalOffset"))
     local applied = tonumber(savegame.xmlFile:getValue(basePath .. "#effectiveOffset"))
 
@@ -656,8 +656,33 @@ function Suite.resolveConfiguration(object, moduleId, isServer)
     local effective = Suite.getEffectiveOffset(moduleId, original)
     appliedStore[moduleId] = effective
 
-    if isServer ~= false and effective ~= selected then
-        object.configurations[moduleId] = Suite.getConfigIdFromOffset(effective)
+    local selectedIsAllowed = Suite.getIsOffsetAllowed(moduleId, selected)
+    local isRestore = math.abs(effective) > math.abs(selected)
+    if isServer == false or effective == selected or (selectedIsAllowed and not isRestore) then
+        return effective
+    end
+
+    local configId = Suite.getConfigIdFromOffset(effective)
+    object.configurations[moduleId] = configId
+
+    if
+        ConfigurationUtil ~= nil
+        and ConfigurationUtil.addBoughtConfiguration ~= nil
+        and object.boughtConfigurations ~= nil
+    then
+        local manager = nil
+        for _, candidate in ipairs({ g_vehicleConfigurationManager, g_placeableConfigurationManager }) do
+            if manager == nil and candidate ~= nil and candidate.getConfigurationIndexByName ~= nil then
+                local ok, index = safeCall(candidate.getConfigurationIndexByName, candidate, moduleId)
+                if ok and index ~= nil then
+                    manager = candidate
+                end
+            end
+        end
+
+        if manager ~= nil then
+            safeCall(ConfigurationUtil.addBoughtConfiguration, manager, object, moduleId, configId)
+        end
     end
 
     return effective
