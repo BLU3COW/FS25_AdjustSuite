@@ -4,14 +4,11 @@ local ACRP = AdjustSuiteACRP
 local Suite = AdjustSuite
 local PRODUCTION_PATH = "placeable.productionPoint"
 local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfigurations.productionPointConfiguration"
-local CYCLE_ATTRIBUTES = { "cyclesPerMonth", "cyclesPerHour", "cyclesPerMinute" }
 
 local function productionPointHasCycles(xmlFile, key)
     local hasCycles = false
-    xmlFile:iterate(key .. ".productions.production", function(_, productionKey)
-        for _, attribute in ipairs(CYCLE_ATTRIBUTES) do
-            hasCycles = hasCycles or xmlFile:hasProperty(productionKey .. "#" .. attribute)
-        end
+    xmlFile:iterate(key .. ".productions.production", function()
+        hasCycles = true
     end)
     return hasCycles
 end

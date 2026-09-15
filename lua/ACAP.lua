@@ -23,15 +23,12 @@ end
 local function productionPointHasCycleAmounts(xmlFile, key)
     local hasCycleAmounts = false
     xmlFile:iterate(key .. ".productions.production", function(_, productionKey)
-        local hasInput = false
-        local hasOutput = false
         xmlFile:iterate(productionKey .. ".inputs.input", function()
-            hasInput = true
+            hasCycleAmounts = true
         end)
         xmlFile:iterate(productionKey .. ".outputs.output", function()
-            hasOutput = true
+            hasCycleAmounts = true
         end)
-        hasCycleAmounts = hasCycleAmounts or hasInput and hasOutput
     end)
     return hasCycleAmounts
 end

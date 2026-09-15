@@ -32,6 +32,15 @@ local function scaleValue(xmlFile, key, factor)
     end
 end
 
+local function solarConfigurationIsActive(xmlFile, key)
+    if xmlFile:getValue(key .. "#isActive", false) == true then
+        return true
+    end
+
+    local handle = xmlFile.handle
+    return handle ~= nil and getXMLString(handle, key .. "#headNode") ~= nil
+end
+
 local function selectedAttributeKey(placeable, configurationName, configurationsPath, attribute)
     local configurationId = tonumber(placeable.configurations ~= nil and placeable.configurations[configurationName])
         or 1
@@ -53,7 +62,7 @@ function AIPP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, 
     xmlFile:iterate(SOLAR_CONFIGURATIONS_PATH, function(_, key)
         local configurationId = getConfigurationId(key)
         if configurationId ~= nil then
-            solarByConfiguration[configurationId] = xmlFile:getValue(key .. "#isActive", false)
+            solarByConfiguration[configurationId] = solarConfigurationIsActive(xmlFile, key)
                 and valueIsIncome(xmlFile, key .. "#incomePerHour")
         end
     end)

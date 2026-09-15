@@ -51,7 +51,7 @@ local function getBufferFlowFactor(vehicle)
 end
 
 local function applyBufferEmptySpeeds(vehicle)
-    if not getIsBufferCombine(vehicle) then
+    if not Suite.getIsModuleEnabled("ADR") or not getIsBufferCombine(vehicle) then
         return false
     end
 
@@ -203,7 +203,18 @@ function ADR:getDischargeNodeEmptyFactor(superFunc, dischargeNode)
 end
 
 function ADR:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
-    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or not hasSelectedConfiguration(self) then
+    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
+        return
+    end
+
+    if getIsBufferCombine(self) then
+        if Suite.getIsModuleEnabled("ADR") then
+            Suite.addHelpText(string.format("ADR: %s", g_i18n:getText("CONFIG_ADR_COUPLED")))
+        end
+        return
+    end
+
+    if not hasSelectedConfiguration(self) then
         return
     end
 

@@ -17,14 +17,28 @@ local MANURE_HEAP_CAPACITY_PATH = "placeable.manureHeap#capacity"
 
 AFVP.visualFillVolumes = AFVP.visualFillVolumes or setmetatable({}, { __mode = "v" })
 AFVP.baseFillPlaneAdd = AFVP.baseFillPlaneAdd or fillPlaneAdd
-if AFVP.fillPlaneHookInstalled ~= true and AFVP.baseFillPlaneAdd ~= nil then
-    AFVP.fillPlaneHookInstalled = true
-    fillPlaneAdd = function(fillPlaneId, delta, ...)
+AFVP.hookedFillPlaneAdd = AFVP.hookedFillPlaneAdd
+    or function(fillPlaneId, delta, ...)
         local fillVolume = AFVP.visualFillVolumes[fillPlaneId]
         if fillVolume ~= nil and fillVolume.volume == fillPlaneId then
             delta = delta / (tonumber(fillVolume.adjustSuiteAFVPVisualFactor) or 1)
         end
         return AFVP.baseFillPlaneAdd(fillPlaneId, delta, ...)
+    end
+
+local function updateFillPlaneHook()
+    if AFVP.baseFillPlaneAdd == nil then
+        return
+    end
+
+    if next(AFVP.visualFillVolumes) ~= nil then
+        if AFVP.fillPlaneHookInstalled ~= true then
+            AFVP.fillPlaneHookInstalled = true
+            fillPlaneAdd = AFVP.hookedFillPlaneAdd
+        end
+    elseif AFVP.fillPlaneHookInstalled == true and fillPlaneAdd == AFVP.hookedFillPlaneAdd then
+        AFVP.fillPlaneHookInstalled = false
+        fillPlaneAdd = AFVP.baseFillPlaneAdd
     end
 end
 
@@ -76,6 +90,7 @@ local function recreateFillVolume(fillVolume, capacity, fillLevel, fillTypeIndex
     end
 
     AFVP.visualFillVolumes[fillVolume.volume] = nil
+    updateFillPlaneHook()
     delete(fillVolume.volume)
     fillVolume.volume = newVolume
     link(fillVolume.baseNode, newVolume)
@@ -128,6 +143,7 @@ local function recreateFillVolume(fillVolume, capacity, fillLevel, fillTypeIndex
     fillVolume.lastFillType = fillTypeIndex
     fillVolume.adjustSuiteAFVPVisualFactor = factor
     AFVP.visualFillVolumes[newVolume] = fillVolume
+    updateFillPlaneHook()
     setVisibility(newVolume, fillLevel > 0)
 end
 
@@ -269,6 +285,8 @@ function AFVP.onFeedingRobotDelete(robot)
     if type(fillPlane) == "table" and fillPlane.volume ~= nil then
         AFVP.visualFillVolumes[fillPlane.volume] = nil
     end
+
+    updateFillPlaneHook()
 end
 
 if

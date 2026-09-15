@@ -42,9 +42,7 @@ local function isValidTool(vehicle)
         return false
     end
 
-    local isMotorVehicle = vehicle.spec_motorized ~= nil or vehicle.spec_enterable ~= nil
-    local isSelfPropelledWorkMachine = isMotorVehicle and vehicle.spec_workArea ~= nil
-    if isMotorVehicle and not isSelfPropelledWorkMachine then
+    if vehicle.spec_workArea == nil then
         return false
     end
 
@@ -73,7 +71,7 @@ function AWS.prerequisitesPresent(specializations)
 end
 
 function AWS.registerOverwrittenFunctions(vehicleType)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSpeedLimit", AWS.getSpeedLimit)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getRawSpeedLimit", AWS.getRawSpeedLimit)
 end
 
 function AWS.initSpecialization()
@@ -110,19 +108,19 @@ function AWS:onLoad(savegame)
     spec.currentSpeedLimit = normalizeSpeed(self, defaultSpeed * spec.currentFactor)
 end
 
-function AWS:getSpeedLimit(superFunc, onlyIfWorking)
-    local limit, doCheckSpeedLimit = superFunc(self, onlyIfWorking)
+function AWS:getRawSpeedLimit(superFunc)
+    local limit = superFunc(self)
     if not isValidTool(self) or not getIsLoweredForWork(self) then
-        return limit, doCheckSpeedLimit
+        return limit
     end
 
     local factor = getSpec(self).currentFactor or getFactorFromOffset(getSelectedOffset(self))
     limit = tonumber(limit)
     if math.abs(factor - 1) > 0.0001 and limit ~= nil and limit > 0.5 and limit < math.huge then
-        return math.max(limit * factor, SETTINGS.minAbsoluteSpeed), doCheckSpeedLimit
+        return math.max(limit * factor, SETTINGS.minAbsoluteSpeed)
     end
 
-    return limit, doCheckSpeedLimit
+    return limit
 end
 
 function AWS:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
@@ -132,12 +130,7 @@ function AWS:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
 
     local adjustedSpeed = getAdjustedSpeed(self)
     if adjustedSpeed ~= nil then
-        local displaySpeed = math.floor(adjustedSpeed + 0.5)
-        local displayUnit = g_i18n:getText("CONFIG_AS_KMH")
-        if g_gameSettings.useMiles == true then
-            displaySpeed = math.floor((adjustedSpeed / 1.609344) * 10 + 0.5) / 10
-            displayUnit = g_i18n:getText("CONFIG_AS_MPH")
-        end
+        local displaySpeed, displayUnit = Suite.getSpeedDisplay(adjustedSpeed)
         local offset = getSpec(self).currentOffset or getSelectedOffset(self)
         Suite.addHelpText(
             string.format(

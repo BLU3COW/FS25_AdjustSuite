@@ -25,6 +25,7 @@
         <text name="CONFIG_ADS_TITLE" text="Vitesse d'avancement" />
         <text name="CONFIG_ABP_TITLE" text="Force de freinage" />
         <text name="CONFIG_ADR_TITLE" text="Débit de déchargement" />
+        <text name="CONFIG_ADR_COUPLED" text="Le débit suit la largeur et la vitesse de travail" />
         <text name="CONFIG_AFVP_TITLE" text="Volume de remplissage" />
         <text name="CONFIG_ADRP_TITLE" text="Débit de déchargement" />
         <text name="CONFIG_ACRP_TITLE" text="Vitesse de cycle" />

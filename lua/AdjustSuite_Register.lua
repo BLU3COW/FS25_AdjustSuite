@@ -838,23 +838,15 @@ local definitions = {
     AWS = {
         baseValueField = "AWSStandardSpeedLimit",
         typeFilter = function(vehicleTypeName, vehicleType)
-            local isMotorized = hasSpecialization(Motorized, vehicleType.specializations)
-            local isEnterable = hasSpecialization(Enterable, vehicleType.specializations)
-            local isSelfPropelledWorkMachine = (isMotorized or isEnterable)
-                and hasSpecialization(WorkArea, vehicleType.specializations)
-            return not hasSpecialization(Locomotive, vehicleType.specializations)
-                and (not isMotorized or isSelfPropelledWorkMachine)
-                and (not isEnterable or isSelfPropelledWorkMachine)
+            return hasSpecialization(WorkArea, vehicleType.specializations)
+                and not hasSpecialization(Locomotive, vehicleType.specializations)
                 and vehicleTypeName ~= "trainTimberTrailer"
                 and vehicleTypeName ~= "trainTrailer"
                 and vehicleTypeName ~= "pallet"
                 and vehicleTypeName ~= "horse"
         end,
         getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
-            local isMotorVehicle = xmlFile:hasProperty("vehicle.motorized") or xmlFile:hasProperty("vehicle.enterable")
-            local isSelfPropelledWorkMachine = isMotorVehicle and hasWorkAreas(xmlFile)
-            local speedLimit = (not isMotorVehicle or isSelfPropelledWorkMachine)
-                    and tonumber(xmlFile:getValue("vehicle.base.speedLimit#value"))
+            local speedLimit = hasWorkAreas(xmlFile) and tonumber(xmlFile:getValue("vehicle.base.speedLimit#value"))
                 or nil
             local vehicleTypeContexts, hasUsableVehicleType
             if xmlFile:hasProperty("vehicle.sprayer") then
@@ -1857,6 +1849,10 @@ end
 
 function Suite:loadMap()
     Suite.registerPlaceableOffsetSavegamePaths()
+
+    for _, moduleId in ipairs(Suite.moduleIds) do
+        Suite.refreshStoreConfigurations(moduleId)
+    end
 end
 
 if Suite.modEventListenerInstalled ~= true then

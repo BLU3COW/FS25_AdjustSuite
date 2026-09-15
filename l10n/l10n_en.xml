@@ -25,6 +25,7 @@
         <text name="CONFIG_ADS_TITLE" text="Driving Speed" />
         <text name="CONFIG_ABP_TITLE" text="Brake Power" />
         <text name="CONFIG_ADR_TITLE" text="Discharge Rate" />
+        <text name="CONFIG_ADR_COUPLED" text="Throughput follows working width and working speed" />
         <text name="CONFIG_AFVP_TITLE" text="Fill Volume" />
         <text name="CONFIG_ADRP_TITLE" text="Discharge Rate" />
         <text name="CONFIG_ACRP_TITLE" text="Cycle Rate" />

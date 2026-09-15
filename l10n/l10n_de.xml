@@ -25,6 +25,7 @@
         <text name="CONFIG_ADS_TITLE" text="Fahrgeschwindigkeit" />
         <text name="CONFIG_ABP_TITLE" text="Bremskraft" />
         <text name="CONFIG_ADR_TITLE" text="Entladerate" />
+        <text name="CONFIG_ADR_COUPLED" text="Durchsatz folgt Arbeitsbreite und Arbeitsgeschwindigkeit" />
         <text name="CONFIG_AFVP_TITLE" text="Füllvolumen" />
         <text name="CONFIG_ADRP_TITLE" text="Entladerate" />
         <text name="CONFIG_ACRP_TITLE" text="Zyklusrate" />

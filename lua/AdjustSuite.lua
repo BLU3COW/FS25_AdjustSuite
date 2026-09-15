@@ -880,6 +880,18 @@ function Suite.getStatusText(offset)
     return g_i18n:getText(string.format("CONFIG_AS_%s", Suite.getStatusTier(offset)))
 end
 
+function Suite.getSpeedDisplay(speedKmh)
+    local displaySpeed = tonumber(speedKmh) or 0
+    local displayUnit = g_i18n:getText("CONFIG_AS_KMH")
+
+    if g_gameSettings ~= nil and g_gameSettings.useMiles == true then
+        displaySpeed = displaySpeed / 1.609344
+        displayUnit = g_i18n:getText("CONFIG_AS_MPH")
+    end
+
+    return math.floor(displaySpeed * 10 + 0.5) / 10, displayUnit
+end
+
 function Suite.getOffsetText(offset)
     return offset == 0 and g_i18n:getText("CONFIG_AS_STANDARD") or string.format("%+d %%", offset)
 end
@@ -894,6 +906,11 @@ function Suite.buildConfigurationName(moduleId, offset)
 end
 
 function Suite.getStoreItemPrice(storeItem, xmlFile)
+    local remembered = storeItem ~= nil and tonumber(storeItem.adjustSuiteBasePrice) or nil
+    if remembered ~= nil and remembered > 0 then
+        return remembered
+    end
+
     local price = 0
 
     if storeItem ~= nil then
@@ -907,7 +924,12 @@ function Suite.getStoreItemPrice(storeItem, xmlFile)
         end
     end
 
-    return math.max(price, 0)
+    price = math.max(price, 0)
+    if storeItem ~= nil and price > 0 then
+        storeItem.adjustSuiteBasePrice = price
+    end
+
+    return price
 end
 
 function Suite.getPriceScale(offset)

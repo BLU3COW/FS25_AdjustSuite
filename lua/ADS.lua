@@ -147,19 +147,6 @@ local function applyDrivingSpeed(vehicle)
     return true
 end
 
-local function getDisplaySpeed(speed)
-    local displaySpeed = speed * 3.6
-    local displayUnit = g_i18n:getText("CONFIG_AS_KMH")
-
-    if g_gameSettings.useMiles == true then
-        displaySpeed = displaySpeed / 1.609344
-        displayUnit = g_i18n:getText("CONFIG_AS_MPH")
-    end
-
-    displaySpeed = math.floor(displaySpeed * 10 + 0.5) / 10
-    return displaySpeed, displayUnit
-end
-
 function ADS.prerequisitesPresent(specializations)
     return Motorized ~= nil
         and Drivable ~= nil
@@ -217,7 +204,7 @@ function ADS:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
         return
     end
 
-    local displaySpeed, displayUnit = getDisplaySpeed(spec.currentForwardSpeed)
+    local displaySpeed, displayUnit = Suite.getSpeedDisplay(spec.currentForwardSpeed * 3.6)
     Suite.addHelpText(
         string.format(
             "ADS: %s [%s] - %s %s",
