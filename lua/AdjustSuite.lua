@@ -434,6 +434,9 @@ function Suite.getIsLoweredForWork(vehicle)
     return true
 end
 
+local ORIGINAL_OFFSETS_KEY = "adjustSuiteOriginalOffsets"
+local EFFECTIVE_OFFSETS_KEY = "adjustSuiteEffectiveOffsets"
+
 function Suite.roundToStep(value)
     value = tonumber(value) or 0
     local nearestOffset = 0
@@ -484,6 +487,180 @@ function Suite.getSelectedOffset(vehicle, configurationName)
     end
 
     return 0
+end
+
+function Suite.getConfigIdFromOffset(offset)
+    offset = Suite.clampOffset(offset)
+
+    for index, value in ipairs(Suite.configurationOffsets) do
+        if value == offset then
+            return index
+        end
+    end
+
+    return Suite.getDefaultIndex()
+end
+
+function Suite.getEffectiveOffset(moduleId, offset)
+    offset = Suite.clampOffset(offset)
+    if offset == 0 or Suite.getIsOffsetAllowed(moduleId, offset) then
+        return offset
+    end
+
+    local isPositive = offset > 0
+    local magnitude = math.abs(offset)
+    local best = 0
+
+    for _, value in ipairs(Suite.configurationOffsets) do
+        if value ~= 0 and (value > 0) == isPositive then
+            local candidate = math.abs(value)
+            if candidate < magnitude and candidate > math.abs(best) and Suite.getIsOffsetAllowed(moduleId, value) then
+                best = value
+            end
+        end
+    end
+
+    return best
+end
+
+local function getOffsetStore(object, storeKey)
+    if object == nil then
+        return nil
+    end
+
+    if object[storeKey] == nil then
+        object[storeKey] = {}
+    end
+
+    return object[storeKey]
+end
+
+function Suite.getOriginalOffset(object, moduleId)
+    local store = getOffsetStore(object, ORIGINAL_OFFSETS_KEY)
+    return store ~= nil and tonumber(store[moduleId]) or nil
+end
+
+function Suite.getAppliedOffset(object, moduleId)
+    local store = getOffsetStore(object, EFFECTIVE_OFFSETS_KEY)
+    return store ~= nil and tonumber(store[moduleId]) or nil
+end
+
+function Suite.registerOffsetSavegamePaths(moduleId)
+    if Vehicle == nil or Vehicle.xmlSchemaSavegame == nil or XMLValueType == nil then
+        return
+    end
+
+    Vehicle.xmlSchemaSavegame:register(
+        XMLValueType.FLOAT,
+        string.format("vehicles.vehicle(?).FS25_AdjustSuite.%s#originalOffset", moduleId),
+        "AdjustSuite selection as chosen by the player"
+    )
+    Vehicle.xmlSchemaSavegame:register(
+        XMLValueType.FLOAT,
+        string.format("vehicles.vehicle(?).FS25_AdjustSuite.%s#effectiveOffset", moduleId),
+        "AdjustSuite selection after applying the host rules"
+    )
+end
+
+function Suite.loadStoredOffsets(object, moduleId, savegame)
+    if object == nil or savegame == nil or savegame.resetVehicles == true or savegame.xmlFile == nil then
+        return
+    end
+
+    local basePath = string.format("%s.FS25_AdjustSuite.%s", savegame.key, moduleId)
+    local original = tonumber(savegame.xmlFile:getValue(basePath .. "#originalOffset"))
+    local applied = tonumber(savegame.xmlFile:getValue(basePath .. "#effectiveOffset"))
+
+    if original ~= nil then
+        getOffsetStore(object, ORIGINAL_OFFSETS_KEY)[moduleId] = Suite.clampOffset(original)
+    end
+
+    if applied ~= nil then
+        getOffsetStore(object, EFFECTIVE_OFFSETS_KEY)[moduleId] = Suite.clampOffset(applied)
+    end
+end
+
+function Suite.saveStoredOffsets(object, moduleId, xmlFile, key)
+    if object == nil or xmlFile == nil or key == nil then
+        return
+    end
+
+    local original = Suite.getOriginalOffset(object, moduleId)
+    if original == nil then
+        return
+    end
+
+    xmlFile:setValue(key .. "#originalOffset", original)
+
+    local applied = Suite.getAppliedOffset(object, moduleId)
+    if applied ~= nil then
+        xmlFile:setValue(key .. "#effectiveOffset", applied)
+    end
+end
+
+function Suite.registerPlaceableOffsetSavegamePaths()
+    if Placeable == nil or Placeable.xmlSchemaSavegame == nil or XMLValueType == nil then
+        return
+    end
+
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        Placeable.xmlSchemaSavegame:register(
+            XMLValueType.FLOAT,
+            string.format("placeables.placeable(?).FS25_AdjustSuite.%s#originalOffset", moduleId),
+            "AdjustSuite selection as chosen by the player"
+        )
+        Placeable.xmlSchemaSavegame:register(
+            XMLValueType.FLOAT,
+            string.format("placeables.placeable(?).FS25_AdjustSuite.%s#effectiveOffset", moduleId),
+            "AdjustSuite selection after applying the host rules"
+        )
+    end
+end
+
+function Suite.savePlaceableStoredOffsets(placeable, xmlFile, key)
+    if placeable == nil or xmlFile == nil or key == nil then
+        return
+    end
+
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        local original = Suite.getOriginalOffset(placeable, moduleId)
+        if original ~= nil then
+            local basePath = string.format("%s.FS25_AdjustSuite.%s", key, moduleId)
+            xmlFile:setValue(basePath .. "#originalOffset", original)
+
+            local applied = Suite.getAppliedOffset(placeable, moduleId)
+            if applied ~= nil then
+                xmlFile:setValue(basePath .. "#effectiveOffset", applied)
+            end
+        end
+    end
+end
+
+function Suite.resolveConfiguration(object, moduleId, isServer)
+    if object == nil or object.configurations == nil or object.configurations[moduleId] == nil then
+        return nil
+    end
+
+    local selected = Suite.getOffsetFromConfigId(object.configurations[moduleId])
+    local originalStore = getOffsetStore(object, ORIGINAL_OFFSETS_KEY)
+    local appliedStore = getOffsetStore(object, EFFECTIVE_OFFSETS_KEY)
+    local original = tonumber(originalStore[moduleId])
+    local applied = tonumber(appliedStore[moduleId])
+
+    if original == nil or applied == nil or selected ~= applied then
+        original = selected
+    end
+
+    originalStore[moduleId] = original
+
+    local effective = Suite.getEffectiveOffset(moduleId, original)
+    appliedStore[moduleId] = effective
+
+    if isServer ~= false and effective ~= selected then
+        object.configurations[moduleId] = Suite.getConfigIdFromOffset(effective)
+    end
+
+    return effective
 end
 
 local function getBasePerMonthValue(production, baseField, monthField, hourField, minuteField)

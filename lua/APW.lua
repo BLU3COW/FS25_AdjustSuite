@@ -153,7 +153,22 @@ function APW.prerequisitesPresent(specializations)
         and SpecializationUtil.hasSpecialization(WorkArea, specializations)
 end
 
+function APW.initSpecialization()
+    Suite.registerOffsetSavegamePaths("APW")
+end
+
+function APW:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "APW", savegame)
+    Suite.resolveConfiguration(self, "APW", self.isServer)
+end
+
+function APW:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "APW", xmlFile, key)
+end
+
 function APW.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", APW)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", APW)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", APW)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", APW)
     SpecializationUtil.registerEventListener(vehicleType, "onUpdate", APW)

@@ -148,7 +148,22 @@ function ADR.registerOverwrittenFunctions(vehicleType)
     )
 end
 
+function ADR.initSpecialization()
+    Suite.registerOffsetSavegamePaths("ADR")
+end
+
+function ADR:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "ADR", savegame)
+    Suite.resolveConfiguration(self, "ADR", self.isServer)
+end
+
+function ADR:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "ADR", xmlFile, key)
+end
+
 function ADR.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", ADR)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", ADR)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ADR)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", ADR)
     SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", ADR)

@@ -452,7 +452,22 @@ function AFV.prerequisitesPresent(specializations)
     return true
 end
 
+function AFV.initSpecialization()
+    Suite.registerOffsetSavegamePaths("AFV")
+end
+
+function AFV:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "AFV", savegame)
+    Suite.resolveConfiguration(self, "AFV", self.isServer)
+end
+
+function AFV:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "AFV", xmlFile, key)
+end
+
 function AFV.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", AFV)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", AFV)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", AFV)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", AFV)
 end

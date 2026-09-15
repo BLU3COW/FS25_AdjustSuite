@@ -146,7 +146,22 @@ function APC.registerOverwrittenFunctions(vehicleType)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "addFillUnitFillLevel", APC.addFillUnitFillLevel)
 end
 
+function APC.initSpecialization()
+    Suite.registerOffsetSavegamePaths("APC")
+end
+
+function APC:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "APC", savegame)
+    Suite.resolveConfiguration(self, "APC", self.isServer)
+end
+
+function APC:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "APC", xmlFile, key)
+end
+
 function APC.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", APC)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", APC)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", APC)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", APC)
 end

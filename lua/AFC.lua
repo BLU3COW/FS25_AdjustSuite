@@ -353,7 +353,22 @@ function AFC.prerequisitesPresent(specializations)
         and SpecializationUtil.hasSpecialization(FillUnit, specializations)
 end
 
+function AFC.initSpecialization()
+    Suite.registerOffsetSavegamePaths("AFC")
+end
+
+function AFC:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "AFC", savegame)
+    Suite.resolveConfiguration(self, "AFC", self.isServer)
+end
+
+function AFC:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "AFC", xmlFile, key)
+end
+
 function AFC.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", AFC)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", AFC)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", AFC)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", AFC)
 end

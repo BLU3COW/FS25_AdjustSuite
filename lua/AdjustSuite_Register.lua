@@ -995,9 +995,15 @@ end
 function AdjustSuitePlaceableConfigurationItem:onPreLoad(placeable, configId)
     AdjustSuitePlaceableConfigurationItem:superClass().onPreLoad(self, placeable, configId)
 
+    Suite.loadStoredOffsets(placeable, self.configName, placeable.savegame)
+    local effectiveOffset = Suite.resolveConfiguration(placeable, self.configName, placeable.isServer)
+    if effectiveOffset == nil then
+        effectiveOffset = Suite.getOffsetFromConfigId(configId)
+    end
+
     local module = _G[getModuleClassName(self.configName)]
     if module ~= nil and module.applyToPlaceableXML ~= nil then
-        local ok, message = safeCall(module.applyToPlaceableXML, placeable, Suite.getOffsetFromConfigId(configId))
+        local ok, message = safeCall(module.applyToPlaceableXML, placeable, effectiveOffset)
         if not ok then
             Logging.xmlError(
                 placeable.xmlFile,
@@ -1840,6 +1846,15 @@ function Suite:update(dt)
         self.useMiles = g_gameSettings.useMiles
         self.refreshStoreConfigurations("AWS")
     end
+end
+
+Suite.registerPlaceableOffsetSavegamePaths()
+
+if Suite.placeableSaveHookInstalled ~= true and Placeable ~= nil and Placeable.saveToXMLFile ~= nil then
+    Suite.placeableSaveHookInstalled = true
+    Placeable.saveToXMLFile = Utils.appendedFunction(Placeable.saveToXMLFile, function(self, xmlFile, key)
+        Suite.savePlaceableStoredOffsets(self, xmlFile, key)
+    end)
 end
 
 if Suite.modEventListenerInstalled ~= true then

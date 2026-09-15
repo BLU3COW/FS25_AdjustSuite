@@ -18,7 +18,22 @@ function ABP.registerOverwrittenFunctions(vehicleType)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getBrakeForce", ABP.getBrakeForce)
 end
 
+function ABP.initSpecialization()
+    Suite.registerOffsetSavegamePaths("ABP")
+end
+
+function ABP:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "ABP", savegame)
+    Suite.resolveConfiguration(self, "ABP", self.isServer)
+end
+
+function ABP:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "ABP", xmlFile, key)
+end
+
 function ABP.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", ABP)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", ABP)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ABP)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ABP)
 end

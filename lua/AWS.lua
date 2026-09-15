@@ -76,7 +76,22 @@ function AWS.registerOverwrittenFunctions(vehicleType)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getSpeedLimit", AWS.getSpeedLimit)
 end
 
+function AWS.initSpecialization()
+    Suite.registerOffsetSavegamePaths("AWS")
+end
+
+function AWS:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "AWS", savegame)
+    Suite.resolveConfiguration(self, "AWS", self.isServer)
+end
+
+function AWS:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "AWS", xmlFile, key)
+end
+
 function AWS.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", AWS)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", AWS)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", AWS)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", AWS)
 end

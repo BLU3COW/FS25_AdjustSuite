@@ -1930,6 +1930,7 @@ function AWW.prerequisitesPresent(specializations)
 end
 
 function AWW.initSpecialization()
+    Suite.registerOffsetSavegamePaths("AWW")
     Vehicle.xmlSchemaSavegame:register(
         XMLValueType.BOOL,
         "vehicles.vehicle(?).FS25_AdjustSuite.AWW#useWindrowDropAreas",
@@ -1937,7 +1938,13 @@ function AWW.initSpecialization()
     )
 end
 
+function AWW:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "AWW", savegame)
+    Suite.resolveConfiguration(self, "AWW", self.isServer)
+end
+
 function AWW.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", AWW)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", AWW)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", AWW)
     SpecializationUtil.registerEventListener(vehicleType, "onUpdate", AWW)
@@ -2238,6 +2245,7 @@ function AWW:onReadStream(streamId, connection)
 end
 
 function AWW:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "AWW", xmlFile, key)
     local spec = getSpec(self)
     if Suite.getIsModuleEnabled("AWW") and spec.syntheticMowerModes == true and self.spec_mower ~= nil then
         xmlFile:setValue(key .. "#useWindrowDropAreas", self.spec_mower.useWindrowDropAreas == true)

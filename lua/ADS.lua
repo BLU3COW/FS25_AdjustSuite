@@ -169,7 +169,22 @@ function ADS.prerequisitesPresent(specializations)
         and SpecializationUtil.hasSpecialization(Wheels, specializations)
 end
 
+function ADS.initSpecialization()
+    Suite.registerOffsetSavegamePaths("ADS")
+end
+
+function ADS:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "ADS", savegame)
+    Suite.resolveConfiguration(self, "ADS", self.isServer)
+end
+
+function ADS:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "ADS", xmlFile, key)
+end
+
 function ADS.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", ADS)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", ADS)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ADS)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", ADS)
     SpecializationUtil.registerEventListener(vehicleType, "onUpdate", ADS)

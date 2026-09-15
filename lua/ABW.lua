@@ -162,7 +162,22 @@ function ABW.prerequisitesPresent(specializations)
     return isAttachable or isMotorized or isDrivable
 end
 
+function ABW.initSpecialization()
+    Suite.registerOffsetSavegamePaths("ABW")
+end
+
+function ABW:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "ABW", savegame)
+    Suite.resolveConfiguration(self, "ABW", self.isServer)
+end
+
+function ABW:saveToXMLFile(xmlFile, key, usedModNames)
+    Suite.saveStoredOffsets(self, "ABW", xmlFile, key)
+end
+
 function ABW.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", ABW)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", ABW)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ABW)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ABW)
 end
