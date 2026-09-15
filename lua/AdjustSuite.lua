@@ -436,6 +436,7 @@ end
 
 local ORIGINAL_OFFSETS_KEY = "adjustSuiteOriginalOffsets"
 local EFFECTIVE_OFFSETS_KEY = "adjustSuiteEffectiveOffsets"
+local CAPACITY_OFFSETS_KEY = "adjustSuiteCapacityOffsets"
 
 function Suite.roundToStep(value)
     value = tonumber(value) or 0
@@ -560,6 +561,11 @@ function Suite.registerOffsetSavegamePaths(moduleId)
         string.format("vehicles.vehicle(?).FS25_AdjustSuite.AdjustSuite%s#effectiveOffset", moduleId),
         "AdjustSuite selection after applying the host rules"
     )
+    Vehicle.xmlSchemaSavegame:register(
+        XMLValueType.FLOAT,
+        string.format("vehicles.vehicle(?).FS25_AdjustSuite.AdjustSuite%s#capacityOffset", moduleId),
+        "AdjustSuite offset last used to compute a fill unit capacity"
+    )
 end
 
 function Suite.loadStoredOffsets(object, moduleId, savegame, nodeName)
@@ -577,6 +583,11 @@ function Suite.loadStoredOffsets(object, moduleId, savegame, nodeName)
 
     if applied ~= nil then
         getOffsetStore(object, EFFECTIVE_OFFSETS_KEY)[moduleId] = Suite.clampOffset(applied)
+    end
+
+    local capacityOffset = tonumber(savegame.xmlFile:getValue(basePath .. "#capacityOffset"))
+    if capacityOffset ~= nil then
+        getOffsetStore(object, CAPACITY_OFFSETS_KEY)[moduleId] = Suite.clampOffset(capacityOffset)
     end
 end
 
@@ -596,6 +607,11 @@ function Suite.saveStoredOffsets(object, moduleId, xmlFile, key)
     if applied ~= nil then
         xmlFile:setValue(key .. "#effectiveOffset", applied)
     end
+
+    local capacityOffset = Suite.getCapacityOffset(object, moduleId)
+    if capacityOffset ~= nil then
+        xmlFile:setValue(key .. "#capacityOffset", capacityOffset)
+    end
 end
 
 function Suite.registerPlaceableOffsetSavegamePaths()
@@ -613,6 +629,11 @@ function Suite.registerPlaceableOffsetSavegamePaths()
             XMLValueType.FLOAT,
             string.format("placeables.placeable(?).FS25_AdjustSuite.%s#effectiveOffset", moduleId),
             "AdjustSuite selection after applying the host rules"
+        )
+        Placeable.xmlSchemaSavegame:register(
+            XMLValueType.FLOAT,
+            string.format("placeables.placeable(?).FS25_AdjustSuite.%s#capacityOffset", moduleId),
+            "AdjustSuite offset last used to compute a fill unit capacity"
         )
     end
 end
@@ -632,8 +653,54 @@ function Suite.savePlaceableStoredOffsets(placeable, xmlFile, key)
             if applied ~= nil then
                 xmlFile:setValue(basePath .. "#effectiveOffset", applied)
             end
+
+            local capacityOffset = Suite.getCapacityOffset(placeable, moduleId)
+            if capacityOffset ~= nil then
+                xmlFile:setValue(basePath .. "#capacityOffset", capacityOffset)
+            end
         end
     end
+end
+
+function Suite.getCapacityOffset(object, moduleId)
+    local store = getOffsetStore(object, CAPACITY_OFFSETS_KEY)
+    return store ~= nil and tonumber(store[moduleId]) or nil
+end
+
+function Suite.setCapacityOffset(object, moduleId, offset)
+    getOffsetStore(object, CAPACITY_OFFSETS_KEY)[moduleId] = offset
+end
+
+function Suite.getCapacityBase(fillUnit)
+    if fillUnit == nil then
+        return nil
+    end
+
+    local base = tonumber(fillUnit.adjustSuiteBaseCapacity)
+        or tonumber(fillUnit.defaultCapacity)
+        or tonumber(fillUnit.capacity)
+    if base ~= nil and base > 0 and base < math.huge then
+        fillUnit.adjustSuiteBaseCapacity = base
+        return base
+    end
+
+    return nil
+end
+
+function Suite.capacityLooksExternallyOverridden(object, fillUnit, sourceModuleId)
+    if Suite.respectExternalCapacityOverrides ~= true then
+        return false
+    end
+
+    local baseCapacity = Suite.getCapacityBase(fillUnit)
+    local currentCapacity = fillUnit ~= nil and tonumber(fillUnit.capacity) or nil
+    local trackedOffset = Suite.getCapacityOffset(object, sourceModuleId)
+    if baseCapacity == nil or currentCapacity == nil or trackedOffset == nil then
+        return false
+    end
+
+    local expectedCapacity = baseCapacity * Suite.getFactorFromOffset(trackedOffset)
+    return math.abs(currentCapacity - expectedCapacity) > 0.5
 end
 
 function Suite.resolveConfiguration(object, moduleId, isServer)

@@ -150,22 +150,6 @@ local function fillUnitHasUsableFillTypes(fillUnit)
     return true
 end
 
-local function getBaseCapacity(fillUnit)
-    if fillUnit == nil then
-        return nil
-    end
-
-    local baseCapacity = tonumber(fillUnit.AFVBaseCapacity)
-        or tonumber(fillUnit.defaultCapacity)
-        or tonumber(fillUnit.capacity)
-    if baseCapacity ~= nil and baseCapacity > 0 and baseCapacity < math.huge then
-        fillUnit.AFVBaseCapacity = baseCapacity
-        return baseCapacity
-    end
-
-    return nil
-end
-
 local function getFillUnitXMLKey(vehicle, fillUnitIndex)
     if vehicle == nil or vehicle.xmlFile == nil or tonumber(fillUnitIndex) == nil then
         return nil
@@ -263,8 +247,6 @@ local function clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity)
 end
 
 local function applyFillUnitCapacity(vehicle, fillUnitIndex, fillUnit, capacity)
-    fillUnit.defaultCapacity = capacity
-
     local applied = false
     if vehicle.setFillUnitCapacity ~= nil then
         applied = safeCall(vehicle.setFillUnitCapacity, vehicle, fillUnitIndex, capacity, true)
@@ -309,7 +291,7 @@ local function collectFillUnits(vehicle, force)
 
     local operatingIndices = Suite.getOperatingConsumerFillUnitIndices(vehicle)
     for index, fillUnit in pairs(fillUnits) do
-        local capacity = getBaseCapacity(fillUnit)
+        local capacity = Suite.getCapacityBase(fillUnit)
 
         if
             capacity ~= nil
@@ -410,29 +392,24 @@ local function applyOffset(vehicle)
         return false
     end
 
-    local offset = Utils.getNoNil(tonumber(spec.currentOffset), getSelectedOffset(vehicle))
+    local offset = clampOffset(Utils.getNoNil(tonumber(spec.currentOffset), getSelectedOffset(vehicle)))
     local factor = getFactorFromOffset(offset)
-
-    spec.currentOffset = clampOffset(offset)
+    spec.currentOffset = offset
 
     for _, entry in ipairs(spec.units) do
         local fillUnit = entry.fillUnit
-        local computedCapacity = roundCapacityUp(entry.baseCapacity * factor)
-        local lastApplied = tonumber(fillUnit.AFVLastAppliedCapacity)
-        local currentCapacity = tonumber(fillUnit.capacity)
 
-        if
-            Suite.respectExternalCapacityOverrides == true
-            and lastApplied ~= nil
-            and currentCapacity ~= nil
-            and math.abs(currentCapacity - lastApplied) > 0.5
-        then
-            entry.adjustedCapacity = currentCapacity
-            fillUnit.AFVLastAppliedCapacity = currentCapacity
+        if Suite.capacityLooksExternallyOverridden(vehicle, fillUnit, "AFV") then
+            entry.adjustedCapacity = tonumber(fillUnit.capacity)
         else
-            entry.adjustedCapacity = computedCapacity
-            fillUnit.AFVLastAppliedCapacity = computedCapacity
-            applyFillUnitCapacity(vehicle, entry.index, fillUnit, computedCapacity)
+            local targetCapacity = offset == 0 and entry.baseCapacity or roundCapacityUp(entry.baseCapacity * factor)
+            local currentCapacity = tonumber(fillUnit.capacity)
+            entry.adjustedCapacity = targetCapacity
+            Suite.setCapacityOffset(vehicle, "AFV", offset)
+
+            if currentCapacity == nil or math.abs(currentCapacity - targetCapacity) > 0.001 then
+                applyFillUnitCapacity(vehicle, entry.index, fillUnit, targetCapacity)
+            end
         end
     end
 

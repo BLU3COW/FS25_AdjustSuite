@@ -16,6 +16,7 @@
         <text name="CONFIG_AFV_TITLE" text="Fill Volume" />
         <text name="CONFIG_AFC_TITLE" text="Fuel Capacity" />
         <text name="CONFIG_APC_TITLE" text="Payload Compensation" />
+        <text name="CONFIG_APC_PAYLOAD_MASS" text="Payload mass" />
         <text name="CONFIG_ABW_TITLE" text="Ballast Weight" />
         <text name="CONFIG_AMP_TITLE" text="Motor Power" />
         <text name="CONFIG_AWS_TITLE" text="Working Speed" />

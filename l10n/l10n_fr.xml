@@ -16,6 +16,7 @@
         <text name="CONFIG_AFV_TITLE" text="Volume de remplissage" />
         <text name="CONFIG_AFC_TITLE" text="Capacité de carburant" />
         <text name="CONFIG_APC_TITLE" text="Compensation de charge utile" />
+        <text name="CONFIG_APC_PAYLOAD_MASS" text="Masse de charge utile" />
         <text name="CONFIG_ABW_TITLE" text="Poids de lestage" />
         <text name="CONFIG_AMP_TITLE" text="Puissance du moteur" />
         <text name="CONFIG_AWS_TITLE" text="Vitesse de travail" />

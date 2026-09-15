@@ -4,8 +4,6 @@ local APC = AdjustSuiteAPC
 
 local Suite = AdjustSuite
 local getSpec, _, hasSelectedConfiguration, getSelectionFactor = Suite.createModuleAccessors("APC")
-local _, getAFVSelectedOffset = Suite.createModuleAccessors("AFV")
-local getFactorFromOffset = Suite.getFactorFromOffset
 local IGNORED_FILLTYPE_NAMES = Suite.ignoredFillTypeNames
 
 local function getFillTypeName(fillTypeIndex)
@@ -43,24 +41,22 @@ local function getFillTypeMassPerLiter(fillTypeIndex)
     return massPerLiter ~= nil and massPerLiter > 0 and massPerLiter or nil
 end
 
+local function getMaxFillTypeMassPerLiter(fillUnit)
+    local best = nil
+
+    for fillTypeIndex in pairs(fillUnit.fillTypes or {}) do
+        local massPerLiter = getFillTypeMassPerLiter(fillTypeIndex)
+        if massPerLiter ~= nil and (best == nil or massPerLiter > best) then
+            best = massPerLiter
+        end
+    end
+
+    return best or getFillTypeMassPerLiter(fillUnit.fillType)
+end
+
 local function getPayloadMassFactor(vehicle)
     local selectionFactor = getSelectionFactor(vehicle)
     return selectionFactor > 0 and 1 / selectionFactor or 1
-end
-
-local function capacityLooksExternallyOverridden(vehicle, fillUnit)
-    if Suite.respectExternalCapacityOverrides ~= true then
-        return false
-    end
-
-    local baseCapacity = tonumber(fillUnit.AFVBaseCapacity)
-    local currentCapacity = tonumber(fillUnit.capacity)
-    if baseCapacity == nil or baseCapacity <= 0 or currentCapacity == nil then
-        return false
-    end
-
-    local expectedCapacity = baseCapacity * getFactorFromOffset(getAFVSelectedOffset(vehicle))
-    return math.abs(currentCapacity - expectedCapacity) > 0.5
 end
 
 local function getFillUnitXMLKey(vehicle, fillUnitIndex)
@@ -167,7 +163,38 @@ function APC.registerEventListeners(vehicleType)
 end
 
 function APC:onPostLoad(savegame)
-    if hasSelectedConfiguration(self) and self.setMassDirty ~= nil then
+    if not hasSelectedConfiguration(self) then
+        return
+    end
+
+    local payloadMassFactor = getPayloadMassFactor(self)
+    if payloadMassFactor > 1 and self.maxComponentMass ~= nil and self.maxComponentMass < math.huge then
+        local additionalMass = 0
+        local fillUnits = self.spec_fillUnit ~= nil and self.spec_fillUnit.fillUnits or nil
+
+        for fillUnitIndex, fillUnit in ipairs(fillUnits or {}) do
+            if
+                fillUnit.updateMass == true
+                and fillUnit.fillMassNode ~= nil
+                and fillUnit.fillMassNode ~= 0
+                and not fillUnitIsTechnicalHidden(self, fillUnitIndex, fillUnit)
+                and not Suite.fillUnitIsOperatingConsumer(self, fillUnitIndex)
+                and not Suite.capacityLooksExternallyOverridden(self, fillUnit, "AFV")
+            then
+                local massPerLiter = getMaxFillTypeMassPerLiter(fillUnit)
+                local capacity = tonumber(fillUnit.capacity) or 0
+                if massPerLiter ~= nil and capacity > 0 and capacity < math.huge then
+                    additionalMass = additionalMass + capacity * massPerLiter * (payloadMassFactor - 1)
+                end
+            end
+        end
+
+        if additionalMass > 0 then
+            self.maxComponentMass = self.maxComponentMass + additionalMass
+        end
+    end
+
+    if self.setMassDirty ~= nil then
         self:setMassDirty()
     end
 end
@@ -188,7 +215,7 @@ function APC:getAdditionalComponentMass(superFunc, component)
         if
             fillUnit.fillMassNode == component.node
             and fillUnitIsEligible(self, fillUnitIndex, fillUnit, fillUnit.fillType)
-            and not capacityLooksExternallyOverridden(self, fillUnit)
+            and not Suite.capacityLooksExternallyOverridden(self, fillUnit, "AFV")
         then
             local massPerLiter = getFillTypeMassPerLiter(fillUnit.fillType)
             local fillLevel = tonumber(fillUnit.fillLevel) or 0
@@ -217,6 +244,7 @@ function APC:addFillUnitFillLevel(
         or fillUnit == nil
         or fillUnit.ignoreFillLimit == true
         or not fillUnitIsEligible(self, fillUnitIndex, fillUnit, fillTypeIndex)
+        or Suite.capacityLooksExternallyOverridden(self, fillUnit, "AFV")
         or g_currentMission == nil
         or g_currentMission.missionInfo == nil
         or g_currentMission.missionInfo.trailerFillLimit ~= true
@@ -253,7 +281,19 @@ function APC:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
         return
     end
 
+    local payloadMassFactor = getPayloadMassFactor(self)
     local spec = getSpec(self)
     local offset = spec.currentOffset or 0
-    Suite.addHelpText(string.format("APC: %s [%s]", Suite.getOffsetText(offset), Suite.getStatusText(offset)))
+    local helpText = string.format("APC: %s [%s]", Suite.getOffsetText(offset), Suite.getStatusText(offset))
+
+    if payloadMassFactor > 0 and payloadMassFactor ~= 1 then
+        helpText = string.format(
+            "%s - %s: %d %%",
+            helpText,
+            g_i18n:getText("CONFIG_APC_PAYLOAD_MASS"),
+            math.floor(payloadMassFactor * 100 + 0.5)
+        )
+    end
+
+    Suite.addHelpText(helpText)
 end

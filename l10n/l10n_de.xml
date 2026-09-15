@@ -16,6 +16,7 @@
         <text name="CONFIG_AFV_TITLE" text="Füllvolumen" />
         <text name="CONFIG_AFC_TITLE" text="Kraftstoffkapazität" />
         <text name="CONFIG_APC_TITLE" text="Nutzlastausgleich" />
+        <text name="CONFIG_APC_PAYLOAD_MASS" text="Nutzlastmasse" />
         <text name="CONFIG_ABW_TITLE" text="Ballastgewicht" />
         <text name="CONFIG_AMP_TITLE" text="Motorleistung" />
         <text name="CONFIG_AWS_TITLE" text="Arbeitsgeschwindigkeit" />

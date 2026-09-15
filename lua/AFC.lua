@@ -55,22 +55,6 @@ end
 
 local fillTypeIsAir = Suite.fillTypeIsAir
 
-local function getBaseCapacity(fillUnit)
-    if fillUnit == nil then
-        return nil
-    end
-
-    local capacity = tonumber(fillUnit.AFCBaseCapacity)
-        or tonumber(fillUnit.defaultCapacity)
-        or tonumber(fillUnit.capacity)
-    if capacity ~= nil and capacity > 0 and capacity < math.huge then
-        fillUnit.AFCBaseCapacity = capacity
-        return capacity
-    end
-
-    return nil
-end
-
 local function getFillUnitXMLKey(vehicle, fillUnitIndex)
     if vehicle == nil or vehicle.xmlFile == nil or tonumber(fillUnitIndex) == nil then
         return nil
@@ -176,8 +160,6 @@ end
 
 local function applyCapacity(vehicle, entry, capacity)
     local fillUnit = entry.fillUnit
-    fillUnit.defaultCapacity = capacity
-
     local applied = false
     if vehicle.setFillUnitCapacity ~= nil then
         applied = safeCall(vehicle.setFillUnitCapacity, vehicle, entry.index, capacity, true)
@@ -222,7 +204,7 @@ local function collectOperatingUnits(vehicle, force)
         if fillUnitIndex ~= nil and fillUnitIndex > 0 and not fillTypeIsAir(fillType) then
             fillUnitIndex = math.floor(fillUnitIndex + 0.5)
             local fillUnit = fillUnits[fillUnitIndex]
-            local baseCapacity = getBaseCapacity(fillUnit)
+            local baseCapacity = Suite.getCapacityBase(fillUnit)
             if baseCapacity ~= nil and unitsByIndex[fillUnitIndex] == nil then
                 local entry = {
                     index = fillUnitIndex,
@@ -324,22 +306,18 @@ local function applyOffset(vehicle)
 
     for _, entry in ipairs(spec.units) do
         local fillUnit = entry.fillUnit
-        local computedCapacity = math.max(entry.baseCapacity * factor, 0.001)
-        local lastApplied = tonumber(fillUnit.AFCLastAppliedCapacity)
-        local currentCapacity = tonumber(fillUnit.capacity)
 
-        if
-            Suite.respectExternalCapacityOverrides == true
-            and lastApplied ~= nil
-            and currentCapacity ~= nil
-            and math.abs(currentCapacity - lastApplied) > 0.5
-        then
-            entry.adjustedCapacity = currentCapacity
-            fillUnit.AFCLastAppliedCapacity = currentCapacity
+        if Suite.capacityLooksExternallyOverridden(vehicle, fillUnit, "AFC") then
+            entry.adjustedCapacity = tonumber(fillUnit.capacity)
         else
-            entry.adjustedCapacity = computedCapacity
-            fillUnit.AFCLastAppliedCapacity = computedCapacity
-            applyCapacity(vehicle, entry, computedCapacity)
+            local targetCapacity = offset == 0 and entry.baseCapacity or math.max(entry.baseCapacity * factor, 0.001)
+            local currentCapacity = tonumber(fillUnit.capacity)
+            entry.adjustedCapacity = targetCapacity
+            Suite.setCapacityOffset(vehicle, "AFC", offset)
+
+            if currentCapacity == nil or math.abs(currentCapacity - targetCapacity) > 0.001 then
+                applyCapacity(vehicle, entry, targetCapacity)
+            end
         end
     end
 
@@ -394,12 +372,14 @@ function AFC:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     local offset = Utils.getNoNil(tonumber(spec.currentOffset), getSelectedOffset(self))
     local helpText = string.format("AFC: %s [%s]", Suite.getOffsetText(offset), Suite.getStatusText(offset))
     for _, entry in ipairs(spec.units) do
-        local capacityText = formatCapacity(entry.adjustedCapacity or entry.fillUnit.capacity, entry.unitText)
-        if capacityText ~= nil then
-            if entry.fillTypeTitle ~= nil and entry.fillTypeTitle ~= "" then
-                capacityText = string.format("%s: %s", entry.fillTypeTitle, capacityText)
+        if string.upper(tostring(getFillTypeName(entry.fillType) or "")) ~= "DEF" then
+            local capacityText = formatCapacity(entry.adjustedCapacity or entry.fillUnit.capacity, entry.unitText)
+            if capacityText ~= nil then
+                if entry.fillTypeTitle ~= nil and entry.fillTypeTitle ~= "" then
+                    capacityText = string.format("%s: %s", entry.fillTypeTitle, capacityText)
+                end
+                helpText = string.format("%s - %s", helpText, capacityText)
             end
-            helpText = string.format("%s - %s", helpText, capacityText)
         end
     end
 
