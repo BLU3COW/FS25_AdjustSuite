@@ -27,7 +27,15 @@ function Compatibility.getBunkerSiloSpeed(trailerModule, superFunc)
 end
 
 function Compatibility.install()
-    if Compatibility.installed == true or ADTrailerModule == nil or ADTrailerModule.getBunkerSiloSpeed == nil then
+    if Compatibility.installed == true or Compatibility.abandoned == true then
+        return
+    end
+
+    if ADTrailerModule == nil or ADTrailerModule.getBunkerSiloSpeed == nil then
+        Compatibility.attempts = (Compatibility.attempts or 0) + 1
+        if Compatibility.attempts >= 600 then
+            Compatibility.abandoned = true
+        end
         return
     end
 

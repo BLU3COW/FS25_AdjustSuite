@@ -940,7 +940,8 @@ end
 function Suite.getConfigurationPrice(basePrice, offset)
     local price = math.max(tonumber(basePrice) or 0, 0)
     local priceFactor = Suite.getPricePercent() / 100
-    return math.floor((price * (Suite.getPriceScale(offset) - 1) * priceFactor) + 0.5)
+    local adjustment = price * (Suite.getPriceScale(offset) - 1) * priceFactor
+    return math.floor(math.max(adjustment, -price) + 0.5)
 end
 
 local function getSettingsFilename()
@@ -1272,6 +1273,14 @@ local function sendSelectionSettings(baseMission, connection, x, y, z, viewDista
     end
 end
 
-FSBaseMission.onConnectionFinishedLoading =
-    Utils.prependedFunction(FSBaseMission.onConnectionFinishedLoading, sendSelectionSettings)
+if
+    Suite.connectionHookInstalled ~= true
+    and FSBaseMission ~= nil
+    and FSBaseMission.onConnectionFinishedLoading ~= nil
+then
+    Suite.connectionHookInstalled = true
+    FSBaseMission.onConnectionFinishedLoading =
+        Utils.prependedFunction(FSBaseMission.onConnectionFinishedLoading, sendSelectionSettings)
+end
+
 Suite.loadSelectionSettings()

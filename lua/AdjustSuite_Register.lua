@@ -1826,8 +1826,11 @@ for _, moduleId in ipairs(Suite.placeableModuleIds) do
     end
 end
 
-ConfigurationUtil.getConfigurationsFromXML =
-    Utils.overwrittenFunction(ConfigurationUtil.getConfigurationsFromXML, addSuiteStoreConfigurations)
+if Suite.storeConfigurationHookInstalled ~= true and ConfigurationUtil.getConfigurationsFromXML ~= nil then
+    Suite.storeConfigurationHookInstalled = true
+    ConfigurationUtil.getConfigurationsFromXML =
+        Utils.overwrittenFunction(ConfigurationUtil.getConfigurationsFromXML, addSuiteStoreConfigurations)
+end
 
 function Suite:update(dt)
     if AdjustSuiteAutoDrive ~= nil then
