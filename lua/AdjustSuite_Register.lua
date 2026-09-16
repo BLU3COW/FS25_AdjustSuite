@@ -1875,6 +1875,29 @@ if Suite.placeableSaveHookInstalled ~= true and Placeable ~= nil and Placeable.s
     end)
 end
 
+function Suite.refreshProductionPoints()
+    local manager = g_currentMission ~= nil and g_currentMission.productionChainManager or nil
+    for _, productionPoint in ipairs(manager ~= nil and manager.productionPoints or {}) do
+        Suite.applyProductionAdjustments(productionPoint)
+    end
+end
+
+if Suite.productionHookInstalled ~= true and ProductionPoint ~= nil and ProductionPoint.register ~= nil then
+    Suite.productionHookInstalled = true
+    ProductionPoint.register = Utils.appendedFunction(ProductionPoint.register, function(productionPoint)
+        Suite.applyProductionAdjustments(productionPoint)
+    end)
+end
+
+if
+    Suite.productionSettingsHookInstalled ~= true
+    and AdjustSuiteSettingsEvent ~= nil
+    and AdjustSuiteSettingsEvent.run ~= nil
+then
+    Suite.productionSettingsHookInstalled = true
+    AdjustSuiteSettingsEvent.run = Utils.appendedFunction(AdjustSuiteSettingsEvent.run, Suite.refreshProductionPoints)
+end
+
 function Suite:loadMap()
     Suite.registerPlaceableOffsetSavegamePaths()
 

@@ -66,6 +66,6 @@ function ADRP.applyToPlaceableXML(placeable, offset)
 
     visitSelectedLoadTriggers(placeable, function(key)
         local value = tonumber(placeable.xmlFile:getValue(key .. "#fillLitersPerSecond", 1000)) or 1000
-        placeable.xmlFile:setValue(key .. "#fillLitersPerSecond", math.max(math.floor(value * factor + 0.5), 1))
+        placeable.xmlFile:setValue(key .. "#fillLitersPerSecond", math.max(math.ceil(value * factor - 0.000001), 1))
     end)
 end

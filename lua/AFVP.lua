@@ -227,16 +227,11 @@ function AFVP.applyToPlaceableXML(placeable, offset)
         return
     end
 
-    local seen = {}
     visitStorageKeys(placeable.xmlFile, function(key)
-        seen[key] = true
         scaleStorage(placeable.xmlFile, key, factor)
     end)
 
-    local productionStorageKey = getSelectedProductionStorageKey(placeable)
-    if not seen[productionStorageKey] then
-        scaleStorage(placeable.xmlFile, productionStorageKey, factor)
-    end
+    scaleStorage(placeable.xmlFile, getSelectedProductionStorageKey(placeable), factor)
 
     if capacityIsUsable(placeable.xmlFile, HUSBANDRY_FOOD_CAPACITY_PATH) then
         scaleCapacity(placeable.xmlFile, HUSBANDRY_FOOD_CAPACITY_PATH, factor)

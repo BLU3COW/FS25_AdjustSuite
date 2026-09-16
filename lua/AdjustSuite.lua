@@ -438,7 +438,7 @@ local ORIGINAL_OFFSETS_KEY = "adjustSuiteOriginalOffsets"
 local EFFECTIVE_OFFSETS_KEY = "adjustSuiteEffectiveOffsets"
 local CAPACITY_OFFSETS_KEY = "adjustSuiteCapacityOffsets"
 
-function Suite.roundToStep(value)
+function Suite.clampOffset(value)
     value = tonumber(value) or 0
     local nearestOffset = 0
     local nearestDistance = math.huge
@@ -452,10 +452,6 @@ function Suite.roundToStep(value)
     end
 
     return nearestOffset
-end
-
-function Suite.clampOffset(offset)
-    return Suite.roundToStep(offset)
 end
 
 function Suite.getFactorFromOffset(offset)
@@ -669,6 +665,103 @@ end
 
 function Suite.setCapacityOffset(object, moduleId, offset)
     getOffsetStore(object, CAPACITY_OFFSETS_KEY)[moduleId] = offset
+end
+
+function Suite.getFillUnits(vehicle)
+    if vehicle == nil then
+        return nil
+    end
+
+    if vehicle.spec_fillUnit ~= nil and vehicle.spec_fillUnit.fillUnits ~= nil then
+        return vehicle.spec_fillUnit.fillUnits
+    end
+
+    return vehicle.fillUnits
+end
+
+function Suite.getFillTypeName(fillTypeIndex)
+    if fillTypeIndex == nil then
+        return nil
+    end
+
+    if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
+        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
+        if ok then
+            return name
+        end
+    end
+
+    if FillType ~= nil then
+        for name, index in pairs(FillType) do
+            if index == fillTypeIndex then
+                return name
+            end
+        end
+    end
+
+    return nil
+end
+
+function Suite.fillTypeIsIgnored(fillTypeIndex)
+    local name = Suite.getFillTypeName(fillTypeIndex)
+    return name ~= nil and Suite.ignoredFillTypeNames[string.upper(tostring(name))] == true
+end
+
+function Suite.getFillUnitXMLKey(vehicle, fillUnitIndex)
+    if vehicle == nil or vehicle.xmlFile == nil or tonumber(fillUnitIndex) == nil then
+        return nil
+    end
+
+    local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
+    configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
+    local configurationKey =
+        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
+    local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
+
+    if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
+        fillUnitKey = string.format("vehicle.fillUnit.fillUnits.fillUnit(%d)", fillUnitIndex - 1)
+    end
+
+    return vehicle.xmlFile:hasProperty(fillUnitKey) and fillUnitKey or nil
+end
+
+function Suite.fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
+    if fillUnit == nil or fillUnit.showOnHud ~= false then
+        return false
+    end
+
+    local fillUnitKey = Suite.getFillUnitXMLKey(vehicle, fillUnitIndex)
+    return fillUnitKey ~= nil
+        and (
+            vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
+            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false
+        )
+end
+
+function Suite.captureSavedFillLevels(savegame, spec)
+    spec.savedFillLevels = nil
+    if savegame == nil or savegame.resetVehicles or savegame.xmlFile == nil or savegame.key == nil then
+        return
+    end
+
+    local savedLevels = {}
+    local i = 0
+    while true do
+        local unitKey = string.format("%s.fillUnit.unit(%d)", savegame.key, i)
+        if not savegame.xmlFile:hasProperty(unitKey) then
+            break
+        end
+
+        local fillUnitIndex = savegame.xmlFile:getValue(unitKey .. "#index")
+        local fillLevel = savegame.xmlFile:getValue(unitKey .. "#fillLevel")
+        if fillUnitIndex ~= nil and fillLevel ~= nil then
+            savedLevels[math.floor(fillUnitIndex + 0.5)] = fillLevel
+        end
+
+        i = i + 1
+    end
+
+    spec.savedFillLevels = savedLevels
 end
 
 function Suite.getCapacityBase(fillUnit)
@@ -957,14 +1050,6 @@ local function getSettingsFilename()
     return settingsDirectory .. "/FS25_AdjustSuite.xml"
 end
 
-local function getBoolOrDefault(value, defaultValue)
-    if value == nil then
-        return defaultValue
-    end
-
-    return value == true
-end
-
 local function getDefaultModuleSettings()
     local settings = {}
     for _, key in ipairs(MODULE_SETTING_KEYS) do
@@ -1016,13 +1101,8 @@ local function applyModuleSettings(moduleId, values)
     end
 end
 
-local function applyPricePercent(value, refreshStore)
+local function applyPricePercent(value)
     Suite.pricePercent = normalizePricePercent(value)
-    if refreshStore and Suite.refreshStoreConfigurations ~= nil then
-        for _, moduleId in ipairs(Suite.moduleIds) do
-            Suite.refreshStoreConfigurations(moduleId)
-        end
-    end
 end
 
 local function boolToString(value)
@@ -1163,7 +1243,7 @@ function Suite.loadSelectionSettings()
     end
     Suite.showHelpMenu = showHelpMenu
     Suite.respectExternalCapacityOverrides = respectExternalCapacityOverrides
-    applyPricePercent(pricePercent, false)
+    applyPricePercent(pricePercent)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = getDefaultModuleSettings()
@@ -1253,7 +1333,7 @@ function AdjustSuiteSettingsEvent:run(connection)
     if connection ~= nil and connection:getIsServer() then
         Suite.showHelpMenu = self.showHelpMenu ~= false
         Suite.respectExternalCapacityOverrides = self.respectExternalCapacityOverrides == true
-        applyPricePercent(self.pricePercent, false)
+        applyPricePercent(self.pricePercent)
         for _, moduleId in ipairs(Suite.moduleIds) do
             applyModuleSettings(moduleId, self.settingsByModule[moduleId])
         end

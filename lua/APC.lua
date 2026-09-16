@@ -4,27 +4,8 @@ local APC = AdjustSuiteAPC
 
 local Suite = AdjustSuite
 local getSpec, _, hasSelectedConfiguration, getSelectionFactor = Suite.createModuleAccessors("APC")
-local IGNORED_FILLTYPE_NAMES = Suite.ignoredFillTypeNames
-
-local function getFillTypeName(fillTypeIndex)
-    if fillTypeIndex == nil then
-        return nil
-    end
-
-    if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
-        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
-        if ok then
-            return name
-        end
-    end
-
-    return nil
-end
-
-local function fillTypeIsIgnored(fillTypeIndex)
-    local name = getFillTypeName(fillTypeIndex)
-    return name ~= nil and IGNORED_FILLTYPE_NAMES[string.upper(tostring(name))] == true
-end
+local fillTypeIsIgnored = Suite.fillTypeIsIgnored
+local fillUnitIsTechnicalHidden = Suite.fillUnitIsTechnicalHidden
 
 local function getFillTypeMassPerLiter(fillTypeIndex)
     if
@@ -57,37 +38,6 @@ end
 local function getPayloadMassFactor(vehicle)
     local selectionFactor = getSelectionFactor(vehicle)
     return selectionFactor > 0 and 1 / selectionFactor or 1
-end
-
-local function getFillUnitXMLKey(vehicle, fillUnitIndex)
-    if vehicle == nil or vehicle.xmlFile == nil or tonumber(fillUnitIndex) == nil then
-        return nil
-    end
-
-    local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
-    configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
-    local configurationKey =
-        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
-    local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
-
-    if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
-        fillUnitKey = string.format("vehicle.fillUnit.fillUnits.fillUnit(%d)", fillUnitIndex - 1)
-    end
-
-    return vehicle.xmlFile:hasProperty(fillUnitKey) and fillUnitKey or nil
-end
-
-local function fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
-    if fillUnit == nil or fillUnit.showOnHud ~= false then
-        return false
-    end
-
-    local fillUnitKey = getFillUnitXMLKey(vehicle, fillUnitIndex)
-    return fillUnitKey ~= nil
-        and (
-            vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
-            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false
-        )
 end
 
 local function fillUnitIsEligible(vehicle, fillUnitIndex, fillUnit, fillTypeIndex)

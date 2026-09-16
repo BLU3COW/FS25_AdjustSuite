@@ -3,44 +3,13 @@ AdjustSuiteAFC = AdjustSuiteAFC or {}
 local AFC = AdjustSuiteAFC
 
 local Suite = AdjustSuite
+local getFillUnits = Suite.getFillUnits
+local getFillTypeName = Suite.getFillTypeName
+local getFillUnitXMLKey = Suite.getFillUnitXMLKey
+local captureSavedFillLevels = Suite.captureSavedFillLevels
 local clampOffset = Suite.clampOffset
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("AFC")
-
-local function getFillUnits(vehicle)
-    if vehicle == nil then
-        return nil
-    end
-
-    if vehicle.spec_fillUnit ~= nil and vehicle.spec_fillUnit.fillUnits ~= nil then
-        return vehicle.spec_fillUnit.fillUnits
-    end
-
-    return vehicle.fillUnits
-end
-
-local function getFillTypeName(fillTypeIndex)
-    if fillTypeIndex == nil then
-        return nil
-    end
-
-    if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
-        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
-        if ok then
-            return name
-        end
-    end
-
-    if FillType ~= nil then
-        for name, index in pairs(FillType) do
-            if index == fillTypeIndex then
-                return name
-            end
-        end
-    end
-
-    return nil
-end
 
 local function getFillTypeTitle(fillTypeIndex)
     if fillTypeIndex ~= nil and g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeByIndex ~= nil then
@@ -54,24 +23,6 @@ local function getFillTypeTitle(fillTypeIndex)
 end
 
 local fillTypeIsAir = Suite.fillTypeIsAir
-
-local function getFillUnitXMLKey(vehicle, fillUnitIndex)
-    if vehicle == nil or vehicle.xmlFile == nil or tonumber(fillUnitIndex) == nil then
-        return nil
-    end
-
-    local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
-    configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
-    local configurationKey =
-        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
-    local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
-
-    if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
-        fillUnitKey = string.format("vehicle.fillUnit.fillUnits.fillUnit(%d)", fillUnitIndex - 1)
-    end
-
-    return vehicle.xmlFile:hasProperty(fillUnitKey) and fillUnitKey or nil
-end
 
 local function resolveUnitText(value)
     value = tostring(value or "")
@@ -224,32 +175,6 @@ local function collectOperatingUnits(vehicle, force)
         return a.index < b.index
     end)
     return #spec.units > 0
-end
-
-local function captureSavedFillLevels(savegame, spec)
-    spec.savedFillLevels = nil
-    if savegame == nil or savegame.resetVehicles or savegame.xmlFile == nil or savegame.key == nil then
-        return
-    end
-
-    local savedLevels = {}
-    local i = 0
-    while true do
-        local unitKey = string.format("%s.fillUnit.unit(%d)", savegame.key, i)
-        if not savegame.xmlFile:hasProperty(unitKey) then
-            break
-        end
-
-        local fillUnitIndex = savegame.xmlFile:getValue(unitKey .. "#index")
-        local fillLevel = savegame.xmlFile:getValue(unitKey .. "#fillLevel")
-        if fillUnitIndex ~= nil and fillLevel ~= nil then
-            savedLevels[math.floor(fillUnitIndex + 0.5)] = fillLevel
-        end
-
-        i = i + 1
-    end
-
-    spec.savedFillLevels = savedLevels
 end
 
 local function restoreSavedFillLevels(vehicle, spec)

@@ -7,8 +7,12 @@ local clampOffset = Suite.clampOffset
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("AFV")
 
-local IGNORED_FILLTYPE_NAMES = Suite.ignoredFillTypeNames
-AFV.ignoredFillTypeNames = IGNORED_FILLTYPE_NAMES
+AFV.ignoredFillTypeNames = Suite.ignoredFillTypeNames
+local getFillUnits = Suite.getFillUnits
+local fillTypeIsIgnored = Suite.fillTypeIsIgnored
+local getFillUnitXMLKey = Suite.getFillUnitXMLKey
+local fillUnitIsTechnicalHidden = Suite.fillUnitIsTechnicalHidden
+local captureSavedFillLevels = Suite.captureSavedFillLevels
 
 local function roundCapacityUp(capacity)
     return math.max(math.ceil((tonumber(capacity) or 0) - 0.000001), 1)
@@ -42,22 +46,6 @@ local function formatCapacity(capacity, displayUnit)
     return string.format("%s %s", value, g_i18n:getText("CONFIG_AS_M3"))
 end
 
-local function getFillUnits(vehicle)
-    if vehicle == nil then
-        return nil
-    end
-
-    if vehicle.spec_fillUnit ~= nil and vehicle.spec_fillUnit.fillUnits ~= nil then
-        return vehicle.spec_fillUnit.fillUnits
-    end
-
-    if vehicle.fillUnits ~= nil then
-        return vehicle.fillUnits
-    end
-
-    return nil
-end
-
 local function vehicleIsExcluded(vehicle)
     if vehicle == nil then
         return true
@@ -74,38 +62,6 @@ local function vehicleIsExcluded(vehicle)
         or vehicle.spec_pallet ~= nil
         or vehicle.spec_bigBag ~= nil
         or vehicle.spec_multipleItemPurchase ~= nil
-end
-
-local function getFillTypeName(fillTypeIndex)
-    if fillTypeIndex == nil then
-        return nil
-    end
-
-    if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
-        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
-        if ok then
-            return name
-        end
-    end
-
-    if FillType ~= nil then
-        for name, index in pairs(FillType) do
-            if index == fillTypeIndex then
-                return name
-            end
-        end
-    end
-
-    return nil
-end
-
-local function fillTypeIsIgnored(fillTypeIndex)
-    local name = getFillTypeName(fillTypeIndex)
-    if name == nil then
-        return false
-    end
-
-    return IGNORED_FILLTYPE_NAMES[string.upper(tostring(name))] == true
 end
 
 local function fillUnitHasUsableFillTypes(fillUnit)
@@ -148,37 +104,6 @@ local function fillUnitHasUsableFillTypes(fillUnit)
     end
 
     return true
-end
-
-local function getFillUnitXMLKey(vehicle, fillUnitIndex)
-    if vehicle == nil or vehicle.xmlFile == nil or tonumber(fillUnitIndex) == nil then
-        return nil
-    end
-
-    local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
-    configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
-    local configurationKey =
-        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
-    local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
-
-    if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
-        fillUnitKey = string.format("vehicle.fillUnit.fillUnits.fillUnit(%d)", fillUnitIndex - 1)
-    end
-
-    return vehicle.xmlFile:hasProperty(fillUnitKey) and fillUnitKey or nil
-end
-
-local function fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
-    if fillUnit == nil or fillUnit.showOnHud ~= false then
-        return false
-    end
-
-    local fillUnitKey = getFillUnitXMLKey(vehicle, fillUnitIndex)
-    return fillUnitKey ~= nil
-        and (
-            vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
-            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false
-        )
 end
 
 local function getFillUnitDisplayUnit(vehicle, fillUnitIndex, capacity)
@@ -315,32 +240,6 @@ local function collectFillUnits(vehicle, force)
     end)
 
     return #spec.units > 0
-end
-
-local function captureSavedFillLevels(savegame, spec)
-    spec.savedFillLevels = nil
-    if savegame == nil or savegame.resetVehicles or savegame.xmlFile == nil or savegame.key == nil then
-        return
-    end
-
-    local savedLevels = {}
-    local i = 0
-    while true do
-        local unitKey = string.format("%s.fillUnit.unit(%d)", savegame.key, i)
-        if not savegame.xmlFile:hasProperty(unitKey) then
-            break
-        end
-
-        local fillUnitIndex = savegame.xmlFile:getValue(unitKey .. "#index")
-        local fillLevel = savegame.xmlFile:getValue(unitKey .. "#fillLevel")
-        if fillUnitIndex ~= nil and fillLevel ~= nil then
-            savedLevels[math.floor(fillUnitIndex + 0.5)] = fillLevel
-        end
-
-        i = i + 1
-    end
-
-    spec.savedFillLevels = savedLevels
 end
 
 local function restoreSavedFillLevels(vehicle, spec)
