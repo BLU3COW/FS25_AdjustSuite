@@ -677,7 +677,7 @@ local function getBallastConfigurationContexts(xmlFile, configurations)
                         configurationDesc.configurationKey
                     )
                 end
-                optionContexts[index] = { hasUsable = mass > 0 }
+                optionContexts[index] = { hasUsable = mass > 0, mass = mass }
                 optionHasUsable = optionHasUsable or mass > 0
             end
 
@@ -1674,6 +1674,17 @@ local function updateSuiteConstructionControls(screen)
     local options = {}
     collectSuiteShopOptions(layout, options)
 
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        if storeItem.configurations[moduleId] ~= nil then
+            Suite.constructionSelections[moduleId] = {
+                xmlFilename = storeItem.xmlFilename,
+                configurationId = getConstructionSelection(screen, storeItem, layout, moduleId),
+            }
+        else
+            Suite.constructionSelections[moduleId] = nil
+        end
+    end
+
     if hideDisabledConstructionRows(screen, storeItem, layout, options) and layout.invalidateLayout ~= nil then
         layout:invalidateLayout()
     end
@@ -1920,8 +1931,317 @@ function Suite.verifyPlaceableStorageCapacities()
     end
 end
 
+local function createSpecRestore()
+    local entries = {}
+
+    local function set(target, key, value)
+        table.insert(entries, { target = target, key = key, value = target[key] })
+        target[key] = value
+    end
+
+    local function restore()
+        for index = #entries, 1, -1 do
+            local entry = entries[index]
+            entry.target[entry.key] = entry.value
+        end
+    end
+
+    return set, restore
+end
+
+local function scaleSpecNumber(specName)
+    return function(storeItem, factor)
+        local specs = storeItem.specs
+        local value = specs ~= nil and tonumber(specs[specName]) or nil
+        if value == nil then
+            return nil
+        end
+
+        local set, restore = createSpecRestore()
+        set(specs, specName, value * factor)
+        return restore
+    end
+end
+
+local function scaleFillUnitCapacities(storeItem, factor)
+    local capacityConfigurations = storeItem.specs ~= nil and storeItem.specs.capacity or nil
+    if capacityConfigurations == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for _, configuration in pairs(capacityConfigurations) do
+        for _, fillUnit in ipairs(configuration.fillUnits or {}) do
+            local value = tonumber(fillUnit.capacity)
+            if value ~= nil then
+                set(fillUnit, "capacity", value * factor)
+            end
+        end
+    end
+    return restore
+end
+
+local function scaleFuelCapacities(storeItem, factor)
+    local fuel = storeItem.specs ~= nil and storeItem.specs.fuel or nil
+    if fuel == nil or fuel.consumers == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for _, consumerConfiguration in pairs(fuel.consumers) do
+        for _, unitConsumer in ipairs(consumerConfiguration) do
+            local value = tonumber(unitConsumer.capacity)
+            if value ~= nil then
+                set(unitConsumer, "capacity", value * factor)
+            end
+        end
+    end
+    return restore
+end
+
+local function scaleWorkingWidth(storeItem, factor)
+    local workingWidth = storeItem.specs ~= nil and storeItem.specs.workingWidth or nil
+    if workingWidth == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for _, key in ipairs({ "width", "minWidth" }) do
+        local value = tonumber(workingWidth[key])
+        if value ~= nil then
+            set(workingWidth, key, value * factor)
+        end
+    end
+    return restore
+end
+
+local function scaleWorkingWidthConfig(storeItem, factor)
+    local widthsByConfiguration = storeItem.specs ~= nil and storeItem.specs.workingWidthConfig or nil
+    if widthsByConfiguration == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for _, widths in pairs(widthsByConfiguration) do
+        for _, entry in pairs(widths) do
+            local value = tonumber(entry.width)
+            if value ~= nil then
+                set(entry, "width", value * factor)
+            end
+        end
+    end
+    return restore
+end
+
+local function scaleMotorPower(storeItem, factor)
+    local set, restore = createSpecRestore()
+
+    local specs = storeItem.specs
+    local declaredPower = specs ~= nil and tonumber(specs.power) or nil
+    if declaredPower ~= nil then
+        set(specs, "power", declaredPower * factor)
+    end
+
+    local motorItems = storeItem.configurations ~= nil and storeItem.configurations["motor"] or nil
+    for _, configItem in ipairs(motorItems or {}) do
+        local value = tonumber(configItem.power)
+        if value ~= nil then
+            set(configItem, "power", value * factor)
+        end
+    end
+
+    return restore
+end
+
+local function scaleIncomePerHour(storeItem, factor)
+    local income = storeItem.specs ~= nil and storeItem.specs.incomePerHour or nil
+    if type(income) ~= "table" then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for index, value in ipairs(income) do
+        local number = tonumber(value)
+        if number ~= nil then
+            set(income, index, number * factor)
+        end
+    end
+    return restore
+end
+
+local function getSelectedConfigurationId(realItem, configurations, configurationName)
+    if realItem ~= nil and realItem.configurations ~= nil and realItem.configurations[configurationName] ~= nil then
+        return tonumber(realItem.configurations[configurationName]) or 1
+    end
+
+    if configurations ~= nil and configurations[configurationName] ~= nil then
+        return tonumber(configurations[configurationName]) or 1
+    end
+
+    return 1
+end
+
+local function getBallastMassDelta(storeItem, factor, realItem, configurations)
+    local weight = storeItem.specs ~= nil and storeItem.specs.weight or nil
+    if weight == nil then
+        return 0
+    end
+
+    if storeItem.ABWIsStandaloneWeight == true then
+        local base = tonumber(weight.componentMass) or 0
+        local componentId = configurations ~= nil and configurations["component"] or nil
+        if componentId ~= nil and weight.configurations ~= nil then
+            base = tonumber(weight.configurations[componentId]) or base
+        end
+        return base * (factor - 1)
+    end
+
+    local ballastConfigurations = storeItem.ABWBallastConfigurations
+    if ballastConfigurations == nil then
+        return 0
+    end
+
+    local ballastMass = 0
+    for configurationName, contexts in pairs(ballastConfigurations) do
+        local context = contexts[getSelectedConfigurationId(realItem, configurations, configurationName)]
+        ballastMass = ballastMass + (context ~= nil and tonumber(context.mass) or 0)
+    end
+
+    return ballastMass * 0.001 * (factor - 1)
+end
+
+local function scaleVehicleWeight(storeItem, factor, realItem, configurations)
+    local weight = storeItem.specs ~= nil and storeItem.specs.weight or nil
+    local delta = getBallastMassDelta(storeItem, factor, realItem, configurations)
+    if weight == nil or delta == 0 then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+
+    local componentMass = tonumber(weight.componentMass)
+    if componentMass ~= nil then
+        set(weight, "componentMass", componentMass + delta)
+    end
+
+    for index, value in pairs(weight.configurations or {}) do
+        local number = tonumber(value)
+        if number ~= nil then
+            set(weight.configurations, index, number + delta)
+        end
+    end
+
+    return restore
+end
+
+local function scaleAdditionalWeight(storeItem, factor, realItem, configurations)
+    local specs = storeItem.specs
+    local maxMass = specs ~= nil and tonumber(specs.additionalWeight) or nil
+    local delta = getBallastMassDelta(storeItem, factor, realItem, configurations)
+    if maxMass == nil or delta == 0 then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    set(specs, "additionalWeight", maxMass + delta)
+
+    local weightRestore = scaleVehicleWeight(storeItem, factor, realItem, configurations)
+    if weightRestore == nil then
+        return restore
+    end
+
+    return function()
+        weightRestore()
+        restore()
+    end
+end
+
+local SPEC_SCALERS = {
+    { name = "speedLimit", moduleId = "AWS", apply = scaleSpecNumber("speedLimit") },
+    { name = "maxSpeed", moduleId = "ADS", apply = scaleSpecNumber("maxSpeed") },
+    { name = "capacity", moduleId = "AFV", apply = scaleFillUnitCapacities },
+    { name = "fuel", moduleId = "AFC", apply = scaleFuelCapacities },
+    { name = "electricCharge", moduleId = "AFC", apply = scaleFuelCapacities },
+    { name = "methane", moduleId = "AFC", apply = scaleFuelCapacities },
+    { name = "workingWidth", moduleId = "AWW", apply = scaleWorkingWidth },
+    { name = "workingWidthConfig", moduleId = "AWW", apply = scaleWorkingWidthConfig },
+    { name = "power", moduleId = "AMP", apply = scaleMotorPower },
+    { name = "weight", moduleId = "ABW", apply = scaleVehicleWeight },
+    { name = "additionalWeight", moduleId = "ABW", apply = scaleAdditionalWeight },
+    { name = "siloVolume", moduleId = "AFVP", apply = scaleSpecNumber("siloVolume") },
+    { name = "siloExtensionVolume", moduleId = "AFVP", apply = scaleSpecNumber("siloExtensionVolume") },
+    { name = "manureHeapCapacity", moduleId = "AFVP", apply = scaleSpecNumber("manureHeapCapacity") },
+    { name = "incomePerHour", moduleId = "AIPP", apply = scaleIncomePerHour },
+}
+
+Suite.constructionSelections = Suite.constructionSelections or {}
+
+local function getSpecConfigurationId(storeItem, realItem, configurations, moduleId)
+    if realItem ~= nil and realItem.configurations ~= nil and realItem.configurations[moduleId] ~= nil then
+        return tonumber(realItem.configurations[moduleId])
+    end
+
+    if configurations ~= nil and configurations[moduleId] ~= nil then
+        return tonumber(configurations[moduleId])
+    end
+
+    local selection = Suite.constructionSelections[moduleId]
+    if selection ~= nil and storeItem ~= nil and selection.xmlFilename == storeItem.xmlFilename then
+        return tonumber(selection.configurationId)
+    end
+
+    return nil
+end
+
+local function getSpecScaleFactor(storeItem, realItem, configurations, moduleId)
+    if storeItem == nil or not Suite.getIsModuleEnabled(moduleId) then
+        return 1
+    end
+
+    local configId = getSpecConfigurationId(storeItem, realItem, configurations, moduleId)
+    if configId == nil then
+        return 1
+    end
+
+    return Suite.getFactorFromOffset(Suite.getEffectiveOffset(moduleId, Suite.getOffsetFromConfigId(configId)))
+end
+
+function Suite.installSpecValueScaling()
+    if g_storeManager == nil or g_storeManager.getSpecTypeByName == nil then
+        return
+    end
+
+    for _, entry in ipairs(SPEC_SCALERS) do
+        local specType = g_storeManager:getSpecTypeByName(entry.name)
+        if specType ~= nil and specType.getValueFunc ~= nil and specType.adjustSuiteScaled ~= true then
+            specType.adjustSuiteScaled = true
+
+            local originalFunc = specType.getValueFunc
+            specType.getValueFunc = function(storeItem, realItem, configurations, saleItem, returnValues, returnRange)
+                local factor = getSpecScaleFactor(storeItem, realItem, configurations, entry.moduleId)
+                if factor == 1 then
+                    return originalFunc(storeItem, realItem, configurations, saleItem, returnValues, returnRange)
+                end
+
+                local restore = entry.apply(storeItem, factor, realItem, configurations)
+                local ok, first, second =
+                    safeCall(originalFunc, storeItem, realItem, configurations, saleItem, returnValues, returnRange)
+                if restore ~= nil then
+                    restore()
+                end
+
+                if not ok then
+                    return nil
+                end
+                return first, second
+            end
+        end
+    end
+end
+
 function Suite:loadMap()
     Suite.registerPlaceableOffsetSavegamePaths()
+    Suite.installSpecValueScaling()
     Suite.storageVerificationDelay = 600
 
     for _, moduleId in ipairs(Suite.moduleIds) do

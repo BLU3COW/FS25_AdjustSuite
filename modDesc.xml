@@ -51,6 +51,7 @@ Changelog 1.0.0.4:
 - AWS is now only offered on vehicles with a work function, and a tractor no longer raises the speed limit of its implement. The lower of the two applies, as before.
 - ADR now explains in the help menu that a forage harvester couples its throughput to working width and speed.
 - AFC no longer lists DEF next to diesel in the help menu.
+- The specification sheet in the shop and in construction mode now follows the selected stage: power, top speed, tank contents, capacity, working width, weight, additional weight, speed limit, silo volume, manure heap capacity and income per hour. It always shows the stage that actually applies, so a value lowered by a range switch is displayed as it will be.
 - A price percentage above roughly 500 could produce a negative total price. The discount is now limited to the base price.
 - The EXTERNALCAPACITY setting now also covers placeables and productions. With respect="true" a storage capacity changed by AdjustStorageCapacity or a similar mod is kept; with the default "false" the AFV-P selection is re-applied after loading.
 
@@ -100,6 +101,7 @@ Changelog 1.0.0.4:
 - AWS wird nur noch bei Fahrzeugen mit Arbeitsfunktion angeboten, und ein Traktor hebt das Tempolimit seines Anbaugeräts nicht mehr mit an. Es gilt wie bisher der niedrigere Wert.
 - ADR erklärt jetzt im Hilfemenü, dass ein Feldhäcksler seinen Durchsatz an Arbeitsbreite und Geschwindigkeit koppelt.
 - AFC führt DEF im Hilfemenü nicht mehr neben dem Diesel auf.
+- Das Spezifikationsblatt im Shop und im Baumenü folgt jetzt der gewählten Stufe: Leistung, Höchstgeschwindigkeit, Tankinhalt, Kapazität, Arbeitsbreite, Gewicht, Zusatzgewicht, Tempolimit, Silovolumen, Misthaufen-Kapazität und Einkommen pro Stunde. Es zeigt immer die wirksame Stufe, ein durch einen Bereichsschalter herabgestufter Wert wird also so angezeigt, wie er tatsächlich gilt.
 - Ein Preiswert über etwa 500 Prozent konnte einen negativen Gesamtpreis erzeugen. Der Abschlag ist jetzt auf den Grundpreis begrenzt.
 - Die Einstellung EXTERNALCAPACITY gilt jetzt auch für platzierbare Objekte und Produktionen. Mit respect="true" bleibt eine von AdjustStorageCapacity oder einem ähnlichen Mod geänderte Lagerkapazität erhalten, mit dem Standardwert "false" wird die AFV-P-Auswahl nach dem Laden wieder angewendet.
 
@@ -149,6 +151,7 @@ Changelog 1.0.0.4 :
 - AWS n'est plus proposé que sur les véhicules dotés d'une fonction de travail, et un tracteur n'augmente plus la limite de vitesse de son outil. C'est la valeur la plus basse qui s'applique, comme auparavant.
 - ADR explique désormais dans le menu d'aide qu'une ensileuse lie son débit à la largeur et à la vitesse de travail.
 - AFC ne liste plus le DEF à côté du diesel dans le menu d'aide.
+- La fiche technique dans la boutique et en mode construction suit désormais le niveau choisi : puissance, vitesse maximale, contenu du réservoir, capacité, largeur de travail, poids, poids supplémentaire, limite de vitesse, volume de silo, capacité du tas de fumier et revenu horaire. Elle affiche toujours le niveau réellement appliqué.
 - Un pourcentage de prix supérieur à environ 500 pouvait produire un prix total négatif. La remise est désormais limitée au prix de base.
 - Le réglage EXTERNALCAPACITY couvre désormais aussi les objets plaçables et les productions. Avec respect="true", une capacité de stockage modifiée par AdjustStorageCapacity ou un mod similaire est conservée ; avec la valeur par défaut "false", la sélection AFV-P est réappliquée après le chargement.
 
