@@ -168,17 +168,6 @@ Changelog 1.0.0.3 (Patch 1.23) :
         <sourceFile filename="lua/ACRP.lua" />
         <sourceFile filename="lua/ACAP.lua" />
         <sourceFile filename="lua/AIPP.lua" />
-		<sourceFile filename="lua/AFV.lua" />
-		<sourceFile filename="lua/AFC.lua" />
-		<sourceFile filename="lua/APC.lua" />
-		<sourceFile filename="lua/ABW.lua" />
-		<sourceFile filename="lua/AMP.lua" />
-		<sourceFile filename="lua/AWS.lua" />
-		<sourceFile filename="lua/AWW.lua" />
-		<sourceFile filename="lua/APW.lua" />
-		<sourceFile filename="lua/ADS.lua" />
-		<sourceFile filename="lua/ABP.lua" />
-		<sourceFile filename="lua/ADR.lua" />
         <sourceFile filename="lua/AdjustSuite_PrecisionFarming.lua" />
         <sourceFile filename="lua/AdjustSuite_Courseplay.lua" />
         <sourceFile filename="lua/AdjustSuite_AutoDrive.lua" />
