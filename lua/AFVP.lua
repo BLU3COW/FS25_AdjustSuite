@@ -42,6 +42,74 @@ local function updateFillPlaneHook()
     end
 end
 
+AFVP.storages = AFVP.storages or setmetatable({}, { __mode = "k" })
+
+function AFVP.rememberStorageCapacities(storage)
+    if type(storage) ~= "table" then
+        return
+    end
+
+    local capacity = tonumber(storage.capacity)
+    if capacity == nil or capacity <= 0 then
+        return
+    end
+
+    storage.adjustSuiteAFVPCapacity = capacity
+
+    local applied = {}
+    for fillType, value in pairs(storage.capacities or {}) do
+        applied[fillType] = tonumber(value)
+    end
+    storage.adjustSuiteAFVPCapacities = applied
+
+    AFVP.storages[storage] = true
+end
+
+local function reconcileCapacity(current, applied, respectExternal)
+    if current == nil or applied == nil or math.abs(current - applied) <= 0.5 then
+        return nil
+    end
+
+    return respectExternal and current or applied
+end
+
+function AFVP.verifyStorageCapacities()
+    local respectExternal = Suite.respectExternalCapacityOverrides == true
+
+    for storage in pairs(AFVP.storages) do
+        local resolved =
+            reconcileCapacity(tonumber(storage.capacity), tonumber(storage.adjustSuiteAFVPCapacity), respectExternal)
+        if resolved ~= nil then
+            storage.capacity = resolved
+            storage.adjustSuiteAFVPCapacity = resolved
+        end
+
+        local applied = storage.adjustSuiteAFVPCapacities
+        local capacities = storage.capacities
+        if applied ~= nil and capacities ~= nil then
+            for fillType, value in pairs(applied) do
+                local resolvedFillType = reconcileCapacity(tonumber(capacities[fillType]), value, respectExternal)
+                if resolvedFillType ~= nil then
+                    capacities[fillType] = resolvedFillType
+                    applied[fillType] = resolvedFillType
+                end
+            end
+        end
+    end
+end
+
+local StorageClass = _G["Storage"]
+if AFVP.storageHookInstalled ~= true and StorageClass ~= nil and StorageClass.load ~= nil then
+    AFVP.storageHookInstalled = true
+    StorageClass.load = Utils.overwrittenFunction(StorageClass.load, function(storage, superFunc, ...)
+        local loaded = superFunc(storage, ...)
+        if loaded ~= false then
+            AFVP.rememberStorageCapacities(storage)
+        end
+        return loaded
+    end)
+end
+
 local function capacityIsUsable(xmlFile, key)
     local value = tonumber(xmlFile:getValue(key))
     return value ~= nil and value > 0

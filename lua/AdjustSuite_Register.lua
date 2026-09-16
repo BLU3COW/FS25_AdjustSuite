@@ -1868,6 +1868,16 @@ function Suite:update(dt)
     if AdjustSuiteAutoDrive ~= nil then
         AdjustSuiteAutoDrive.install()
     end
+
+    local pending = tonumber(Suite.storageVerificationDelay)
+    if pending ~= nil then
+        if pending > 0 then
+            Suite.storageVerificationDelay = pending - 1
+        else
+            Suite.storageVerificationDelay = nil
+            Suite.verifyPlaceableStorageCapacities()
+        end
+    end
 end
 
 if Suite.placeableSaveHookInstalled ~= true and Placeable ~= nil and Placeable.saveToXMLFile ~= nil then
@@ -1897,11 +1907,22 @@ if
     and AdjustSuiteSettingsEvent.run ~= nil
 then
     Suite.productionSettingsHookInstalled = true
-    AdjustSuiteSettingsEvent.run = Utils.appendedFunction(AdjustSuiteSettingsEvent.run, Suite.refreshProductionPoints)
+    AdjustSuiteSettingsEvent.run = Utils.appendedFunction(AdjustSuiteSettingsEvent.run, function()
+        Suite.refreshProductionPoints()
+        Suite.verifyPlaceableStorageCapacities()
+    end)
+end
+
+function Suite.verifyPlaceableStorageCapacities()
+    local module = _G[getModuleClassName("AFVP")]
+    if module ~= nil and module.verifyStorageCapacities ~= nil then
+        module.verifyStorageCapacities()
+    end
 end
 
 function Suite:loadMap()
     Suite.registerPlaceableOffsetSavegamePaths()
+    Suite.storageVerificationDelay = 600
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         Suite.refreshStoreConfigurations(moduleId)

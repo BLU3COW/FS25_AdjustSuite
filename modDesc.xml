@@ -52,6 +52,7 @@ Changelog 1.0.0.4:
 - ADR now explains in the help menu that a forage harvester couples its throughput to working width and speed.
 - AFC no longer lists DEF next to diesel in the help menu.
 - A price percentage above roughly 500 could produce a negative total price. The discount is now limited to the base price.
+- The EXTERNALCAPACITY setting now also covers placeables and productions. With respect="true" a storage capacity changed by AdjustStorageCapacity or a similar mod is kept; with the default "false" the AFV-P selection is re-applied after loading.
 
 Changelog 1.0.0.3 (Patch 1.23):
 - Updated for Farming Simulator 25 Patch 1.23.
@@ -100,6 +101,7 @@ Changelog 1.0.0.4:
 - ADR erklärt jetzt im Hilfemenü, dass ein Feldhäcksler seinen Durchsatz an Arbeitsbreite und Geschwindigkeit koppelt.
 - AFC führt DEF im Hilfemenü nicht mehr neben dem Diesel auf.
 - Ein Preiswert über etwa 500 Prozent konnte einen negativen Gesamtpreis erzeugen. Der Abschlag ist jetzt auf den Grundpreis begrenzt.
+- Die Einstellung EXTERNALCAPACITY gilt jetzt auch für platzierbare Objekte und Produktionen. Mit respect="true" bleibt eine von AdjustStorageCapacity oder einem ähnlichen Mod geänderte Lagerkapazität erhalten, mit dem Standardwert "false" wird die AFV-P-Auswahl nach dem Laden wieder angewendet.
 
 Changelog 1.0.0.3 (Patch 1.23):
 - Aktualisiert für Farming Simulator 25 Patch 1.23.
@@ -148,6 +150,7 @@ Changelog 1.0.0.4 :
 - ADR explique désormais dans le menu d'aide qu'une ensileuse lie son débit à la largeur et à la vitesse de travail.
 - AFC ne liste plus le DEF à côté du diesel dans le menu d'aide.
 - Un pourcentage de prix supérieur à environ 500 pouvait produire un prix total négatif. La remise est désormais limitée au prix de base.
+- Le réglage EXTERNALCAPACITY couvre désormais aussi les objets plaçables et les productions. Avec respect="true", une capacité de stockage modifiée par AdjustStorageCapacity ou un mod similaire est conservée ; avec la valeur par défaut "false", la sélection AFV-P est réappliquée après le chargement.
 
 Changelog 1.0.0.3 (Patch 1.23) :
 - Mis à jour pour Farming Simulator 25 Patch 1.23.
