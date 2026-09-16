@@ -2,6 +2,7 @@ AdjustSuiteADRP = AdjustSuiteADRP or {}
 local ADRP = AdjustSuiteADRP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ADRP"] = ADRP
 local LOAD_TRIGGER_PATHS = {
     "placeable.silo.loadingStation.loadTrigger",
     "placeable.buyingStation.loadTrigger",

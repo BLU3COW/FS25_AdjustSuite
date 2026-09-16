@@ -13,6 +13,7 @@ end
 for _, moduleId in ipairs(Suite.placeableModuleIds) do
     table.insert(Suite.moduleIds, moduleId)
 end
+Suite.moduleClasses = Suite.moduleClasses or {}
 Suite.configurationNames = {}
 for _, moduleId in ipairs(Suite.moduleIds) do
     Suite.configurationNames[moduleId] = true

@@ -3,6 +3,7 @@ AdjustSuiteAPC = AdjustSuiteAPC or {}
 local APC = AdjustSuiteAPC
 
 local Suite = AdjustSuite
+Suite.moduleClasses["APC"] = APC
 local getSpec, _, hasSelectedConfiguration, getSelectionFactor = Suite.createModuleAccessors("APC")
 local fillTypeIsIgnored = Suite.fillTypeIsIgnored
 local fillUnitIsTechnicalHidden = Suite.fillUnitIsTechnicalHidden

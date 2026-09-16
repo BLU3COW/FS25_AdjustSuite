@@ -2,6 +2,7 @@ AdjustSuiteAWS = AdjustSuiteAWS or {}
 local AWS = AdjustSuiteAWS
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AWS"] = AWS
 local SETTINGS = Suite.range
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getIsLoweredForWork = Suite.getIsLoweredForWork

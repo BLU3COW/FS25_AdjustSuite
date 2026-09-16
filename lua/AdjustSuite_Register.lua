@@ -7,27 +7,22 @@ local function getModuleClassName(moduleId)
     return "AdjustSuite" .. moduleId
 end
 
-Suite.moduleClasses = Suite.moduleClasses or {}
-for _, moduleId in ipairs(Suite.moduleIds) do
-    local className = getModuleClassName(moduleId)
-    local moduleClass = _G[className] or {}
-    _G[className] = moduleClass
-    Suite.moduleClasses[moduleId] = moduleClass
-end
-
-local AFV = Suite.moduleClasses["AFV"]
-AFV.ignoredFillTypeNames = AFV.ignoredFillTypeNames or Suite.ignoredFillTypeNames
-
 local function hasSpecialization(specialization, specializations)
     return specialization ~= nil
         and specializations ~= nil
         and SpecializationUtil.hasSpecialization(specialization, specializations)
 end
 
+local function getIgnoredFillTypeNames()
+    local module = Suite.moduleClasses["AFV"]
+    local ignored = module ~= nil and module.ignoredFillTypeNames or nil
+    return ignored or Suite.ignoredFillTypeNames
+end
+
 local function fillTypeTokenIsIgnored(token)
     token = string.upper(tostring(token or ""))
     token = string.gsub(token, "%s", "")
-    return AFV.ignoredFillTypeNames[token] == true
+    return getIgnoredFillTypeNames()[token] == true
 end
 
 local function tokenListAllowsUsableFillType(value)
@@ -985,7 +980,6 @@ for _, moduleId in ipairs(Suite.vehicleModuleIds) do
     definition.specializationName = string.format("%s.%s", MOD_NAME, definition.registrationName)
     definition.specializationClassName = definition.registrationName
     definition.titleKey = string.format("CONFIG_%s_TITLE", moduleId)
-    definition.specialization = Suite.moduleClasses[definition.id]
     definition.specializationFile = string.format("lua/%s.lua", definition.configName)
 end
 
@@ -1067,7 +1061,7 @@ local function xmlVehicleTypeHasModule(definition, xmlFile, customEnvironment)
     end
 
     local vehicleType = getVehicleType(xmlFile, customEnvironment)
-    return vehicleType ~= nil and hasSpecialization(definition.specialization, vehicleType.specializations)
+    return vehicleType ~= nil and hasSpecialization(Suite.moduleClasses[definition.id], vehicleType.specializations)
 end
 
 local function updateConfigurationItems(definition, configItems, context)

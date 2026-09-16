@@ -2,6 +2,7 @@ AdjustSuiteABW = AdjustSuiteABW or {}
 local ABW = AdjustSuiteABW
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ABW"] = ABW
 local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ABW")
 
 local function getComponent(vehicle, node)

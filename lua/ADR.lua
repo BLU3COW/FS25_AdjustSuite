@@ -2,6 +2,7 @@ AdjustSuiteADR = AdjustSuiteADR or {}
 local ADR = AdjustSuiteADR
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ADR"] = ADR
 local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ADR")
 local WIDTH_CONFIGURATION_NAMES = { "AWW", "APW" }
 

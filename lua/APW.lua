@@ -2,6 +2,7 @@ AdjustSuiteAPW = AdjustSuiteAPW or {}
 local APW = AdjustSuiteAPW
 
 local Suite = AdjustSuite
+Suite.moduleClasses["APW"] = APW
 local getAreaNodes = Suite.getWorkAreaNodes
 
 local pickupWorkAreaFunctions = Suite.pickupWorkAreaFunctions

@@ -2,6 +2,7 @@ AdjustSuiteADS = AdjustSuiteADS or {}
 local ADS = AdjustSuiteADS
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ADS"] = ADS
 local getSpec, getSelectedOffset, hasSelectedConfiguration = Suite.createModuleAccessors("ADS")
 
 local MAX_OVERDRIVE_SPEED_STEP = 1.25

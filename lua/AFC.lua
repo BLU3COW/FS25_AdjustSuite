@@ -3,6 +3,7 @@ AdjustSuiteAFC = AdjustSuiteAFC or {}
 local AFC = AdjustSuiteAFC
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AFC"] = AFC
 local getFillUnits = Suite.getFillUnits
 local getFillTypeName = Suite.getFillTypeName
 local getFillUnitXMLKey = Suite.getFillUnitXMLKey

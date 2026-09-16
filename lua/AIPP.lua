@@ -2,6 +2,7 @@ AdjustSuiteAIPP = AdjustSuiteAIPP or {}
 local AIPP = AdjustSuiteAIPP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AIPP"] = AIPP
 local INCOME_PATH = "placeable.incomePerHour"
 local INCOME_CONFIGURATIONS_PATH = INCOME_PATH .. ".incomePerHourConfigurations.incomePerHourConfiguration"
 local SOLAR_CONFIGURATIONS_PATH = "placeable.solarPanels.solarPanelsConfigurations.solarPanelsConfiguration"

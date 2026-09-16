@@ -2,6 +2,7 @@ AdjustSuiteACAP = AdjustSuiteACAP or {}
 local ACAP = AdjustSuiteACAP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ACAP"] = ACAP
 local PRODUCTION_PATH = "placeable.productionPoint"
 local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfigurations.productionPointConfiguration"
 local FEEDING_ROBOT_PATH = "placeable.husbandry.feedingRobot"

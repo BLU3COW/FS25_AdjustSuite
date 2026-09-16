@@ -3,6 +3,7 @@ AdjustSuiteAMP = AdjustSuiteAMP or {}
 local AMP = AdjustSuiteAMP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AMP"] = AMP
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("AMP")
 

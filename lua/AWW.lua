@@ -3,6 +3,7 @@ AdjustSuiteAWW = AdjustSuiteAWW or {}
 local AWW = AdjustSuiteAWW
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AWW"] = AWW
 local getAreaNodes = Suite.getWorkAreaNodes
 local clampOffset = Suite.clampOffset
 local getFactorFromOffset = Suite.getFactorFromOffset

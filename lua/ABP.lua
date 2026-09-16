@@ -2,6 +2,7 @@ AdjustSuiteABP = AdjustSuiteABP or {}
 local ABP = AdjustSuiteABP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ABP"] = ABP
 local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ABP")
 
 function ABP.prerequisitesPresent(specializations)

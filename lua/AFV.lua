@@ -3,6 +3,7 @@ AdjustSuiteAFV = AdjustSuiteAFV or {}
 local AFV = AdjustSuiteAFV
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AFV"] = AFV
 local clampOffset = Suite.clampOffset
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("AFV")

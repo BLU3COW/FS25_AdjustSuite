@@ -2,6 +2,7 @@ AdjustSuiteACRP = AdjustSuiteACRP or {}
 local ACRP = AdjustSuiteACRP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ACRP"] = ACRP
 local PRODUCTION_PATH = "placeable.productionPoint"
 local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfigurations.productionPointConfiguration"
 

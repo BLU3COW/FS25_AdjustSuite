@@ -2,6 +2,7 @@ AdjustSuiteAFVP = AdjustSuiteAFVP or {}
 local AFVP = AdjustSuiteAFVP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AFVP"] = AFVP
 local STORAGE_PATHS = {
     { path = "placeable.silo.storages.storage", isList = true },
     { path = "placeable.siloExtension.storage" },
