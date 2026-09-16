@@ -1439,7 +1439,9 @@ end
 local function collectSprayerVisualEffectNodes(vehicle)
     local nodes = {}
     local seen = {}
-    local extendedNodes = AdjustSuitePrecisionFarming.getVisualEffectNodes(vehicle)
+    local extendedNodes = AdjustSuitePrecisionFarming ~= nil
+            and AdjustSuitePrecisionFarming.getVisualEffectNodes(vehicle)
+        or nil
     if extendedNodes ~= nil then
         for _, entry in pairs(extendedNodes) do
             addEffectNode(nodes, seen, entry.node, entry.effectData)
@@ -2043,12 +2045,16 @@ end
 
 function AWW:onChangedFillType(fillUnitIndex, fillTypeIndex, oldFillTypeIndex)
     queueSprayerVisualEffectUpdate(self)
-    AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    if AdjustSuitePrecisionFarming ~= nil then
+        AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    end
 end
 
 function AWW:onSprayTypeChange(sprayType)
     queueSprayerVisualEffectUpdate(self)
-    AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    if AdjustSuitePrecisionFarming ~= nil then
+        AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    end
 end
 
 function AWW:onTurnedOn()
@@ -2056,7 +2062,9 @@ function AWW:onTurnedOn()
 end
 
 function AWW:onTurnedOff()
-    AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    if AdjustSuitePrecisionFarming ~= nil then
+        AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    end
 end
 
 function AWW:onPostLoad(savegame)
@@ -2329,7 +2337,14 @@ function AWW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
 end
 
 function AWW:onUpdateTick(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+    if AdjustSuitePrecisionFarming == nil then
+        return
+    end
+
+    local spec = getSpec(self)
     if Suite.getIsModuleEnabled("AWW") then
-        AdjustSuitePrecisionFarming.updateLimeFallback(self, getSpec(self))
+        AdjustSuitePrecisionFarming.updateLimeFallback(self, spec)
+    elseif spec.precisionFarmingLimeEffectActive == true then
+        AdjustSuitePrecisionFarming.stopLimeFallback(self, spec)
     end
 end

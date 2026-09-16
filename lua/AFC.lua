@@ -252,9 +252,6 @@ local function captureSavedFillLevels(savegame, spec)
     spec.savedFillLevels = savedLevels
 end
 
--- The base game clamps a loaded fillLevel to the vehicle's default (unadjusted)
--- capacity before this mod's onPostLoad gets a chance to enlarge it, so a level
--- saved above the default capacity would otherwise be lost on every restart.
 local function restoreSavedFillLevels(vehicle, spec)
     local savedLevels = spec.savedFillLevels
     spec.savedFillLevels = nil
