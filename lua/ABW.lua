@@ -171,7 +171,7 @@ function ABW:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "ABW", self.isServer)
 end
 
-function ABW:saveToXMLFile(xmlFile, key, usedModNames)
+function ABW:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "ABW", xmlFile, key)
 end
 
@@ -182,7 +182,7 @@ function ABW.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ABW)
 end
 
-function ABW:onLoad(savegame)
+function ABW:onLoad(_savegame)
     if not hasSelectedConfiguration(self) then
         return
     end
@@ -216,7 +216,7 @@ function ABW:onLoad(savegame)
     end
 end
 
-function ABW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ABW:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if
         not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)

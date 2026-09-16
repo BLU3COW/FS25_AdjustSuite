@@ -27,7 +27,7 @@ function ABP:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "ABP", self.isServer)
 end
 
-function ABP:saveToXMLFile(xmlFile, key, usedModNames)
+function ABP:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "ABP", xmlFile, key)
 end
 
@@ -38,7 +38,7 @@ function ABP.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ABP)
 end
 
-function ABP:onLoad(savegame)
+function ABP:onLoad(_savegame)
     if hasSelectedConfiguration(self) then
         getFactor(self)
     end
@@ -53,7 +53,7 @@ function ABP:getBrakeForce(superFunc)
     return brakeForce * getFactor(self)
 end
 
-function ABP:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ABP:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or not hasSelectedConfiguration(self) then
         return
     end

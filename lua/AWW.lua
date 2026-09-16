@@ -395,7 +395,7 @@ local function getSyntheticAreaGeometry(spec, areas)
     local count = 0
 
     for _, area in ipairs(areas) do
-        local sx, sy, sz = getNodePositionInReference(area.startNode, spec.referenceNode)
+        local sx, _sy, sz = getNodePositionInReference(area.startNode, spec.referenceNode)
         local wx, _, wz = getNodePositionInReference(area.widthNode, spec.referenceNode)
         local hx, _, hz = getNodePositionInReference(area.heightNode, spec.referenceNode)
         if sx ~= nil and wx ~= nil and hx ~= nil then
@@ -1302,7 +1302,7 @@ local function applyAIMarkerWidth(vehicle, spec, factor, appliedNodes)
 
     local applyMarkerSet = scaleMarkerSet
     if spec.usePlowWidthAxis then
-        applyMarkerSet = function(unusedSpec, leftMarker, rightMarker, backMarker, unusedFactor, nodes)
+        applyMarkerSet = function(_unusedSpec, leftMarker, rightMarker, backMarker, _unusedFactor, nodes)
             setPlowMarkerSet(spec, leftMarker, rightMarker, backMarker, nodes)
         end
     end
@@ -1984,7 +1984,7 @@ function AWW:processCultivatorArea(superFunc, workArea, dt)
     return processSyntheticArea(superFunc, self, workArea, dt, getSpec(self).syntheticPlowPackerArea)
 end
 
-function AWW:onStartWorkAreaProcessing(dt, workAreas)
+function AWW:onStartWorkAreaProcessing(_dt, _workAreas)
     local spec = getSpec(self)
     if spec.syntheticPlowArea ~= nil then
         updateSyntheticAreaSetGeometry(spec, spec.syntheticPlowArea)
@@ -2024,14 +2024,14 @@ local function queueSprayerVisualEffectUpdate(vehicle)
     end
 end
 
-function AWW:onChangedFillType(fillUnitIndex, fillTypeIndex, oldFillTypeIndex)
+function AWW:onChangedFillType(_fillUnitIndex, _fillTypeIndex, _oldFillTypeIndex)
     queueSprayerVisualEffectUpdate(self)
     if AdjustSuitePrecisionFarming ~= nil then
         AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
     end
 end
 
-function AWW:onSprayTypeChange(sprayType)
+function AWW:onSprayTypeChange(_sprayType)
     queueSprayerVisualEffectUpdate(self)
     if AdjustSuitePrecisionFarming ~= nil then
         AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
@@ -2048,7 +2048,7 @@ function AWW:onTurnedOff()
     end
 end
 
-function AWW:onPostLoad(savegame)
+function AWW:onPostLoad(_savegame)
     if not Suite.getIsModuleEnabled("AWW") then
         return
     end
@@ -2112,7 +2112,7 @@ local function updateNativeMowerModeAction(vehicle)
     g_inputBinding:setActionEventActive(actionEvent.actionEventId, isAllowed)
 end
 
-function AWW.actionEventToggleMowerDropMode(vehicle, actionName, inputValue, callbackState, isAnalog)
+function AWW.actionEventToggleMowerDropMode(vehicle, _actionName, _inputValue, _callbackState, _isAnalog)
     local mowerSpec = vehicle.spec_mower
     if mowerSpec ~= nil and vehicle.setUseMowerWindrowDropAreas ~= nil then
         vehicle:setUseMowerWindrowDropAreas(not mowerSpec.useWindrowDropAreas)
@@ -2165,7 +2165,7 @@ function AWW:setWorkMode(superFunc, state, noEventSend)
     return result
 end
 
-function AWW:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSelection)
+function AWW:onRegisterActionEvents(_isActiveForInput, isActiveForInputIgnoreSelection)
     if self.isClient ~= true or not Suite.getIsModuleEnabled("AWW") then
         return
     end
@@ -2210,7 +2210,7 @@ function AWW:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSele
     end
 end
 
-function AWW:onWriteStream(streamId, connection)
+function AWW:onWriteStream(streamId, _connection)
     local spec = getSpec(self)
     local useWindrowDropAreas = Suite.getIsModuleEnabled("AWW")
         and spec.syntheticMowerModes == true
@@ -2219,7 +2219,7 @@ function AWW:onWriteStream(streamId, connection)
     streamWriteBool(streamId, useWindrowDropAreas)
 end
 
-function AWW:onReadStream(streamId, connection)
+function AWW:onReadStream(streamId, _connection)
     local spec = getSpec(self)
     local useWindrowDropAreas = streamReadBool(streamId)
     spec.requestedUseWindrowDropAreas = useWindrowDropAreas
@@ -2233,7 +2233,7 @@ function AWW:onReadStream(streamId, connection)
     end
 end
 
-function AWW:saveToXMLFile(xmlFile, key, usedModNames)
+function AWW:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "AWW", xmlFile, key)
     local spec = getSpec(self)
     if Suite.getIsModuleEnabled("AWW") and spec.syntheticMowerModes == true and self.spec_mower ~= nil then
@@ -2241,7 +2241,7 @@ function AWW:saveToXMLFile(xmlFile, key, usedModNames)
     end
 end
 
-function AWW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AWW:onUpdate(_dt, _isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.getIsModuleEnabled("AWW") then
         return
     end
@@ -2284,7 +2284,7 @@ function AWW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isS
     end
 end
 
-function AWW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AWW:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if spec.currentWidth == nil or spec.baseWidth == nil or spec.baseWidth <= 0 then
         return
@@ -2319,7 +2319,7 @@ function AWW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     )
 end
 
-function AWW:onUpdateTick(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AWW:onUpdateTick(_dt, _isActiveForInput, _isActiveForInputIgnoreSelection, _isSelected)
     if AdjustSuitePrecisionFarming == nil then
         return
     end

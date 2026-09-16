@@ -143,7 +143,7 @@ function APW:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "APW", self.isServer)
 end
 
-function APW:saveToXMLFile(xmlFile, key, usedModNames)
+function APW:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "APW", xmlFile, key)
 end
 
@@ -156,7 +156,7 @@ function APW.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", APW)
 end
 
-function APW:onLoad(savegame)
+function APW:onLoad(_savegame)
     if self.configurations == nil or self.configurations.APW == nil then
         return
     end
@@ -164,21 +164,21 @@ function APW:onLoad(savegame)
     getSpec(self).pendingApply = true
 end
 
-function APW:onPostLoad(savegame)
+function APW:onPostLoad(_savegame)
     local spec = getSpec(self)
     if spec.pendingApply == true and applyPickupWidth(self) then
         spec.pendingApply = false
     end
 end
 
-function APW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function APW:onUpdate(_dt, _isActiveForInput, _isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if spec.pendingApply == true and applyPickupWidth(self) then
         spec.pendingApply = false
     end
 end
 
-function APW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function APW:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if
         not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)

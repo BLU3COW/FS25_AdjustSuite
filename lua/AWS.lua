@@ -66,7 +66,7 @@ local function getAdjustedSpeed(vehicle)
     return normalizeSpeed(vehicle, speed)
 end
 
-function AWS.prerequisitesPresent(specializations)
+function AWS.prerequisitesPresent(_specializations)
     return true
 end
 
@@ -83,7 +83,7 @@ function AWS:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "AWS", self.isServer)
 end
 
-function AWS:saveToXMLFile(xmlFile, key, usedModNames)
+function AWS:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "AWS", xmlFile, key)
 end
 
@@ -94,7 +94,7 @@ function AWS.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", AWS)
 end
 
-function AWS:onLoad(savegame)
+function AWS:onLoad(_savegame)
     if not isValidTool(self) then
         return
     end
@@ -123,7 +123,7 @@ function AWS:getRawSpeedLimit(superFunc)
     return limit
 end
 
-function AWS:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AWS:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
         return
     end

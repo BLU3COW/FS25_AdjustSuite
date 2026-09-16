@@ -98,10 +98,9 @@ function AFVP.verifyStorageCapacities()
     end
 end
 
-local StorageClass = _G["Storage"]
-if AFVP.storageHookInstalled ~= true and StorageClass ~= nil and StorageClass.load ~= nil then
+if AFVP.storageHookInstalled ~= true and Storage ~= nil and Storage.load ~= nil then
     AFVP.storageHookInstalled = true
-    StorageClass.load = Utils.overwrittenFunction(StorageClass.load, function(storage, superFunc, ...)
+    Storage.load = Utils.overwrittenFunction(Storage.load, function(storage, superFunc, ...)
         local loaded = superFunc(storage, ...)
         if loaded ~= false then
             AFVP.rememberStorageCapacities(storage)
@@ -313,7 +312,7 @@ function AFVP.applyToPlaceableXML(placeable, offset)
     scaleCapacity(placeable.xmlFile, MANURE_HEAP_CAPACITY_PATH, factor)
 end
 
-function AFVP.onFeedingRobotLoaded(placeable, robot, args)
+function AFVP.onFeedingRobotLoaded(placeable, robot, _args)
     local factor = tonumber(placeable ~= nil and placeable.adjustSuiteAFVPFactor) or 1
     if robot == nil or factor == 1 or robot.adjustSuiteAFVPScaled == true then
         return

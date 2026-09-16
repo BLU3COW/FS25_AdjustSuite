@@ -101,7 +101,7 @@ function APC:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "APC", self.isServer)
 end
 
-function APC:saveToXMLFile(xmlFile, key, usedModNames)
+function APC:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "APC", xmlFile, key)
 end
 
@@ -112,7 +112,7 @@ function APC.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", APC)
 end
 
-function APC:onPostLoad(savegame)
+function APC:onPostLoad(_savegame)
     if not hasSelectedConfiguration(self) then
         return
     end
@@ -222,7 +222,7 @@ function APC:addFillUnitFillLevel(
     return appliedDelta
 end
 
-function APC:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function APC:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if
         not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)
         or not hasSelectedConfiguration(self)

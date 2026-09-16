@@ -157,7 +157,7 @@ function ADR:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "ADR", self.isServer)
 end
 
-function ADR:saveToXMLFile(xmlFile, key, usedModNames)
+function ADR:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "ADR", xmlFile, key)
 end
 
@@ -171,21 +171,21 @@ function ADR.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ADR)
 end
 
-function ADR:onLoad(savegame)
+function ADR:onLoad(_savegame)
     if hasSelectedConfiguration(self) then
         getFactor(self)
     end
 end
 
-function ADR:onPostLoad(savegame)
+function ADR:onPostLoad(_savegame)
     applyBufferEmptySpeeds(self)
 end
 
-function ADR:onPostAttachImplement(attachable, inputJointDescIndex, jointDescIndex)
+function ADR:onPostAttachImplement(_attachable, _inputJointDescIndex, _jointDescIndex)
     applyBufferEmptySpeeds(self)
 end
 
-function ADR:onPostDetachImplement(implement)
+function ADR:onPostDetachImplement(_implement)
     applyBufferEmptySpeeds(self)
 end
 
@@ -202,7 +202,7 @@ function ADR:getDischargeNodeEmptyFactor(superFunc, dischargeNode)
     return emptyFactor * getFactor(self)
 end
 
-function ADR:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ADR:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
         return
     end

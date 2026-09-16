@@ -23,7 +23,7 @@ function AMP.initSpecialization()
     Suite.registerOffsetSavegamePaths("AMP")
 end
 
-function AMP:saveToXMLFile(xmlFile, key, usedModNames)
+function AMP:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "AMP", xmlFile, key)
 end
 
@@ -98,7 +98,7 @@ function AMP:loadMotor(superFunc, xmlFile, motorId)
     return motor
 end
 
-function AMP:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AMP:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
         return
     end

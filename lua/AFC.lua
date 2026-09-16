@@ -262,7 +262,7 @@ function AFC:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "AFC", self.isServer)
 end
 
-function AFC:saveToXMLFile(xmlFile, key, usedModNames)
+function AFC:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "AFC", xmlFile, key)
 end
 
@@ -281,7 +281,7 @@ function AFC:onPostLoad(savegame)
     restoreSavedFillLevels(self, spec)
 end
 
-function AFC:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AFC:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
         return
     end

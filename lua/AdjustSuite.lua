@@ -1345,7 +1345,7 @@ function AdjustSuiteSettingsEvent:readStream(streamId, connection)
     self:run(connection)
 end
 
-function AdjustSuiteSettingsEvent:writeStream(streamId, connection)
+function AdjustSuiteSettingsEvent:writeStream(streamId, _connection)
     streamWriteBool(streamId, self.showHelpMenu ~= false)
     streamWriteFloat32(streamId, self.pricePercent)
     streamWriteBool(streamId, self.respectExternalCapacityOverrides == true)
@@ -1369,7 +1369,7 @@ function AdjustSuiteSettingsEvent:run(connection)
     end
 end
 
-local function sendSelectionSettings(baseMission, connection, x, y, z, viewDistanceCoeff)
+local function sendSelectionSettings(_baseMission, connection, _x, _y, _z, _viewDistanceCoeff)
     if g_server ~= nil and connection ~= nil then
         connection:sendEvent(
             AdjustSuiteSettingsEvent.new(

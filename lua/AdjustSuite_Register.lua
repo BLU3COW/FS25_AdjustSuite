@@ -7,12 +7,15 @@ local function getModuleClassName(moduleId)
     return "AdjustSuite" .. moduleId
 end
 
-for _, moduleId in ipairs(Suite.vehicleModuleIds) do
+Suite.moduleClasses = Suite.moduleClasses or {}
+for _, moduleId in ipairs(Suite.moduleIds) do
     local className = getModuleClassName(moduleId)
-    _G[className] = _G[className] or {}
+    local moduleClass = _G[className] or {}
+    _G[className] = moduleClass
+    Suite.moduleClasses[moduleId] = moduleClass
 end
 
-local AFV = _G[getModuleClassName("AFV")]
+local AFV = Suite.moduleClasses["AFV"]
 AFV.ignoredFillTypeNames = AFV.ignoredFillTypeNames or Suite.ignoredFillTypeNames
 
 local function hasSpecialization(specialization, specializations)
@@ -600,7 +603,7 @@ local function getBasePriceContext(storeItem, xmlFile)
     return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
-local function isRoadVehicleType(vehicleTypeName, vehicleType)
+local function isRoadVehicleType(_vehicleTypeName, vehicleType)
     return not hasSpecialization(Locomotive, vehicleType.specializations)
         and hasSpecialization(Motorized, vehicleType.specializations)
         and hasSpecialization(Drivable, vehicleType.specializations)
@@ -691,13 +694,13 @@ local function getBallastConfigurationContexts(xmlFile, configurations)
     return next(contexts) ~= nil and contexts or nil, hasUsable
 end
 
-local function isBallastVehicleType(vehicleTypeName, vehicleType)
+local function isBallastVehicleType(_vehicleTypeName, vehicleType)
     return hasSpecialization(Attachable, vehicleType.specializations)
         or hasSpecialization(Motorized, vehicleType.specializations)
         or hasSpecialization(Drivable, vehicleType.specializations)
 end
 
-local function isMotorizedFillUnitVehicleType(vehicleTypeName, vehicleType)
+local function isMotorizedFillUnitVehicleType(_vehicleTypeName, vehicleType)
     return hasSpecialization(Motorized, vehicleType.specializations)
         and hasSpecialization(FillUnit, vehicleType.specializations)
 end
@@ -731,7 +734,7 @@ local definitions = {
             storeItem.AFVVehicleTypeByConfiguration = context.vehicleTypeContexts
             storeItem.AFVHasUsableConfiguration = context.hasUsableConfiguration == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
@@ -760,7 +763,7 @@ local definitions = {
             storeItem.AFCVehicleTypeByConfiguration = context.vehicleTypeContexts
             storeItem.AFCHasUsableConfiguration = context.hasUsableConfiguration == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
@@ -792,7 +795,7 @@ local definitions = {
             storeItem.APCVehicleTypeByConfiguration = context.vehicleTypeContexts
             storeItem.APCHasUsableConfiguration = context.hasUsableConfiguration == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
@@ -818,12 +821,12 @@ local definitions = {
             storeItem.ABWIsStandaloneWeight = context.standalone == true
             storeItem.ABWHasUsableConfiguration = context.active == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
     AMP = {
-        typeFilter = function(vehicleTypeName, vehicleType)
+        typeFilter = function(_vehicleTypeName, vehicleType)
             return not hasSpecialization(Locomotive, vehicleType.specializations)
                 and hasSpecialization(Motorized, vehicleType.specializations)
         end,
@@ -919,7 +922,7 @@ local definitions = {
         end,
     },
     APW = {
-        typeFilter = function(vehicleTypeName, vehicleType)
+        typeFilter = function(_vehicleTypeName, vehicleType)
             return not hasSpecialization(Locomotive, vehicleType.specializations)
                 and hasSpecialization(Pickup, vehicleType.specializations)
                 and hasSpecialization(WorkArea, vehicleType.specializations)
@@ -939,7 +942,7 @@ local definitions = {
     },
     ADR = {
         usableFlagField = "ADRHasUsableConfiguration",
-        typeFilter = function(vehicleTypeName, vehicleType)
+        typeFilter = function(_vehicleTypeName, vehicleType)
             return hasSpecialization(Dischargeable, vehicleType.specializations)
         end,
         getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
@@ -968,7 +971,7 @@ local definitions = {
             storeItem.ADRFillUnitByConfiguration = context.fillUnitByConfiguration
             storeItem.ADRHasUsableConfiguration = context.hasUsableConfiguration == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
@@ -982,7 +985,7 @@ for _, moduleId in ipairs(Suite.vehicleModuleIds) do
     definition.specializationName = string.format("%s.%s", MOD_NAME, definition.registrationName)
     definition.specializationClassName = definition.registrationName
     definition.titleKey = string.format("CONFIG_%s_TITLE", moduleId)
-    definition.specialization = _G[definition.specializationClassName]
+    definition.specialization = Suite.moduleClasses[definition.id]
     definition.specializationFile = string.format("lua/%s.lua", definition.configName)
 end
 
@@ -1004,7 +1007,7 @@ function AdjustSuitePlaceableConfigurationItem:onPreLoad(placeable, configId)
         effectiveOffset = Suite.getOffsetFromConfigId(configId)
     end
 
-    local module = _G[getModuleClassName(self.configName)]
+    local module = Suite.moduleClasses[self.configName]
     if module ~= nil and module.applyToPlaceableXML ~= nil then
         local ok, message = safeCall(module.applyToPlaceableXML, placeable, effectiveOffset)
         if not ok then
@@ -1032,7 +1035,7 @@ end
 
 local placeableDefinitions = {}
 for _, moduleId in ipairs(Suite.placeableModuleIds) do
-    local module = _G[getModuleClassName(moduleId)]
+    local module = Suite.moduleClasses[moduleId]
     placeableDefinitions[moduleId] = {
         id = moduleId,
         configName = moduleId,
@@ -1875,7 +1878,7 @@ if Suite.storeConfigurationHookInstalled ~= true and ConfigurationUtil.getConfig
         Utils.overwrittenFunction(ConfigurationUtil.getConfigurationsFromXML, addSuiteStoreConfigurations)
 end
 
-function Suite:update(dt)
+function Suite:update(_dt)
     if AdjustSuiteAutoDrive ~= nil then
         AdjustSuiteAutoDrive.install()
     end
@@ -1925,7 +1928,7 @@ then
 end
 
 function Suite.verifyPlaceableStorageCapacities()
-    local module = _G[getModuleClassName("AFVP")]
+    local module = Suite.moduleClasses["AFVP"]
     if module ~= nil and module.verifyStorageCapacities ~= nil then
         module.verifyStorageCapacities()
     end

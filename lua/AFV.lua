@@ -312,7 +312,7 @@ local function applyOffset(vehicle)
     return true
 end
 
-function AFV.prepareFillVolumeOnLoad(vehicle, savegame)
+function AFV.prepareFillVolumeOnLoad(vehicle, _savegame)
     if vehicle == nil or vehicle.configurations == nil or vehicle.configurations.AFV == nil then
         return
     end
@@ -321,7 +321,7 @@ function AFV.prepareFillVolumeOnLoad(vehicle, savegame)
     applyOffset(vehicle)
 end
 
-function AFV.prerequisitesPresent(specializations)
+function AFV.prerequisitesPresent(_specializations)
     return true
 end
 
@@ -334,7 +334,7 @@ function AFV:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "AFV", self.isServer)
 end
 
-function AFV:saveToXMLFile(xmlFile, key, usedModNames)
+function AFV:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "AFV", xmlFile, key)
 end
 
@@ -353,7 +353,7 @@ function AFV:onPostLoad(savegame)
     restoreSavedFillLevels(self, spec)
 end
 
-function AFV:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AFV:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
         return
     end

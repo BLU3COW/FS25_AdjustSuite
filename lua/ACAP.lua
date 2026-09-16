@@ -47,7 +47,7 @@ function ACAP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds
     return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
-function ACAP.onFeedingRobotLoaded(placeable, robot, args)
+function ACAP.onFeedingRobotLoaded(placeable, robot, _args)
     local factor = Suite.getFactorFromOffset(Suite.getSelectedOffset(placeable, "ACAP"))
     if robot == nil or factor == 1 or robot.adjustSuiteACAPScaled == true then
         return

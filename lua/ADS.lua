@@ -165,7 +165,7 @@ function ADS:onPreLoad(savegame)
     Suite.resolveConfiguration(self, "ADS", self.isServer)
 end
 
-function ADS:saveToXMLFile(xmlFile, key, usedModNames)
+function ADS:saveToXMLFile(xmlFile, key, _usedModNames)
     Suite.saveStoredOffsets(self, "ADS", xmlFile, key)
 end
 
@@ -178,27 +178,27 @@ function ADS.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ADS)
 end
 
-function ADS:onLoad(savegame)
+function ADS:onLoad(_savegame)
     if hasSelectedConfiguration(self) then
         getSpec(self).pendingApply = true
     end
 end
 
-function ADS:onPostLoad(savegame)
+function ADS:onPostLoad(_savegame)
     local spec = getSpec(self)
     if spec.pendingApply == true and applyDrivingSpeed(self) then
         spec.pendingApply = false
     end
 end
 
-function ADS:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ADS:onUpdate(_dt, _isActiveForInput, _isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if spec.pendingApply == true and applyDrivingSpeed(self) then
         spec.pendingApply = false
     end
 end
 
-function ADS:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ADS:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or spec.currentForwardSpeed == nil then
         return
