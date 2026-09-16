@@ -37,6 +37,10 @@ ACR-P - Cycle Rate
 ACA-P - Cycle Amount
 AIP-P - Income Payments
 
+Good to know: ACR-P and ACA-P act on the same production one after the other, so their effects multiply rather than add. Both set to +200 % means three times the cycles at three times the amount, which is nine times the throughput. The surcharge of the two modules is added up, so a combination of both is comparatively cheap.
+
+Ballast added by ABW raises the base mass of the vehicle, and the game derives braking force from that mass. A heavily ballasted vehicle therefore brakes relatively worse than without the ballast. ABP compensates for this if needed.
+
 Source code, help and issue reports: https://github.com/BLU3COW/FS25_AdjustSuite
 
 Changelog 1.0.0.3 (Patch 1.23):
@@ -71,6 +75,10 @@ ACR-P - Zyklusrate
 ACA-P - Zyklusmenge
 AIP-P - Einkommenszahlungen
 
+Gut zu wissen: ACR-P und ACA-P greifen nacheinander an derselben Produktion an, ihre Wirkungen multiplizieren sich also, statt sich zu addieren. Beide auf +200 % bedeuten dreifache Takte bei dreifacher Menge, also den neunfachen Durchsatz. Der Aufpreis beider Module wird dagegen nur addiert, eine Kombination aus beiden ist damit vergleichsweise günstig.
+
+Ballast aus ABW erhöht die Grundmasse des Fahrzeugs, und das Spiel leitet die Bremskraft aus dieser Masse ab. Ein stark beballastetes Fahrzeug bremst deshalb verhältnismäßig schlechter als ohne den Ballast. ABP gleicht das bei Bedarf wieder aus.
+
 Quellcode, Hilfe und Fehlermeldungen: https://github.com/BLU3COW/FS25_AdjustSuite
 
 Changelog 1.0.0.3 (Patch 1.23):
@@ -104,6 +112,10 @@ ADR-P - Débit de déchargement
 ACR-P - Vitesse de cycle
 ACA-P - Quantité par cycle
 AIP-P - Revenus
+
+Bon à savoir : ACR-P et ACA-P agissent l'un après l'autre sur la même production, leurs effets se multiplient donc au lieu de s'additionner. Les deux réglés sur +200 % donnent trois fois les cycles pour trois fois la quantité, soit neuf fois le débit. Le supplément de prix des deux modules n'est en revanche qu'additionné, une combinaison des deux reste donc relativement abordable.
+
+Le lestage ajouté par ABW augmente la masse de base du véhicule, et le jeu calcule la force de freinage à partir de cette masse. Un véhicule fortement lesté freine donc relativement moins bien que sans ce lestage. ABP compense cela si nécessaire.
 
 Code source, aide et signalement des problèmes : https://github.com/BLU3COW/FS25_AdjustSuite
 
