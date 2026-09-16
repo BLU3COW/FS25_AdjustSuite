@@ -151,10 +151,6 @@ local DEFAULT_MODULE_SETTINGS = {
     extreme = false,
 }
 
-function Suite.getModuleIdFromConfigurationName(configurationName)
-    return string.match(tostring(configurationName or ""), "^(%u+)$")
-end
-
 function Suite.getModuleLabel(moduleId)
     return Suite.moduleLabels[moduleId] or moduleId
 end
@@ -479,11 +475,6 @@ function Suite.getOffsetFromConfigId(configId)
 end
 
 function Suite.getSelectedOffset(vehicle, configurationName)
-    local moduleId = Suite.getModuleIdFromConfigurationName(configurationName)
-    if moduleId ~= nil and not Suite.getIsModuleEnabled(moduleId) then
-        return 0
-    end
-
     if vehicle ~= nil and vehicle.configurations ~= nil and vehicle.configurations[configurationName] ~= nil then
         return Suite.getOffsetFromConfigId(vehicle.configurations[configurationName])
     end
