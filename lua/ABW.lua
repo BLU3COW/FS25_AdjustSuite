@@ -119,7 +119,7 @@ local function applyConfiguredBallast(vehicle, factor)
     local appliedMass = 0
 
     for configurationName, configurationId in pairs(vehicle.configurations or {}) do
-        if configurationName ~= "ABW" then
+        if Suite.configurationNames[configurationName] ~= true then
             local configurationDesc = g_vehicleConfigurationManager:getConfigurationDescByName(configurationName)
             if configurationDesc ~= nil then
                 local configurationKey =

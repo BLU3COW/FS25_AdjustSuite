@@ -3,6 +3,7 @@ AdjustSuiteAWW = AdjustSuiteAWW or {}
 local AWW = AdjustSuiteAWW
 
 local Suite = AdjustSuite
+local getAreaNodes = Suite.getWorkAreaNodes
 local clampOffset = Suite.clampOffset
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getIsLoweredForWork = Suite.getIsLoweredForWork
@@ -21,7 +22,6 @@ local function distance3(x1, y1, z1, x2, y2, z2)
     return math.sqrt(dx * dx + dy * dy + dz * dz)
 end
 
-local resolveNode = Suite.resolveNode
 local getNodePositionInReference = Suite.getNodePosition
 local setNodePositionFromReference = Suite.setNodePosition
 
@@ -42,25 +42,6 @@ local function getConfiguredWorkingWidth(vehicle)
 
     spec.configuredBaseWidth = width ~= nil and width > 0 and width or 0
     return spec.configuredBaseWidth
-end
-
-local function getAreaNodes(workArea)
-    if workArea == nil then
-        return nil, nil, nil
-    end
-
-    local startNode =
-        resolveNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
-    local widthNode =
-        resolveNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
-    local heightNode =
-        resolveNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
-
-    if startNode ~= nil and widthNode ~= nil and startNode ~= 0 and widthNode ~= 0 then
-        return startNode, widthNode, heightNode
-    end
-
-    return nil, nil, nil
 end
 
 local function getWorkAreas(vehicle)
@@ -2267,21 +2248,23 @@ function AWW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isS
 
     local spec = getSpec(self)
 
-    local canApply = self.spec_mower == nil
-        or self.spec_foldable == nil
-        or not hasNativeMowerModes(self)
-        or getIsLoweredForWork(self)
-    if
-        canApply
-        and getSelectedOffset(self) ~= 0
-        and (self.spec_windrower ~= nil or self.spec_tedder ~= nil)
-        and self.spec_foldable ~= nil
-    then
-        canApply = getVisualEffectPoseIsReady(self)
-    end
+    if spec.pendingApply == true then
+        local canApply = self.spec_mower == nil
+            or self.spec_foldable == nil
+            or not hasNativeMowerModes(self)
+            or getIsLoweredForWork(self)
+        if
+            canApply
+            and getSelectedOffset(self) ~= 0
+            and (self.spec_windrower ~= nil or self.spec_tedder ~= nil)
+            and self.spec_foldable ~= nil
+        then
+            canApply = getVisualEffectPoseIsReady(self)
+        end
 
-    if spec.pendingApply == true and canApply and applyWidth(self) then
-        spec.pendingApply = false
+        if canApply and applyWidth(self) then
+            spec.pendingApply = false
+        end
     end
 
     if spec.visualEffectsPending == true and getVisualEffectPoseIsReady(self) then

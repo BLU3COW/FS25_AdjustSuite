@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="113">
     <author>BLU3COW</author>
-    <version>1.0.0.3</version>
+    <version>1.0.0.4</version>
 
     <title>
         <en>AdjustSuite</en>
@@ -43,6 +43,16 @@ Ballast added by ABW raises the base mass of the vehicle, and the game derives b
 
 Source code, help and issue reports: https://github.com/BLU3COW/FS25_AdjustSuite
 
+Changelog 1.0.0.4:
+- A stage that an admin no longer allows is now lowered to the highest stage still permitted in the same direction instead of staying active. The originally purchased stage is remembered, so everything returns on its own once the range is allowed again.
+- A switched-off module now disappears from the shop and from construction mode for all sixteen modules instead of leaving a dead row behind.
+- Fixed placeable and production configurations always showing a surcharge of +0. They are now priced like vehicle configurations.
+- APC no longer runs into the vehicle mass limit on negative stages, and the help menu now states the resulting payload mass so the direction of the setting is visible.
+- AWS is now only offered on vehicles with a work function, and a tractor no longer raises the speed limit of its implement. The lower of the two applies, as before.
+- ADR now explains in the help menu that a forage harvester couples its throughput to working width and speed.
+- AFC no longer lists DEF next to diesel in the help menu.
+- A price percentage above roughly 500 could produce a negative total price. The discount is now limited to the base price.
+
 Changelog 1.0.0.3 (Patch 1.23):
 - Updated for Farming Simulator 25 Patch 1.23.
 - Added an optional EXTERNALCAPACITY setting so AFV, AFC, and APC can respect capacity changes made by AdjustStorageCapacity or similar mods instead of overwriting them. <externalCapacity respect="false"/> must be changed to "true".]]></en>
@@ -81,6 +91,16 @@ Ballast aus ABW erhöht die Grundmasse des Fahrzeugs, und das Spiel leitet die B
 
 Quellcode, Hilfe und Fehlermeldungen: https://github.com/BLU3COW/FS25_AdjustSuite
 
+Changelog 1.0.0.4:
+- Eine Stufe, die ein Administrator nicht mehr erlaubt, fällt jetzt auf die höchste noch erlaubte Stufe derselben Richtung, statt aktiv zu bleiben. Die ursprünglich gekaufte Stufe wird gemerkt, es kommt also alles von selbst zurück, sobald der Bereich wieder freigegeben ist.
+- Ein abgeschaltetes Modul verschwindet jetzt bei allen sechzehn Modulen aus Shop und Baumenü, statt eine tote Zeile stehen zu lassen.
+- Behoben, dass Konfigurationen an platzierbaren Objekten und Produktionen immer einen Aufpreis von +0 zeigten. Sie werden jetzt wie Fahrzeugkonfigurationen bepreist.
+- APC läuft bei Minusstufen nicht mehr in die Massenobergrenze des Fahrzeugs, und das Hilfemenü nennt jetzt die resultierende Nutzlastmasse, damit die Wirkungsrichtung sichtbar ist.
+- AWS wird nur noch bei Fahrzeugen mit Arbeitsfunktion angeboten, und ein Traktor hebt das Tempolimit seines Anbaugeräts nicht mehr mit an. Es gilt wie bisher der niedrigere Wert.
+- ADR erklärt jetzt im Hilfemenü, dass ein Feldhäcksler seinen Durchsatz an Arbeitsbreite und Geschwindigkeit koppelt.
+- AFC führt DEF im Hilfemenü nicht mehr neben dem Diesel auf.
+- Ein Preiswert über etwa 500 Prozent konnte einen negativen Gesamtpreis erzeugen. Der Abschlag ist jetzt auf den Grundpreis begrenzt.
+
 Changelog 1.0.0.3 (Patch 1.23):
 - Aktualisiert für Farming Simulator 25 Patch 1.23.
 - Neue optionale Einstellung EXTERNALCAPACITY hinzugefügt, damit AFV, AFC und APC Kapazitätsänderungen von AdjustStorageCapacity oder ähnlichen Mods respektieren können, statt sie zu überschreiben. Dafür muss <externalCapacity respect="false"/> auf "true" gesetzt werden.]]></de>
@@ -118,6 +138,16 @@ Bon à savoir : ACR-P et ACA-P agissent l'un après l'autre sur la même product
 Le lestage ajouté par ABW augmente la masse de base du véhicule, et le jeu calcule la force de freinage à partir de cette masse. Un véhicule fortement lesté freine donc relativement moins bien que sans ce lestage. ABP compense cela si nécessaire.
 
 Code source, aide et signalement des problèmes : https://github.com/BLU3COW/FS25_AdjustSuite
+
+Changelog 1.0.0.4 :
+- Un niveau qu'un administrateur n'autorise plus redescend désormais au niveau le plus élevé encore permis dans le même sens, au lieu de rester actif. Le niveau acheté à l'origine est mémorisé, tout revient donc de soi-même dès que la plage est réautorisée.
+- Un module désactivé disparaît désormais de la boutique et du mode construction pour les seize modules, au lieu de laisser une ligne morte.
+- Correction des configurations d'objets plaçables et de productions qui affichaient toujours un supplément de +0. Elles sont désormais tarifées comme les configurations de véhicules.
+- APC ne bute plus sur la limite de masse du véhicule aux niveaux négatifs, et le menu d'aide indique désormais la masse de charge utile obtenue, afin que le sens du réglage soit visible.
+- AWS n'est plus proposé que sur les véhicules dotés d'une fonction de travail, et un tracteur n'augmente plus la limite de vitesse de son outil. C'est la valeur la plus basse qui s'applique, comme auparavant.
+- ADR explique désormais dans le menu d'aide qu'une ensileuse lie son débit à la largeur et à la vitesse de travail.
+- AFC ne liste plus le DEF à côté du diesel dans le menu d'aide.
+- Un pourcentage de prix supérieur à environ 500 pouvait produire un prix total négatif. La remise est désormais limitée au prix de base.
 
 Changelog 1.0.0.3 (Patch 1.23) :
 - Mis à jour pour Farming Simulator 25 Patch 1.23.

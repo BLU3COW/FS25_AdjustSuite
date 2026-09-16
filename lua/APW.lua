@@ -2,32 +2,13 @@ AdjustSuiteAPW = AdjustSuiteAPW or {}
 local APW = AdjustSuiteAPW
 
 local Suite = AdjustSuite
+local getAreaNodes = Suite.getWorkAreaNodes
 
-local pickupWorkAreaFunctions = {
-    processBalerArea = true,
-    processForageWagonArea = true,
-}
+local pickupWorkAreaFunctions = Suite.pickupWorkAreaFunctions
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("APW")
 
-local getNode = Suite.resolveNode
 local getNodePosition = Suite.getNodePosition
 local setNodePosition = Suite.setNodePosition
-
-local function getAreaNodes(workArea)
-    if workArea == nil then
-        return nil, nil, nil
-    end
-
-    local startNode = getNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
-    local widthNode = getNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
-    local heightNode =
-        getNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
-    if startNode ~= nil and widthNode ~= nil and startNode ~= 0 and widthNode ~= 0 then
-        return startNode, widthNode, heightNode
-    end
-
-    return nil, nil, nil
-end
 
 local function isPickupWorkArea(workArea)
     return workArea ~= nil and pickupWorkAreaFunctions[workArea.functionName] == true

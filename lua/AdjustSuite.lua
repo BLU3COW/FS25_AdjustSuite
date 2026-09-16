@@ -13,6 +13,10 @@ end
 for _, moduleId in ipairs(Suite.placeableModuleIds) do
     table.insert(Suite.moduleIds, moduleId)
 end
+Suite.configurationNames = {}
+for _, moduleId in ipairs(Suite.moduleIds) do
+    Suite.configurationNames[moduleId] = true
+end
 Suite.moduleLabels = {
     AFVP = "AFV-P",
     ADRP = "ADR-P",
@@ -665,6 +669,31 @@ end
 
 function Suite.setCapacityOffset(object, moduleId, offset)
     getOffsetStore(object, CAPACITY_OFFSETS_KEY)[moduleId] = offset
+end
+
+Suite.pickupWorkAreaFunctions = Suite.pickupWorkAreaFunctions
+    or {
+        processBalerArea = true,
+        processForageWagonArea = true,
+    }
+
+function Suite.getWorkAreaNodes(workArea)
+    if workArea == nil then
+        return nil, nil, nil
+    end
+
+    local startNode =
+        Suite.resolveNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
+    local widthNode =
+        Suite.resolveNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
+    local heightNode =
+        Suite.resolveNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
+
+    if startNode ~= nil and widthNode ~= nil and startNode ~= 0 and widthNode ~= 0 then
+        return startNode, widthNode, heightNode
+    end
+
+    return nil, nil, nil
 end
 
 function Suite.getFillUnits(vehicle)

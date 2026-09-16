@@ -46,7 +46,7 @@ local function visitSelectedLoadTriggers(placeable, callback)
     visitLoadTriggerPath(placeable.xmlFile, productionKey .. ".loadingStation.loadTrigger", callback)
 end
 
-function ADRP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+function ADRP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
     local hasTrigger = false
     visitStoreLoadTriggers(xmlFile, function()
         hasTrigger = true

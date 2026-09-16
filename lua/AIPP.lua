@@ -47,7 +47,7 @@ local function selectedAttributeKey(placeable, configurationName, configurations
     return string.format("%s(%d)#%s", configurationsPath, configurationId - 1, attribute)
 end
 
-function AIPP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+function AIPP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
     local hasFixedIncome = valueIsIncome(xmlFile, INCOME_PATH)
         or valueIsIncome(xmlFile, "placeable.windTurbine#incomePerHour")
     local incomeByConfiguration = {}

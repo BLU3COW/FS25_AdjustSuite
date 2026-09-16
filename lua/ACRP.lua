@@ -13,7 +13,7 @@ local function productionPointHasCycles(xmlFile, key)
     return hasCycles
 end
 
-function ACRP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+function ACRP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
     local hasCycles = productionPointHasCycles(xmlFile, PRODUCTION_PATH)
     xmlFile:iterate(PRODUCTION_CONFIGURATIONS_PATH, function(_, key)
         hasCycles = hasCycles or productionPointHasCycles(xmlFile, key .. ".productionPoint")

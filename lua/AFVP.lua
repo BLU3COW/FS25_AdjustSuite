@@ -207,7 +207,7 @@ local function scaleStorage(xmlFile, key, factor)
     end)
 end
 
-function AFVP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+function AFVP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
     local hasCapacity = capacityIsUsable(xmlFile, HUSBANDRY_FOOD_CAPACITY_PATH)
         or capacityIsUsable(xmlFile, MANURE_HEAP_CAPACITY_PATH)
     visitStoreStorageKeys(xmlFile, function(key)

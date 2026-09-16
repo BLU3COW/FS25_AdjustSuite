@@ -418,10 +418,7 @@ local function getStoreWorkingWidth(xmlFile, storeItem)
     return width ~= nil and width > 0 and width or nil
 end
 
-local pickupWorkAreaFunctions = {
-    processBalerArea = true,
-    processForageWagonArea = true,
-}
+local pickupWorkAreaFunctions = Suite.pickupWorkAreaFunctions
 
 local function workAreaCollectionHasPickupFunction(xmlFile, collectionKey)
     local index = 0
@@ -610,7 +607,13 @@ local function isRoadVehicleType(vehicleTypeName, vehicleType)
         and hasSpecialization(Wheels, vehicleType.specializations)
 end
 
-local function getMotorizedStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+local function getMotorizedStoreContext(
+    xmlFile,
+    _configurations,
+    _defaultConfigurationIds,
+    _customEnvironment,
+    storeItem
+)
     if not xmlFile:hasProperty("vehicle.motorized") then
         return nil
     end
@@ -632,7 +635,7 @@ local function isBrakeVehicleType(vehicleTypeName, vehicleType)
         )
 end
 
-local function getBrakeStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+local function getBrakeStoreContext(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
     if xmlFile:hasProperty("vehicle.motorized") then
         return getBasePriceContext(storeItem, xmlFile)
     end
@@ -654,7 +657,9 @@ local function getBallastConfigurationContexts(xmlFile, configurations)
     local hasUsable = false
 
     for configurationName, items in pairs(configurations or {}) do
-        local configurationDesc = g_vehicleConfigurationManager:getConfigurationDescByName(configurationName)
+        local configurationDesc = Suite.configurationNames[configurationName] ~= true
+                and g_vehicleConfigurationManager:getConfigurationDescByName(configurationName)
+            or nil
         if configurationDesc ~= nil then
             local optionContexts = {}
             local optionHasUsable = false
@@ -699,10 +704,11 @@ end
 
 local definitions = {
     AFV = {
+        usableFlagField = "AFVHasUsableConfiguration",
         typeFilter = function(vehicleTypeName, vehicleType)
             return hasSpecialization(FillUnit, vehicleType.specializations) or isCarFillableVehicleType(vehicleTypeName)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, customEnvironment, storeItem)
             local operatingIndices = getOperatingConsumerFillUnitIndices(xmlFile)
             local capacityByFillUnit, hasUsable = getFillUnitConfigurationContexts(xmlFile, nil, nil, operatingIndices)
             local vehicleTypeContexts, hasUsableVehicleType =
@@ -730,8 +736,9 @@ local definitions = {
         end,
     },
     AFC = {
+        usableFlagField = "AFCHasUsableConfiguration",
         typeFilter = isMotorizedFillUnitVehicleType,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, customEnvironment, storeItem)
             local capacityByFillUnit, hasUsable = getOperatingFillUnitConfigurationContexts(xmlFile)
             local vehicleTypeContexts, hasUsableVehicleType =
                 getVehicleTypeConfigurationContexts(xmlFile, customEnvironment, Motorized)
@@ -758,10 +765,11 @@ local definitions = {
         end,
     },
     APC = {
+        usableFlagField = "APCHasUsableConfiguration",
         typeFilter = function(vehicleTypeName, vehicleType)
             return hasSpecialization(FillUnit, vehicleType.specializations) or isCarFillableVehicleType(vehicleTypeName)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, customEnvironment, storeItem)
             local operatingIndices = getOperatingConsumerFillUnitIndices(xmlFile)
             local massByFillUnit, hasUsable = getFillUnitConfigurationContexts(xmlFile, true, nil, operatingIndices)
             local vehicleTypeContexts, hasUsableVehicleType =
@@ -789,8 +797,9 @@ local definitions = {
         end,
     },
     ABW = {
+        usableFlagField = "ABWHasUsableConfiguration",
         typeFilter = isBallastVehicleType,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             local standalone = Suite.xmlIsStandaloneWeight(xmlFile)
             local ballastConfigurations, hasConfiguredBallast = getBallastConfigurationContexts(xmlFile, configurations)
             if storeItem == nil or (not standalone and not hasConfiguredBallast) then
@@ -818,7 +827,7 @@ local definitions = {
             return not hasSpecialization(Locomotive, vehicleType.specializations)
                 and hasSpecialization(Motorized, vehicleType.specializations)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             local isMotorVehicle = storeItem ~= nil
                 and (
                     xmlFile:hasProperty("vehicle.motorized")
@@ -836,6 +845,7 @@ local definitions = {
         end,
     },
     AWS = {
+        usableFlagField = "AWSHasUsableConfiguration",
         baseValueField = "AWSStandardSpeedLimit",
         typeFilter = function(vehicleTypeName, vehicleType)
             return hasSpecialization(WorkArea, vehicleType.specializations)
@@ -845,7 +855,7 @@ local definitions = {
                 and vehicleTypeName ~= "pallet"
                 and vehicleTypeName ~= "horse"
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, customEnvironment, storeItem)
             local speedLimit = hasWorkAreas(xmlFile) and tonumber(xmlFile:getValue("vehicle.base.speedLimit#value"))
                 or nil
             local vehicleTypeContexts, hasUsableVehicleType
@@ -893,7 +903,7 @@ local definitions = {
                 and vehicleTypeName ~= "pallet"
                 and vehicleTypeName ~= "horse"
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             local workingWidth = getStoreWorkingWidth(xmlFile, storeItem)
             local isEligible = storeItem ~= nil
                 and not xmlFile:hasProperty("vehicle.pickup")
@@ -914,7 +924,7 @@ local definitions = {
                 and hasSpecialization(Pickup, vehicleType.specializations)
                 and hasSpecialization(WorkArea, vehicleType.specializations)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             if storeItem == nil or not hasPickupWorkArea(xmlFile) then
                 return nil
             end
@@ -928,10 +938,11 @@ local definitions = {
         getStoreContext = getBrakeStoreContext,
     },
     ADR = {
+        usableFlagField = "ADRHasUsableConfiguration",
         typeFilter = function(vehicleTypeName, vehicleType)
             return hasSpecialization(Dischargeable, vehicleType.specializations)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             local dischargeByConfiguration, hasUsable = getDischargeableConfigurationContexts(xmlFile)
             local fillUnitByConfiguration = getFillUnitConfigurationContexts(xmlFile, false, true)
             if
@@ -1128,18 +1139,8 @@ function Suite.refreshStoreConfigurations(moduleId)
                 active = true,
             }
 
-            if moduleId == "AFV" then
-                context.active = storeItem.AFVHasUsableConfiguration == true
-            elseif moduleId == "AFC" then
-                context.active = storeItem.AFCHasUsableConfiguration == true
-            elseif moduleId == "APC" then
-                context.active = storeItem.APCHasUsableConfiguration == true
-            elseif moduleId == "ABW" then
-                context.active = storeItem.ABWHasUsableConfiguration == true
-            elseif moduleId == "AWS" then
-                context.active = storeItem.AWSHasUsableConfiguration == true
-            elseif moduleId == "ADR" then
-                context.active = storeItem.ADRHasUsableConfiguration == true
+            if definition.usableFlagField ~= nil then
+                context.active = storeItem[definition.usableFlagField] == true
             end
 
             updateConfigurationItems(definition, configItems, context)
@@ -1147,13 +1148,7 @@ function Suite.refreshStoreConfigurations(moduleId)
     end
 end
 
-local SUITE_CONFIGURATION_NAMES = {}
-for _, moduleId in ipairs(Suite.vehicleModuleIds) do
-    SUITE_CONFIGURATION_NAMES[moduleId] = true
-end
-for _, moduleId in ipairs(Suite.placeableModuleIds) do
-    SUITE_CONFIGURATION_NAMES[moduleId] = true
-end
+local SUITE_CONFIGURATION_NAMES = Suite.configurationNames
 
 local function getConfigurationLayout(screen)
     local layout = screen ~= nil and screen.configurationLayout or nil
@@ -1266,6 +1261,97 @@ local function getActiveConfigurationId(screen, storeItem, configurationName)
     return configurationId
 end
 
+local function getFillUnitDynamicState(screen, storeItem, moduleId)
+    local isPayloadCompensation = moduleId == "APC"
+    local isFuelCapacity = moduleId == "AFC"
+    local fillUnitContexts = isPayloadCompensation and storeItem.APCMassByFillUnit
+        or isFuelCapacity and storeItem.AFCCapacityByFillUnit
+        or storeItem.AFVCapacityByFillUnit
+    if fillUnitContexts == nil then
+        return nil, nil
+    end
+
+    local fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
+    local fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
+    local vehicleTypeContexts = isPayloadCompensation and storeItem.APCVehicleTypeByConfiguration
+        or isFuelCapacity and storeItem.AFCVehicleTypeByConfiguration
+        or storeItem.AFVVehicleTypeByConfiguration
+    local vehicleTypeId = nil
+    local vehicleTypeContext = nil
+    if vehicleTypeContexts ~= nil then
+        vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
+        vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
+    end
+
+    return fillUnitContext.hasUsable == true and (vehicleTypeContext == nil or vehicleTypeContext.hasUsable == true),
+        string.format("%s:%s", tostring(fillUnitId), tostring(vehicleTypeId or 0))
+end
+
+local function getDischargeDynamicState(screen, storeItem)
+    local dischargeContexts = storeItem.ADRDischargeByConfiguration
+    if dischargeContexts == nil then
+        return nil, nil
+    end
+
+    local dischargeId = getActiveConfigurationId(screen, storeItem, "dischargeable")
+    local dischargeContext = dischargeContexts[dischargeId] or dischargeContexts[1] or { hasUsable = false }
+    local fillUnitContexts = storeItem.ADRFillUnitByConfiguration
+    local fillUnitId = nil
+    local fillUnitContext = nil
+    if fillUnitContexts ~= nil then
+        fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
+        fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
+    end
+
+    return dischargeContext.hasUsable == true and (fillUnitContext == nil or fillUnitContext.hasUsable == true),
+        string.format("%s:%s", tostring(dischargeId), tostring(fillUnitId or 0))
+end
+
+local function getBallastDynamicState(screen, storeItem)
+    if storeItem.ABWIsStandaloneWeight == true then
+        return true, "standalone"
+    end
+
+    local ballastConfigurations = storeItem.ABWBallastConfigurations
+    if ballastConfigurations == nil then
+        return nil, nil
+    end
+
+    local active = false
+    local stateParts = {}
+    local configurationNames = {}
+    for configurationName in pairs(ballastConfigurations) do
+        table.insert(configurationNames, configurationName)
+    end
+    table.sort(configurationNames)
+
+    for _, configurationName in ipairs(configurationNames) do
+        local configurationId = getActiveConfigurationId(screen, storeItem, configurationName)
+        local context = ballastConfigurations[configurationName][configurationId] or { hasUsable = false }
+        active = active or context.hasUsable == true
+        table.insert(stateParts, string.format("%s:%s", configurationName, tostring(configurationId)))
+    end
+    return active, table.concat(stateParts, "|")
+end
+
+local function getWorkSpeedDynamicState(screen, storeItem)
+    local vehicleTypeContexts = storeItem.AWSVehicleTypeByConfiguration
+    if vehicleTypeContexts == nil then
+        return nil, nil
+    end
+
+    local vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
+    local vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
+    return vehicleTypeContext.hasUsable == true, tostring(vehicleTypeId)
+end
+
+definitions.AFV.getDynamicState = getFillUnitDynamicState
+definitions.AFC.getDynamicState = getFillUnitDynamicState
+definitions.APC.getDynamicState = getFillUnitDynamicState
+definitions.ADR.getDynamicState = getDischargeDynamicState
+definitions.ABW.getDynamicState = getBallastDynamicState
+definitions.AWS.getDynamicState = getWorkSpeedDynamicState
+
 local function getDynamicShopState(screen, moduleId)
     local storeItem = screen ~= nil and screen.storeItem or nil
     if storeItem == nil then
@@ -1276,91 +1362,12 @@ local function getDynamicShopState(screen, moduleId)
         return false, "disabled"
     end
 
-    if moduleId == "AFV" or moduleId == "AFC" or moduleId == "APC" then
-        local isPayloadCompensation = moduleId == "APC"
-        local isFuelCapacity = moduleId == "AFC"
-        local fillUnitContexts = isPayloadCompensation and storeItem.APCMassByFillUnit
-            or isFuelCapacity and storeItem.AFCCapacityByFillUnit
-            or storeItem.AFVCapacityByFillUnit
-        if fillUnitContexts == nil then
-            return nil, nil
-        end
-
-        local fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
-        local fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
-        local vehicleTypeContexts = isPayloadCompensation and storeItem.APCVehicleTypeByConfiguration
-            or isFuelCapacity and storeItem.AFCVehicleTypeByConfiguration
-            or storeItem.AFVVehicleTypeByConfiguration
-        local vehicleTypeId = nil
-        local vehicleTypeContext = nil
-        if vehicleTypeContexts ~= nil then
-            vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
-            vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
-        end
-
-        return fillUnitContext.hasUsable == true and (vehicleTypeContext == nil or vehicleTypeContext.hasUsable == true),
-            string.format("%s:%s", tostring(fillUnitId), tostring(vehicleTypeId or 0))
+    local definition = definitions[moduleId]
+    if definition == nil or definition.getDynamicState == nil then
+        return nil, nil
     end
 
-    if moduleId == "ADR" then
-        local dischargeContexts = storeItem.ADRDischargeByConfiguration
-        if dischargeContexts == nil then
-            return nil, nil
-        end
-
-        local dischargeId = getActiveConfigurationId(screen, storeItem, "dischargeable")
-        local dischargeContext = dischargeContexts[dischargeId] or dischargeContexts[1] or { hasUsable = false }
-        local fillUnitContexts = storeItem.ADRFillUnitByConfiguration
-        local fillUnitId = nil
-        local fillUnitContext = nil
-        if fillUnitContexts ~= nil then
-            fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
-            fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
-        end
-
-        return dischargeContext.hasUsable == true and (fillUnitContext == nil or fillUnitContext.hasUsable == true),
-            string.format("%s:%s", tostring(dischargeId), tostring(fillUnitId or 0))
-    end
-
-    if moduleId == "ABW" then
-        if storeItem.ABWIsStandaloneWeight == true then
-            return true, "standalone"
-        end
-
-        local ballastConfigurations = storeItem.ABWBallastConfigurations
-        if ballastConfigurations == nil then
-            return nil, nil
-        end
-
-        local active = false
-        local stateParts = {}
-        local configurationNames = {}
-        for configurationName in pairs(ballastConfigurations) do
-            table.insert(configurationNames, configurationName)
-        end
-        table.sort(configurationNames)
-
-        for _, configurationName in ipairs(configurationNames) do
-            local configurationId = getActiveConfigurationId(screen, storeItem, configurationName)
-            local context = ballastConfigurations[configurationName][configurationId] or { hasUsable = false }
-            active = active or context.hasUsable == true
-            table.insert(stateParts, string.format("%s:%s", configurationName, tostring(configurationId)))
-        end
-        return active, table.concat(stateParts, "|")
-    end
-
-    if moduleId == "AWS" then
-        local vehicleTypeContexts = storeItem.AWSVehicleTypeByConfiguration
-        if vehicleTypeContexts == nil then
-            return nil, nil
-        end
-
-        local vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
-        local vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
-        return vehicleTypeContext.hasUsable == true, tostring(vehicleTypeId)
-    end
-
-    return nil, nil
+    return definition.getDynamicState(screen, storeItem, moduleId)
 end
 
 local function updateShopPrice(screen)
@@ -1861,11 +1868,6 @@ function Suite:update(dt)
     if AdjustSuiteAutoDrive ~= nil then
         AdjustSuiteAutoDrive.install()
     end
-
-    if self.useMiles ~= g_gameSettings.useMiles then
-        self.useMiles = g_gameSettings.useMiles
-        self.refreshStoreConfigurations("AWS")
-    end
 end
 
 if Suite.placeableSaveHookInstalled ~= true and Placeable ~= nil and Placeable.saveToXMLFile ~= nil then
@@ -1908,6 +1910,5 @@ end
 
 if Suite.modEventListenerInstalled ~= true then
     Suite.modEventListenerInstalled = true
-    Suite.useMiles = g_gameSettings.useMiles
     addModEventListener(Suite)
 end

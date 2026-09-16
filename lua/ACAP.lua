@@ -33,7 +33,7 @@ local function productionPointHasCycleAmounts(xmlFile, key)
     return hasCycleAmounts
 end
 
-function ACAP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+function ACAP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
     local hasCycleAmounts = productionPointHasCycleAmounts(xmlFile, PRODUCTION_PATH)
     xmlFile:iterate(PRODUCTION_CONFIGURATIONS_PATH, function(_, key)
         hasCycleAmounts = hasCycleAmounts or productionPointHasCycleAmounts(xmlFile, key .. ".productionPoint")
