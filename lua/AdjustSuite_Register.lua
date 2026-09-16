@@ -1,4 +1,13 @@
 local safeCall = pcall
+
+if AdjustSuite == nil then
+    print(
+        "Error: AdjustSuite - lua/AdjustSuite.lua was not loaded first. "
+            .. "Check the sourceFile order in modDesc.xml."
+    )
+    return
+end
+
 local Suite = AdjustSuite
 local MOD_DIRECTORY = g_currentModDirectory
 local MOD_NAME = g_currentModName
