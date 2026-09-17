@@ -149,6 +149,28 @@ local function productionsUseNearbyStorages()
     return Suite.connectProductionStorage ~= false
 end
 
+local function siloNetworkIsEnabled()
+    return Suite.siloNetworkEnabled ~= false
+end
+
+local function silosStayApart()
+    return siloNetworkIsEnabled() and Suite.connectSiloNetwork ~= true
+end
+
+local function belongsToSilo(object)
+    return type(object) == "table" and object.adjustSuiteSiloPlaceable ~= nil
+end
+
+local function withoutSiloStorages(storages)
+    local filtered = {}
+    for _, storage in ipairs(storages or {}) do
+        if not belongsToSilo(storage) then
+            table.insert(filtered, storage)
+        end
+    end
+    return filtered
+end
+
 local function offerStorageToProductions(storageSystem, storage)
     if storage == nil or storage.isExtension ~= true or not productionsUseNearbyStorages() then
         return
@@ -177,6 +199,23 @@ local function offerStorageToProductions(storageSystem, storage)
         then
             rememberSiloLink(storage, unloadingStation, false)
         end
+    end
+end
+
+function AFVP.markSiloStorages(placeable)
+    local spec = placeable ~= nil and placeable.spec_silo or nil
+    if spec == nil then
+        return
+    end
+
+    for _, storage in ipairs(spec.storages or {}) do
+        storage.adjustSuiteSiloPlaceable = placeable
+    end
+    if spec.loadingStation ~= nil then
+        spec.loadingStation.adjustSuiteSiloPlaceable = placeable
+    end
+    if spec.unloadingStation ~= nil then
+        spec.unloadingStation.adjustSuiteSiloPlaceable = placeable
     end
 end
 
@@ -262,6 +301,30 @@ function AFVP.releaseSiloStorages(placeable)
     end
 end
 
+function AFVP.separateSiloStorages(placeable)
+    local spec = placeable ~= nil and placeable.spec_silo or nil
+    local storageSystem = getStorageSystem()
+    if spec == nil or storageSystem == nil then
+        return
+    end
+
+    if spec.loadingStation ~= nil then
+        for _, storage in ipairs(collectKeys(spec.loadingStation.sourceStorages)) do
+            if belongsToSilo(storage) and storage.adjustSuiteSiloPlaceable ~= placeable then
+                storageSystem:removeStorageFromLoadingStations(storage, { spec.loadingStation })
+            end
+        end
+    end
+
+    if spec.unloadingStation ~= nil then
+        for _, storage in ipairs(collectKeys(spec.unloadingStation.targetStorages)) do
+            if belongsToSilo(storage) and storage.adjustSuiteSiloPlaceable ~= placeable then
+                storageSystem:removeStorageFromUnloadingStations(storage, { spec.unloadingStation })
+            end
+        end
+    end
+end
+
 function AFVP.refreshSiloNetwork()
     local storageSystem = getStorageSystem()
     if storageSystem ~= nil then
@@ -277,13 +340,17 @@ function AFVP.refreshSiloNetwork()
     end
     AFVP.siloNetworkLinks = createSiloLinkTable()
 
-    if Suite.connectSiloNetwork ~= true then
+    if storageSystem == nil or not siloNetworkIsEnabled() then
         return
     end
 
     local placeableSystem = g_currentMission ~= nil and g_currentMission.placeableSystem or nil
     for _, placeable in pairs(placeableSystem ~= nil and placeableSystem.placeables or {}) do
-        AFVP.connectSiloStorages(placeable)
+        if Suite.connectSiloNetwork == true then
+            AFVP.connectSiloStorages(placeable)
+        else
+            AFVP.separateSiloStorages(placeable)
+        end
     end
 end
 
@@ -379,7 +446,12 @@ then
             if not productionsUseNearbyStorages() and stationBelongsToProduction(station) then
                 return {}
             end
-            return superFunc(storageSystem, station, ...)
+
+            local storages = superFunc(storageSystem, station, ...)
+            if silosStayApart() and belongsToSilo(station) then
+                return withoutSiloStorages(storages)
+            end
+            return storages
         end
     )
     StorageSystem.getExtendableLoadingStationsInRange = Utils.overwrittenFunction(
@@ -399,17 +471,23 @@ end
 if
     AFVP.siloNetworkHooksInstalled ~= true
     and PlaceableSilo ~= nil
+    and PlaceableSilo.onLoad ~= nil
     and PlaceableSilo.onFinalizePlacement ~= nil
     and PlaceableSilo.onDelete ~= nil
 then
     AFVP.siloNetworkHooksInstalled = true
+    PlaceableSilo.onLoad = Utils.appendedFunction(PlaceableSilo.onLoad, AFVP.markSiloStorages)
     PlaceableSilo.onFinalizePlacement = Utils.appendedFunction(PlaceableSilo.onFinalizePlacement, function(placeable)
-        if Suite.connectSiloNetwork == true then
+        if siloNetworkIsEnabled() and Suite.connectSiloNetwork == true then
             AFVP.connectSiloStorages(placeable)
         end
         AFVP.connectSiloStoragesToProductions(placeable)
     end)
-    PlaceableSilo.onDelete = Utils.prependedFunction(PlaceableSilo.onDelete, AFVP.releaseSiloStorages)
+    PlaceableSilo.onDelete = Utils.prependedFunction(PlaceableSilo.onDelete, function(placeable)
+        if siloNetworkIsEnabled() then
+            AFVP.releaseSiloStorages(placeable)
+        end
+    end)
 end
 
 if
