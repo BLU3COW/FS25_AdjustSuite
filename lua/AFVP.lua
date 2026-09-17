@@ -150,7 +150,7 @@ local function productionsUseNearbyStorages()
 end
 
 local function siloNetworkIsEnabled()
-    return Suite.siloNetworkEnabled ~= false
+    return Suite.siloNetworkEnabled == true
 end
 
 local function silosStayApart()

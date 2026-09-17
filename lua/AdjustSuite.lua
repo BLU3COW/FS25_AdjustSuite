@@ -128,7 +128,7 @@ Suite.configurationOffsets = Suite.configurationOffsets
 Suite.selectionSettings = Suite.selectionSettings or {}
 Suite.showHelpMenu = Suite.showHelpMenu ~= false
 Suite.respectExternalCapacityOverrides = Suite.respectExternalCapacityOverrides == true
-Suite.siloNetworkEnabled = Suite.siloNetworkEnabled ~= false
+Suite.siloNetworkEnabled = Suite.siloNetworkEnabled == true
 Suite.connectSiloNetwork = Suite.connectSiloNetwork ~= false
 Suite.connectProductionStorage = Suite.connectProductionStorage ~= false
 
@@ -1170,7 +1170,7 @@ local function writeSettingsTemplate(
     file:write(
         string.format(
             '        <siloNetwork module="%s" connectAll="%s"/>\n',
-            boolToString(siloNetworkEnabled ~= false),
+            boolToString(siloNetworkEnabled == true),
             boolToString(connectSiloNetwork ~= false)
         )
     )
@@ -1238,7 +1238,7 @@ local function writeSettingsXml(
     setXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show", showHelpMenu ~= false)
     setXMLFloat(xmlFile, SETTINGS_PRICE_KEY .. "#percent", pricePercent)
     setXMLBool(xmlFile, SETTINGS_EXTERNAL_CAPACITY_KEY .. "#respect", respectExternalCapacityOverrides == true)
-    setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#module", siloNetworkEnabled ~= false)
+    setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#module", siloNetworkEnabled == true)
     setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#connectAll", connectSiloNetwork ~= false)
     setXMLBool(xmlFile, SETTINGS_PRODUCTION_STORAGE_KEY .. "#connectSilos", connectProductionStorage ~= false)
 
@@ -1273,7 +1273,7 @@ function Suite.loadSelectionSettings()
     local showHelpMenu = true
     local pricePercent = 100
     local respectExternalCapacityOverrides = false
-    local siloNetworkEnabled = true
+    local siloNetworkEnabled = false
     local connectSiloNetwork = true
     local connectProductionStorage = true
     if settingsFileExists then
@@ -1354,10 +1354,20 @@ function Suite.loadSelectionSettings()
     end
 
     if xmlFile ~= nil and xmlFile ~= 0 then
-        if settingsFileChanged then
-            saveXMLFile(xmlFile)
-        end
         delete(xmlFile)
+    end
+
+    if settingsFileChanged then
+        writeSettingsXml(
+            filename,
+            settingsByModule,
+            showHelpMenu,
+            pricePercent,
+            respectExternalCapacityOverrides,
+            siloNetworkEnabled,
+            connectSiloNetwork,
+            connectProductionStorage
+        )
     end
 
     if not settingsFileExists then
@@ -1396,7 +1406,7 @@ function AdjustSuiteSettingsEvent.new(
     self.showHelpMenu = showHelpMenu ~= false
     self.pricePercent = normalizePricePercent(pricePercent)
     self.respectExternalCapacityOverrides = respectExternalCapacityOverrides == true
-    self.siloNetworkEnabled = siloNetworkEnabled ~= false
+    self.siloNetworkEnabled = siloNetworkEnabled == true
     self.connectSiloNetwork = connectSiloNetwork ~= false
     self.connectProductionStorage = connectProductionStorage ~= false
 
@@ -1431,7 +1441,7 @@ function AdjustSuiteSettingsEvent:writeStream(streamId, _connection)
     streamWriteBool(streamId, self.showHelpMenu ~= false)
     streamWriteFloat32(streamId, self.pricePercent)
     streamWriteBool(streamId, self.respectExternalCapacityOverrides == true)
-    streamWriteBool(streamId, self.siloNetworkEnabled ~= false)
+    streamWriteBool(streamId, self.siloNetworkEnabled == true)
     streamWriteBool(streamId, self.connectSiloNetwork ~= false)
     streamWriteBool(streamId, self.connectProductionStorage ~= false)
 
@@ -1447,7 +1457,7 @@ function AdjustSuiteSettingsEvent:run(connection)
     if connection ~= nil and connection:getIsServer() then
         Suite.showHelpMenu = self.showHelpMenu ~= false
         Suite.respectExternalCapacityOverrides = self.respectExternalCapacityOverrides == true
-        Suite.siloNetworkEnabled = self.siloNetworkEnabled ~= false
+        Suite.siloNetworkEnabled = self.siloNetworkEnabled == true
         Suite.connectSiloNetwork = self.connectSiloNetwork ~= false
         Suite.connectProductionStorage = self.connectProductionStorage ~= false
         applyPricePercent(self.pricePercent)
