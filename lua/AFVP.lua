@@ -122,10 +122,10 @@ end
 
 local function getSiloNetworkStorages(placeable)
     local spec = placeable ~= nil and placeable.spec_silo or nil
-    if spec == nil or spec.storages == nil then
+    if spec == nil or spec.storagePerFarm == true or spec.storages == nil then
         return nil
     end
-    return spec.storages, spec.storagePerFarm == true
+    return spec.storages
 end
 
 local function rememberSiloLink(storage, station, isLoading)
@@ -146,15 +146,14 @@ local function collectKeys(entries)
 end
 
 function AFVP.connectSiloStorages(placeable)
-    local storages, storagePerFarm = getSiloNetworkStorages(placeable)
+    local storages = getSiloNetworkStorages(placeable)
     local storageSystem = getStorageSystem()
     if storages == nil or storageSystem == nil then
         return
     end
 
-    local placeableFarmId = placeable:getOwnerFarmId()
+    local farmId = placeable:getOwnerFarmId()
     for _, storage in ipairs(storages) do
-        local farmId = storagePerFarm and storage:getOwnerFarmId() or placeableFarmId
         if storage.isExtension == true then
             for _, station in ipairs(storageSystem:getExtendableLoadingStationsInRange(storage, farmId)) do
                 if
