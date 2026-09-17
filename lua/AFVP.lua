@@ -122,10 +122,10 @@ end
 
 local function getSiloNetworkStorages(placeable)
     local spec = placeable ~= nil and placeable.spec_silo or nil
-    if spec == nil or spec.storagePerFarm == true or spec.storages == nil then
+    if spec == nil or spec.storages == nil then
         return nil
     end
-    return spec.storages
+    return spec.storages, spec.storagePerFarm == true
 end
 
 local function rememberSiloLink(storage, station, isLoading)
@@ -137,23 +137,24 @@ local function rememberSiloLink(storage, station, isLoading)
     links[station] = isLoading
 end
 
-local function collectStations(stations)
+local function collectKeys(entries)
     local list = {}
-    for station in pairs(stations or {}) do
-        table.insert(list, station)
+    for key in pairs(entries or {}) do
+        table.insert(list, key)
     end
     return list
 end
 
 function AFVP.connectSiloStorages(placeable)
-    local storages = getSiloNetworkStorages(placeable)
+    local storages, storagePerFarm = getSiloNetworkStorages(placeable)
     local storageSystem = getStorageSystem()
     if storages == nil or storageSystem == nil then
         return
     end
 
-    local farmId = placeable:getOwnerFarmId()
+    local placeableFarmId = placeable:getOwnerFarmId()
     for _, storage in ipairs(storages) do
+        local farmId = storagePerFarm and storage:getOwnerFarmId() or placeableFarmId
         if storage.isExtension == true then
             for _, station in ipairs(storageSystem:getExtendableLoadingStationsInRange(storage, farmId)) do
                 if
@@ -186,8 +187,8 @@ function AFVP.releaseSiloStorages(placeable)
     end
 
     for _, storage in ipairs(spec.storages) do
-        storageSystem:removeStorageFromLoadingStations(storage, collectStations(storage.loadingStations))
-        storageSystem:removeStorageFromUnloadingStations(storage, collectStations(storage.unloadingStations))
+        storageSystem:removeStorageFromLoadingStations(storage, collectKeys(storage.loadingStations))
+        storageSystem:removeStorageFromUnloadingStations(storage, collectKeys(storage.unloadingStations))
         AFVP.siloNetworkLinks[storage] = nil
     end
 
