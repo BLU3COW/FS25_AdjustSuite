@@ -56,6 +56,7 @@ Changelog 1.0.0.4:
 - The EXTERNALCAPACITY setting now also covers placeables and productions. With respect="true" a storage capacity changed by AdjustStorageCapacity or a similar mod is kept; with the default "false" the AFV-P selection is re-applied after loading.
 - New SILONETWORK setting, active by default: silos within reach of each other now form one shared network regardless of the order in which they were placed. In the base game a silo only picks up the silos that already existed before it, so every silo reported a different capacity. <siloNetwork connectAll="false"/> restores the base game behaviour.
 - Fixed a removed silo still counting towards the silos next to it until the game was reloaded. This applies regardless of the SILONETWORK setting.
+- New PRODUCTIONSTORAGE setting: <productionStorage connectSilos="false"/> stops productions from using silos and silo extensions in their surroundings as additional storage, so the production menu only shows the production's own capacity and contents. The default "true" keeps the base game behaviour. It applies no matter whether the production or the silo was built first.
 
 Changelog 1.0.0.3 (Patch 1.23):
 - Updated for Farming Simulator 25 Patch 1.23.
@@ -108,6 +109,7 @@ Changelog 1.0.0.4:
 - Die Einstellung EXTERNALCAPACITY gilt jetzt auch für platzierbare Objekte und Produktionen. Mit respect="true" bleibt eine von AdjustStorageCapacity oder einem ähnlichen Mod geänderte Lagerkapazität erhalten, mit dem Standardwert "false" wird die AFV-P-Auswahl nach dem Laden wieder angewendet.
 - Neue Einstellung SILONETWORK, standardmäßig aktiv: Silos in Reichweite zueinander bilden jetzt ein gemeinsames Netz, unabhängig von der Reihenfolge, in der sie gesetzt wurden. Im Basisspiel übernimmt ein Silo nur die Silos, die schon vor ihm existierten. Dadurch meldete jedes Silo eine andere Kapazität. Mit <siloNetwork connectAll="false"/> gilt wieder das Verhalten des Basisspiels.
 - Behoben, dass ein abgerissenes Silo bei den Silos daneben bis zum Neuladen weiter mitzählte. Das gilt unabhängig von der Einstellung SILONETWORK.
+- Neue Einstellung PRODUCTIONSTORAGE: Mit <productionStorage connectSilos="false"/> nutzen Produktionen keine Silos und Silo-Erweiterungen in ihrer Umgebung mehr als zusätzliches Lager, das Produktionsmenü zeigt dann nur noch Kapazität und Inhalt der Produktion selbst. Der Standardwert "true" behält das Verhalten des Basisspiels bei. Es spielt keine Rolle, ob zuerst die Produktion oder das Silo gebaut wurde.
 
 Changelog 1.0.0.3 (Patch 1.23):
 - Aktualisiert für Farming Simulator 25 Patch 1.23.
@@ -160,6 +162,7 @@ Changelog 1.0.0.4 :
 - Le réglage EXTERNALCAPACITY couvre désormais aussi les objets plaçables et les productions. Avec respect="true", une capacité de stockage modifiée par AdjustStorageCapacity ou un mod similaire est conservée ; avec la valeur par défaut "false", la sélection AFV-P est réappliquée après le chargement.
 - Nouveau réglage SILONETWORK, actif par défaut : les silos à portée les uns des autres forment désormais un réseau commun, quel que soit l'ordre dans lequel ils ont été posés. Dans le jeu de base, un silo ne reprend que les silos qui existaient déjà avant lui ; chaque silo affichait donc une capacité différente. <siloNetwork connectAll="false"/> rétablit le comportement du jeu de base.
 - Correction d'un silo démoli qui continuait de compter chez les silos voisins jusqu'au rechargement de la partie. Cela s'applique indépendamment du réglage SILONETWORK.
+- Nouveau réglage PRODUCTIONSTORAGE : avec <productionStorage connectSilos="false"/>, les productions n'utilisent plus les silos et extensions de silo environnants comme stockage supplémentaire ; le menu de production n'affiche alors que la capacité et le contenu propres à la production. La valeur par défaut "true" conserve le comportement du jeu de base. Peu importe que la production ou le silo ait été construit en premier.
 
 Changelog 1.0.0.3 (Patch 1.23) :
 - Mis à jour pour Farming Simulator 25 Patch 1.23.

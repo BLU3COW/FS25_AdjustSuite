@@ -231,6 +231,119 @@ function AFVP.refreshSiloNetwork()
     end
 end
 
+local function productionsUseNearbyStorages()
+    return Suite.connectProductionStorage ~= false
+end
+
+local function stationBelongsToProduction(station)
+    return type(station) == "table" and station.adjustSuiteProductionPoint ~= nil
+end
+
+local function withoutProductionStations(stations)
+    if productionsUseNearbyStorages() or stations == nil then
+        return stations
+    end
+
+    local filtered = {}
+    for _, station in ipairs(stations) do
+        if not stationBelongsToProduction(station) then
+            table.insert(filtered, station)
+        end
+    end
+    return filtered
+end
+
+function AFVP.refreshProductionStorages()
+    local storageSystem = getStorageSystem()
+    local manager = g_currentMission ~= nil and g_currentMission.productionChainManager or nil
+    if storageSystem == nil or manager == nil then
+        return
+    end
+
+    for _, productionPoint in ipairs(manager.productionPoints or {}) do
+        local farmId = productionPoint:getOwnerFarmId()
+        local loadingStation = productionPoint.loadingStation
+        local unloadingStation = productionPoint.unloadingStation
+
+        if productionsUseNearbyStorages() then
+            if loadingStation ~= nil then
+                for _, storage in ipairs(storageSystem:getStorageExtensionsInRange(loadingStation, farmId)) do
+                    if loadingStation.sourceStorages[storage] == nil then
+                        storageSystem:addStorageToLoadingStation(storage, loadingStation)
+                    end
+                end
+            end
+            if unloadingStation ~= nil then
+                for _, storage in ipairs(storageSystem:getStorageExtensionsInRange(unloadingStation, farmId)) do
+                    if unloadingStation.targetStorages[storage] == nil then
+                        storageSystem:addStorageToUnloadingStation(storage, unloadingStation)
+                    end
+                end
+            end
+        else
+            if loadingStation ~= nil then
+                for _, storage in ipairs(collectKeys(loadingStation.sourceStorages)) do
+                    if storage.isExtension == true and storage ~= productionPoint.storage then
+                        storageSystem:removeStorageFromLoadingStations(storage, { loadingStation })
+                    end
+                end
+            end
+            if unloadingStation ~= nil then
+                for _, storage in ipairs(collectKeys(unloadingStation.targetStorages)) do
+                    if storage.isExtension == true and storage ~= productionPoint.storage then
+                        storageSystem:removeStorageFromUnloadingStations(storage, { unloadingStation })
+                    end
+                end
+            end
+        end
+    end
+end
+
+if AFVP.productionStationHookInstalled ~= true and ProductionPoint ~= nil and ProductionPoint.load ~= nil then
+    AFVP.productionStationHookInstalled = true
+    ProductionPoint.load = Utils.overwrittenFunction(ProductionPoint.load, function(productionPoint, superFunc, ...)
+        local loaded = superFunc(productionPoint, ...)
+        if productionPoint.loadingStation ~= nil then
+            productionPoint.loadingStation.adjustSuiteProductionPoint = productionPoint
+        end
+        if productionPoint.unloadingStation ~= nil then
+            productionPoint.unloadingStation.adjustSuiteProductionPoint = productionPoint
+        end
+        return loaded
+    end)
+end
+
+if
+    AFVP.productionStorageFilterInstalled ~= true
+    and StorageSystem ~= nil
+    and StorageSystem.getStorageExtensionsInRange ~= nil
+    and StorageSystem.getExtendableLoadingStationsInRange ~= nil
+    and StorageSystem.getExtendableUnloadingStationsInRange ~= nil
+then
+    AFVP.productionStorageFilterInstalled = true
+    StorageSystem.getStorageExtensionsInRange = Utils.overwrittenFunction(
+        StorageSystem.getStorageExtensionsInRange,
+        function(storageSystem, superFunc, station, ...)
+            if not productionsUseNearbyStorages() and stationBelongsToProduction(station) then
+                return {}
+            end
+            return superFunc(storageSystem, station, ...)
+        end
+    )
+    StorageSystem.getExtendableLoadingStationsInRange = Utils.overwrittenFunction(
+        StorageSystem.getExtendableLoadingStationsInRange,
+        function(storageSystem, superFunc, ...)
+            return withoutProductionStations(superFunc(storageSystem, ...))
+        end
+    )
+    StorageSystem.getExtendableUnloadingStationsInRange = Utils.overwrittenFunction(
+        StorageSystem.getExtendableUnloadingStationsInRange,
+        function(storageSystem, superFunc, ...)
+            return withoutProductionStations(superFunc(storageSystem, ...))
+        end
+    )
+end
+
 if
     AFVP.siloNetworkHooksInstalled ~= true
     and PlaceableSilo ~= nil
@@ -254,6 +367,7 @@ then
     AFVP.siloNetworkSettingsHookInstalled = true
     AdjustSuiteSettingsEvent.run = Utils.appendedFunction(AdjustSuiteSettingsEvent.run, function(_event, connection)
         if connection ~= nil and connection:getIsServer() then
+            AFVP.refreshProductionStorages()
             AFVP.refreshSiloNetwork()
         end
     end)

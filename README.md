@@ -235,6 +235,7 @@ Die neueste Version verbessert außerdem die Kompatibilität mit <strong>Coursep
 | **PRICE** | Adjust Prices | Preise | 100 % |
 | **EXTERNALCAPACITY** | Respect External Capacity Changes | Externe Kapazitätsänderungen respektieren | Off |
 | **SILONETWORK** | Connect All Silos In Reach | Alle Silos in Reichweite verbinden | Activ |
+| **PRODUCTIONSTORAGE** | Productions Use Nearby Silos | Produktionen nutzen Silos in der Nähe | Activ |
 
 </div>
 <br>
@@ -248,7 +249,10 @@ With <strong>PRICE</strong>, you can define how strongly adjustments affect pric
 <strong>EXTERNALCAPACITY</strong> is for players who also use a separate mod that lets you set a vehicle's storage or tank capacity to any custom value at runtime, such as <strong>AdjustStorageCapacity</strong> or similar mods. By default, AdjustSuite doesn't know about such changes and keeps recalculating capacities from its own settings, which would undo them after a reload. Enabling this option makes AdjustSuite recognize when another mod has changed a capacity since AdjustSuite last touched it, and leave that value alone instead of overwriting it. Leave this off if you don't use such a mod.
 <br>
 <br>
-<strong>SILONETWORK</strong> fixes how silos that extend each other connect. In the base game a silo only picks up the silos that already existed when it was built, never the ones built after it. Four silos standing side by side therefore form four different networks, each reports a different total capacity, and tipping into the oldest silo can only use the oldest storage. With this option enabled, every silo within reach joins the same network no matter the order in which they were built. Set <code>&lt;siloNetwork connectAll="false"/&gt;</code> to keep the base game behaviour. Independently of this option, a demolished silo no longer keeps counting towards its neighbours.</div>
+<strong>SILONETWORK</strong> fixes how silos that extend each other connect. In the base game a silo only picks up the silos that already existed when it was built, never the ones built after it. Four silos standing side by side therefore form four different networks, each reports a different total capacity, and tipping into the oldest silo can only use the oldest storage. With this option enabled, every silo within reach joins the same network no matter the order in which they were built. Set <code>&lt;siloNetwork connectAll="false"/&gt;</code> to keep the base game behaviour. Independently of this option, a demolished silo no longer keeps counting towards its neighbours.
+<br>
+<br>
+<strong>PRODUCTIONSTORAGE</strong> decides whether productions use silos and silo extensions in their surroundings as additional storage. The base game does this, which is why the production menu of a factory next to a grain silo suddenly shows a much larger capacity and crops the factory itself never received. Set <code>&lt;productionStorage connectSilos="false"/&gt;</code> to keep productions limited to their own storage, no matter whether the production or the silo was built first. The default keeps the base game behaviour.</div>
 <br>
 <div align="center">
 
@@ -264,7 +268,10 @@ Mit <strong>PRICE</strong> kannst du festlegen, wie stark sich Anpassungen auf d
 <strong>EXTERNALCAPACITY</strong> richtet sich an Spieler, die zusätzlich einen separaten Mod verwenden, mit dem sich die Lager- oder Tankkapazität eines Fahrzeugs jederzeit im Spiel auf einen beliebigen Wert setzen lässt, zum Beispiel <strong>AdjustStorageCapacity</strong> oder ähnliche Mods. Standardmäßig weiß AdjustSuite nichts von solchen Änderungen und berechnet Kapazitäten weiterhin nach seinen eigenen Einstellungen neu, wodurch sie nach einem Neustart wieder rückgängig gemacht würden. Ist diese Option aktiviert, erkennt AdjustSuite, wenn ein anderer Mod eine Kapazität seit der letzten eigenen Änderung angepasst hat, und lässt diesen Wert unangetastet, statt ihn zu überschreiben. Lass diese Option deaktiviert, wenn du keinen solchen Mod nutzt.
 <br>
 <br>
-<strong>SILONETWORK</strong> behebt, wie sich Silos verbinden, die einander erweitern. Im Basisspiel übernimmt ein Silo nur die Silos, die beim Bau bereits standen, nie die danach gebauten. Vier Silos nebeneinander bilden dadurch vier verschiedene Netze, jedes meldet eine andere Gesamtkapazität, und beim Abkippen ins älteste Silo steht nur dessen eigener Speicher zur Verfügung. Ist diese Option aktiviert, gehört jedes Silo in Reichweite zum selben Netz, egal in welcher Reihenfolge gebaut wurde. Mit <code>&lt;siloNetwork connectAll="false"/&gt;</code> bleibt das Verhalten des Basisspiels erhalten. Unabhängig von dieser Option zählt ein abgerissenes Silo nicht mehr bei seinen Nachbarn weiter.</div>
+<strong>SILONETWORK</strong> behebt, wie sich Silos verbinden, die einander erweitern. Im Basisspiel übernimmt ein Silo nur die Silos, die beim Bau bereits standen, nie die danach gebauten. Vier Silos nebeneinander bilden dadurch vier verschiedene Netze, jedes meldet eine andere Gesamtkapazität, und beim Abkippen ins älteste Silo steht nur dessen eigener Speicher zur Verfügung. Ist diese Option aktiviert, gehört jedes Silo in Reichweite zum selben Netz, egal in welcher Reihenfolge gebaut wurde. Mit <code>&lt;siloNetwork connectAll="false"/&gt;</code> bleibt das Verhalten des Basisspiels erhalten. Unabhängig von dieser Option zählt ein abgerissenes Silo nicht mehr bei seinen Nachbarn weiter.
+<br>
+<br>
+<strong>PRODUCTIONSTORAGE</strong> legt fest, ob Produktionen Silos und Silo-Erweiterungen in ihrer Umgebung als zusätzliches Lager nutzen. Das Basisspiel macht das, deshalb zeigt das Produktionsmenü einer Fabrik neben einem Getreidesilo plötzlich eine viel größere Kapazität und Früchte, die die Fabrik selbst nie bekommen hat. Mit <code>&lt;productionStorage connectSilos="false"/&gt;</code> bleiben Produktionen auf ihr eigenes Lager beschränkt, egal ob zuerst die Produktion oder das Silo gebaut wurde. Der Standardwert behält das Verhalten des Basisspiels bei.</div>
 </details>
 </div>
 <br>
