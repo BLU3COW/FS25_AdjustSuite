@@ -145,6 +145,41 @@ local function collectKeys(entries)
     return list
 end
 
+local function productionsUseNearbyStorages()
+    return Suite.connectProductionStorage ~= false
+end
+
+local function offerStorageToProductions(storageSystem, storage)
+    if storage == nil or storage.isExtension ~= true or not productionsUseNearbyStorages() then
+        return
+    end
+
+    local manager = g_currentMission ~= nil and g_currentMission.productionChainManager or nil
+    for _, productionPoint in ipairs(manager ~= nil and manager.productionPoints or {}) do
+        local farmId = productionPoint:getOwnerFarmId()
+        local loadingStation = productionPoint.loadingStation
+        local unloadingStation = productionPoint.unloadingStation
+
+        if
+            loadingStation ~= nil
+            and loadingStation.sourceStorages[storage] == nil
+            and storageSystem:getIsStationCompatible(loadingStation, storage, farmId)
+            and storageSystem:addStorageToLoadingStation(storage, loadingStation)
+        then
+            rememberSiloLink(storage, loadingStation, true)
+        end
+
+        if
+            unloadingStation ~= nil
+            and unloadingStation.targetStorages[storage] == nil
+            and storageSystem:getIsStationCompatible(unloadingStation, storage, farmId)
+            and storageSystem:addStorageToUnloadingStation(storage, unloadingStation)
+        then
+            rememberSiloLink(storage, unloadingStation, false)
+        end
+    end
+end
+
 function AFVP.connectSiloStorages(placeable)
     local storages = getSiloNetworkStorages(placeable)
     local storageSystem = getStorageSystem()
@@ -176,6 +211,28 @@ function AFVP.connectSiloStorages(placeable)
             end
         end
     end
+end
+
+function AFVP.connectSiloStoragesToProductions(placeable)
+    local storages = getSiloNetworkStorages(placeable)
+    local storageSystem = getStorageSystem()
+    if storages == nil or storageSystem == nil then
+        return
+    end
+
+    for _, storage in ipairs(storages) do
+        offerStorageToProductions(storageSystem, storage)
+    end
+end
+
+function AFVP.connectSiloExtensionStorage(placeable)
+    local spec = placeable ~= nil and placeable.spec_siloExtension or nil
+    local storageSystem = getStorageSystem()
+    if spec == nil or spec.storage == nil or storageSystem == nil then
+        return
+    end
+
+    offerStorageToProductions(storageSystem, spec.storage)
 end
 
 function AFVP.releaseSiloStorages(placeable)
@@ -228,10 +285,6 @@ function AFVP.refreshSiloNetwork()
     for _, placeable in pairs(placeableSystem ~= nil and placeableSystem.placeables or {}) do
         AFVP.connectSiloStorages(placeable)
     end
-end
-
-local function productionsUseNearbyStorages()
-    return Suite.connectProductionStorage ~= false
 end
 
 local function stationBelongsToProduction(station)
@@ -354,8 +407,19 @@ then
         if Suite.connectSiloNetwork == true then
             AFVP.connectSiloStorages(placeable)
         end
+        AFVP.connectSiloStoragesToProductions(placeable)
     end)
     PlaceableSilo.onDelete = Utils.prependedFunction(PlaceableSilo.onDelete, AFVP.releaseSiloStorages)
+end
+
+if
+    AFVP.siloExtensionHookInstalled ~= true
+    and PlaceableSiloExtension ~= nil
+    and PlaceableSiloExtension.onFinalizePlacement ~= nil
+then
+    AFVP.siloExtensionHookInstalled = true
+    PlaceableSiloExtension.onFinalizePlacement =
+        Utils.appendedFunction(PlaceableSiloExtension.onFinalizePlacement, AFVP.connectSiloExtensionStorage)
 end
 
 if
