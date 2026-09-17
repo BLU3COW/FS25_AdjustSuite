@@ -1,3 +1,4 @@
+local safeCall = pcall
 AdjustSuiteAFVP = AdjustSuiteAFVP or {}
 local AFVP = AdjustSuiteAFVP
 
@@ -354,8 +355,18 @@ function AFVP.refreshSiloNetwork()
     end
 end
 
+local function placeableRunsInSandbox(placeable)
+    if placeable == nil or placeable.isSandboxPlaceable == nil then
+        return false
+    end
+
+    local ok, isSandbox = safeCall(placeable.isSandboxPlaceable, placeable)
+    return ok and isSandbox == true
+end
+
 local function stationBelongsToProduction(station)
-    return type(station) == "table" and station.adjustSuiteProductionPoint ~= nil
+    local productionPoint = type(station) == "table" and station.adjustSuiteProductionPoint or nil
+    return productionPoint ~= nil and not placeableRunsInSandbox(productionPoint.owningPlaceable)
 end
 
 local function withoutProductionStations(stations)
@@ -384,7 +395,7 @@ function AFVP.refreshProductionStorages()
         local loadingStation = productionPoint.loadingStation
         local unloadingStation = productionPoint.unloadingStation
 
-        if productionsUseNearbyStorages() then
+        if productionsUseNearbyStorages() or placeableRunsInSandbox(productionPoint.owningPlaceable) then
             if loadingStation ~= nil then
                 for _, storage in ipairs(storageSystem:getStorageExtensionsInRange(loadingStation, farmId)) do
                     if loadingStation.sourceStorages[storage] == nil then
