@@ -1670,6 +1670,34 @@ local function hideDisabledConstructionRows(screen, storeItem, layout, options)
     return layoutChanged
 end
 
+local function refreshConstructionAttributes(screen, storeItem, selectionParts)
+    if screen.configurations == nil or screen.assignItemAttributeData == nil or g_shopController == nil then
+        screen.AdjustSuiteSpecStateKey = nil
+        return
+    end
+
+    if #selectionParts == 0 then
+        return
+    end
+
+    local stateKey = string.format("%s|%s", tostring(storeItem.xmlFilename), table.concat(selectionParts, "|"))
+    if screen.AdjustSuiteSpecStateKey == stateKey then
+        return
+    end
+    screen.AdjustSuiteSpecStateKey = stateKey
+
+    local configurations = table.clone(screen.configurations)
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        local selection = Suite.constructionSelections[moduleId]
+        if selection ~= nil then
+            configurations[moduleId] = selection.configurationId
+        end
+    end
+
+    local displayItem = g_shopController:makeDisplayItem(storeItem, nil, configurations)
+    screen:assignItemAttributeData({ name = storeItem.name, displayItem = displayItem })
+end
+
 local function updateSuiteConstructionControls(screen)
     local storeItem = getConstructionStoreItem(screen)
     local layout = getConfigurationLayout(screen)
@@ -1680,12 +1708,15 @@ local function updateSuiteConstructionControls(screen)
     local options = {}
     collectSuiteShopOptions(layout, options)
 
+    local selectionParts = {}
     for _, moduleId in ipairs(Suite.placeableModuleIds) do
         if storeItem.configurations[moduleId] ~= nil then
+            local configurationId = getConstructionSelection(screen, storeItem, layout, moduleId)
             Suite.constructionSelections[moduleId] = {
                 xmlFilename = storeItem.xmlFilename,
-                configurationId = getConstructionSelection(screen, storeItem, layout, moduleId),
+                configurationId = configurationId,
             }
+            table.insert(selectionParts, string.format("%s:%s", moduleId, tostring(configurationId)))
         else
             Suite.constructionSelections[moduleId] = nil
         end
@@ -1694,6 +1725,8 @@ local function updateSuiteConstructionControls(screen)
     if hideDisabledConstructionRows(screen, storeItem, layout, options) and layout.invalidateLayout ~= nil then
         layout:invalidateLayout()
     end
+
+    refreshConstructionAttributes(screen, storeItem, selectionParts)
 
     if storeItem.configurations["AIPP"] == nil then
         return
@@ -2039,6 +2072,33 @@ local function scaleWorkingWidthConfig(storeItem, factor)
     return restore
 end
 
+local function scaleMaxSpeed(storeItem, factor)
+    local set, restore = createSpecRestore()
+
+    local specs = storeItem.specs
+    local declaredMaxSpeed = specs ~= nil and tonumber(specs.maxSpeed) or nil
+    if declaredMaxSpeed ~= nil then
+        set(specs, "maxSpeed", declaredMaxSpeed * factor)
+    end
+
+    local configurations = storeItem.configurations or {}
+    for _, configItem in ipairs(configurations["motor"] or {}) do
+        local value = tonumber(configItem.maxSpeed)
+        if value ~= nil then
+            set(configItem, "maxSpeed", value * factor)
+        end
+    end
+
+    for _, configItem in ipairs(configurations["wheel"] or {}) do
+        local value = tonumber(configItem.maxForwardSpeedShop)
+        if value ~= nil then
+            set(configItem, "maxForwardSpeedShop", value * factor)
+        end
+    end
+
+    return restore
+end
+
 local function scaleMotorPower(storeItem, factor)
     local set, restore = createSpecRestore()
 
@@ -2164,7 +2224,7 @@ end
 
 local SPEC_SCALERS = {
     { name = "speedLimit", moduleId = "AWS", apply = scaleSpecNumber("speedLimit") },
-    { name = "maxSpeed", moduleId = "ADS", apply = scaleSpecNumber("maxSpeed") },
+    { name = "maxSpeed", moduleId = "ADS", apply = scaleMaxSpeed },
     { name = "capacity", moduleId = "AFV", apply = scaleFillUnitCapacities },
     { name = "fuel", moduleId = "AFC", apply = scaleFuelCapacities },
     { name = "electricCharge", moduleId = "AFC", apply = scaleFuelCapacities },
@@ -2243,6 +2303,60 @@ function Suite.installSpecValueScaling()
             end
         end
     end
+end
+
+local CONFIG_SCREEN_SPEC_NAMES = {
+    power = true,
+    maxSpeed = true,
+    speedLimit = true,
+    workingWidth = true,
+    workingWidthConfig = true,
+}
+
+local function applyConfigScreenSpecScaling(storeItem, configurations)
+    local restores = {}
+
+    for _, entry in ipairs(SPEC_SCALERS) do
+        if CONFIG_SCREEN_SPEC_NAMES[entry.name] == true then
+            local factor = getSpecScaleFactor(storeItem, nil, configurations, entry.moduleId)
+            if factor ~= 1 then
+                local restore = entry.apply(storeItem, factor, nil, configurations)
+                if restore ~= nil then
+                    table.insert(restores, restore)
+                end
+            end
+        end
+    end
+
+    if #restores == 0 then
+        return nil
+    end
+
+    return function()
+        for index = #restores, 1, -1 do
+            restores[index]()
+        end
+    end
+end
+
+if
+    Suite.attributeHooksInstalled ~= true
+    and ShopConfigScreen ~= nil
+    and ShopConfigScreen.processAttributeData ~= nil
+then
+    Suite.attributeHooksInstalled = true
+    ShopConfigScreen.processAttributeData = Utils.overwrittenFunction(
+        ShopConfigScreen.processAttributeData,
+        function(screen, superFunc, storeItem, vehicle, saleItem)
+            local restore = applyConfigScreenSpecScaling(storeItem, screen.configurations)
+            if restore == nil then
+                return superFunc(screen, storeItem, vehicle, saleItem)
+            end
+
+            safeCall(superFunc, screen, storeItem, vehicle, saleItem)
+            restore()
+        end
+    )
 end
 
 function Suite:loadMap()
