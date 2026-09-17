@@ -581,11 +581,6 @@ function Suite.loadStoredOffsets(object, moduleId, savegame, nodeName)
     if applied ~= nil then
         getOffsetStore(object, EFFECTIVE_OFFSETS_KEY)[moduleId] = Suite.clampOffset(applied)
     end
-
-    local capacityOffset = tonumber(savegame.xmlFile:getValue(basePath .. "#capacityOffset"))
-    if capacityOffset ~= nil then
-        getOffsetStore(object, CAPACITY_OFFSETS_KEY)[moduleId] = Suite.clampOffset(capacityOffset)
-    end
 end
 
 function Suite.saveStoredOffsets(object, moduleId, xmlFile, key)
@@ -603,11 +598,6 @@ function Suite.saveStoredOffsets(object, moduleId, xmlFile, key)
     local applied = Suite.getAppliedOffset(object, moduleId)
     if applied ~= nil then
         xmlFile:setValue(key .. "#effectiveOffset", applied)
-    end
-
-    local capacityOffset = Suite.getCapacityOffset(object, moduleId)
-    if capacityOffset ~= nil then
-        xmlFile:setValue(key .. "#capacityOffset", capacityOffset)
     end
 end
 
@@ -649,11 +639,6 @@ function Suite.savePlaceableStoredOffsets(placeable, xmlFile, key)
             local applied = Suite.getAppliedOffset(placeable, moduleId)
             if applied ~= nil then
                 xmlFile:setValue(basePath .. "#effectiveOffset", applied)
-            end
-
-            local capacityOffset = Suite.getCapacityOffset(placeable, moduleId)
-            if capacityOffset ~= nil then
-                xmlFile:setValue(basePath .. "#capacityOffset", capacityOffset)
             end
         end
     end
