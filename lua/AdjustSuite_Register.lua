@@ -1633,11 +1633,11 @@ local function getConstructionSelection(screen, storeItem, layout, configuration
         or 1
 end
 
-local function resetConstructionSelection(screen, option, moduleId)
+local function resetConstructionSelection(screen, storeItem, option, moduleId)
     local defaultIndex = Suite.getDefaultIndex()
     setConstructionConfigurationId(screen, moduleId, defaultIndex)
 
-    local items = getConstructionStoreItem(screen).configurations[moduleId]
+    local items = storeItem.configurations ~= nil and storeItem.configurations[moduleId] or nil
     local defaultItem = items ~= nil and items[defaultIndex] or nil
     if defaultItem ~= nil and option.setState ~= nil then
         for state, text in ipairs(option.texts or {}) do
@@ -1658,7 +1658,7 @@ local function hideDisabledConstructionRows(screen, storeItem, layout, options)
             local row = getConfigurationRow(option, layout)
             if option ~= nil and row ~= nil and row.setVisible ~= nil and row.visible == true then
                 if getConstructionSelection(screen, storeItem, layout, moduleId) ~= Suite.getDefaultIndex() then
-                    resetConstructionSelection(screen, option, moduleId)
+                    resetConstructionSelection(screen, storeItem, option, moduleId)
                 end
 
                 row:setVisible(false)
@@ -1754,7 +1754,7 @@ local function updateSuiteConstructionControls(screen)
     if not shouldShow then
         local selectedIndex = getConstructionSelection(screen, storeItem, layout, "AIPP")
         if selectedIndex ~= Suite.getDefaultIndex() then
-            resetConstructionSelection(screen, option, "AIPP")
+            resetConstructionSelection(screen, storeItem, option, "AIPP")
         end
     end
 
