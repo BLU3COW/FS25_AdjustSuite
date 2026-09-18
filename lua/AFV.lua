@@ -191,6 +191,7 @@ local function applyFillUnitCapacity(vehicle, fillUnitIndex, fillUnit, capacity)
     end
 
     clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity)
+    Suite.syncVehicleFillVolumes(vehicle, fillUnitIndex, capacity)
 end
 
 local function collectFillUnits(vehicle, force)

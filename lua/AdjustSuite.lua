@@ -791,6 +791,88 @@ function Suite.getCapacityBase(fillUnit)
     return nil
 end
 
+local function rebuildVehicleFillVolume(fillVolume, capacity)
+    local newVolume = createFillPlaneShape(
+        fillVolume.baseNode,
+        "fillPlane",
+        capacity,
+        fillVolume.maxDelta,
+        fillVolume.maxSurfaceAngle,
+        fillVolume.maxPhysicalSurfaceAngle,
+        fillVolume.maxSurfaceDistanceError,
+        fillVolume.maxSubDivEdgeLength,
+        fillVolume.syncMaxSubDivEdgeLength,
+        fillVolume.allSidePlanes,
+        fillVolume.retessellateTop
+    )
+    if newVolume == nil or newVolume == 0 then
+        return false
+    end
+
+    delete(fillVolume.volume)
+    fillVolume.volume = newVolume
+    fillVolume.capacity = capacity
+    setVisibility(newVolume, false)
+
+    for _, deformer in ipairs(fillVolume.deformers or {}) do
+        deformer.polyline = findPolyline(newVolume, deformer.posX, deformer.posZ)
+    end
+
+    link(fillVolume.baseNode, newVolume)
+
+    local material = g_materialManager ~= nil and g_materialManager:getBaseMaterialByName("fillPlane") or nil
+    if material ~= nil then
+        setMaterial(newVolume, material, 0)
+        if g_fillTypeManager ~= nil and g_terrainNode ~= nil then
+            g_fillTypeManager:assignFillTypeTextureArraysFromTerrain(newVolume, g_terrainNode, true, true, true)
+        end
+    end
+
+    fillPlaneAdd(newVolume, 1, 0, 1, 0, 11, 0, 0, 0, 0, 11)
+    fillVolume.heightOffset = getFillPlaneHeightAtLocalPos(newVolume, 0, 0)
+    fillPlaneAdd(newVolume, -1, 0, 1, 0, 11, 0, 0, 0, 0, 11)
+
+    fillVolume.fillLevel = 0
+    fillVolume.lastFillType = FillType ~= nil and FillType.UNKNOWN or nil
+    return true
+end
+
+function Suite.syncVehicleFillVolumes(vehicle, fillUnitIndex, capacity)
+    local spec = vehicle ~= nil and vehicle.spec_fillVolume or nil
+    local mapping = spec ~= nil
+            and spec.fillUnitFillVolumeMapping ~= nil
+            and spec.fillUnitFillVolumeMapping[fillUnitIndex]
+        or nil
+    capacity = tonumber(capacity)
+    if
+        mapping == nil
+        or mapping.fillVolumes == nil
+        or capacity == nil
+        or capacity <= 0
+        or createFillPlaneShape == nil
+    then
+        return
+    end
+
+    local rebuilt = false
+    for _, fillVolume in ipairs(mapping.fillVolumes) do
+        local targetCapacity = capacity * (tonumber(fillVolume.fillUnitFactor) or 1)
+        if
+            fillVolume.volume ~= nil
+            and fillVolume.volume ~= 0
+            and fillVolume.baseNode ~= nil
+            and math.abs((tonumber(fillVolume.capacity) or 0) - targetCapacity) > 0.5
+        then
+            rebuilt = rebuildVehicleFillVolume(fillVolume, targetCapacity) or rebuilt
+        end
+    end
+
+    if rebuilt and FillVolume ~= nil and FillVolume.onFillUnitFillLevelChanged ~= nil then
+        local toolType = ToolType ~= nil and ToolType.UNDEFINED or nil
+        FillVolume.onFillUnitFillLevelChanged(vehicle, fillUnitIndex, 0, nil, toolType, nil, 0)
+    end
+end
+
 function Suite.capacityLooksExternallyOverridden(object, fillUnit, sourceModuleId)
     if Suite.respectExternalCapacityOverrides ~= true then
         return false
