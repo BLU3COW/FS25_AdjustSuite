@@ -791,21 +791,44 @@ function Suite.getCapacityBase(fillUnit)
     return nil
 end
 
-local function rebuildVehicleFillVolume(fillVolume, capacity)
-    local newVolume = createFillPlaneShape(
-        fillVolume.baseNode,
+function Suite.createFillPlane(baseNode, capacity, params)
+    if baseNode == nil or baseNode == 0 or createFillPlaneShape == nil or capacity == nil or capacity <= 0 then
+        return nil
+    end
+
+    local fillPlane = createFillPlaneShape(
+        baseNode,
         "fillPlane",
         capacity,
-        fillVolume.maxDelta,
-        fillVolume.maxSurfaceAngle,
-        fillVolume.maxPhysicalSurfaceAngle,
-        fillVolume.maxSurfaceDistanceError,
-        fillVolume.maxSubDivEdgeLength,
-        fillVolume.syncMaxSubDivEdgeLength,
-        fillVolume.allSidePlanes,
-        fillVolume.retessellateTop
+        params.maxDelta,
+        params.maxSurfaceAngle,
+        params.maxPhysicalSurfaceAngle,
+        params.maxSurfaceDistanceError,
+        params.maxSubDivEdgeLength,
+        params.syncMaxSubDivEdgeLength,
+        params.allSidePlanes,
+        params.retessellateTop
     )
-    if newVolume == nil or newVolume == 0 then
+    if fillPlane == nil or fillPlane == 0 then
+        return nil
+    end
+
+    link(baseNode, fillPlane)
+
+    local material = g_materialManager ~= nil and g_materialManager:getBaseMaterialByName("fillPlane") or nil
+    if material ~= nil then
+        setMaterial(fillPlane, material, 0)
+        if g_fillTypeManager ~= nil and g_terrainNode ~= nil then
+            g_fillTypeManager:assignFillTypeTextureArraysFromTerrain(fillPlane, g_terrainNode, true, true, true)
+        end
+    end
+
+    return fillPlane
+end
+
+local function rebuildVehicleFillVolume(fillVolume, capacity)
+    local newVolume = Suite.createFillPlane(fillVolume.baseNode, capacity, fillVolume)
+    if newVolume == nil then
         return false
     end
 
@@ -816,16 +839,6 @@ local function rebuildVehicleFillVolume(fillVolume, capacity)
 
     for _, deformer in ipairs(fillVolume.deformers or {}) do
         deformer.polyline = findPolyline(newVolume, deformer.posX, deformer.posZ)
-    end
-
-    link(fillVolume.baseNode, newVolume)
-
-    local material = g_materialManager ~= nil and g_materialManager:getBaseMaterialByName("fillPlane") or nil
-    if material ~= nil then
-        setMaterial(newVolume, material, 0)
-        if g_fillTypeManager ~= nil and g_terrainNode ~= nil then
-            g_fillTypeManager:assignFillTypeTextureArraysFromTerrain(newVolume, g_terrainNode, true, true, true)
-        end
     end
 
     fillPlaneAdd(newVolume, 1, 0, 1, 0, 11, 0, 0, 0, 0, 11)
@@ -844,13 +857,7 @@ function Suite.syncVehicleFillVolumes(vehicle, fillUnitIndex, capacity)
             and spec.fillUnitFillVolumeMapping[fillUnitIndex]
         or nil
     capacity = tonumber(capacity)
-    if
-        mapping == nil
-        or mapping.fillVolumes == nil
-        or capacity == nil
-        or capacity <= 0
-        or createFillPlaneShape == nil
-    then
+    if mapping == nil or mapping.fillVolumes == nil or capacity == nil or capacity <= 0 then
         return
     end
 
@@ -860,7 +867,6 @@ function Suite.syncVehicleFillVolumes(vehicle, fillUnitIndex, capacity)
         if
             fillVolume.volume ~= nil
             and fillVolume.volume ~= 0
-            and fillVolume.baseNode ~= nil
             and math.abs((tonumber(fillVolume.capacity) or 0) - targetCapacity) > 0.5
         then
             rebuilt = rebuildVehicleFillVolume(fillVolume, targetCapacity) or rebuilt

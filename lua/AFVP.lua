@@ -75,12 +75,121 @@ local function reconcileCapacity(current, applied, respectExternal)
     return respectExternal and current or applied
 end
 
+local DEFAULT_MAX_PHYSICAL_SURFACE_ANGLE = 0.6108652381980153
+
+function AFVP.rememberDynamicFillPlane(storage, xmlFile, key)
+    if storage.dynamicFillPlane == nil or xmlFile == nil or type(key) ~= "string" then
+        return
+    end
+
+    local planeKey = key .. ".dynamicFillPlane"
+    local defaultFillTypeName = xmlFile:getValue(planeKey .. "#defaultFillType")
+    local defaultFillTypeIndex = nil
+    if defaultFillTypeName ~= nil and g_fillTypeManager ~= nil then
+        defaultFillTypeIndex = g_fillTypeManager:getFillTypeIndexByName(defaultFillTypeName)
+    end
+
+    storage.adjustSuiteDynamicFillPlane = {
+        fixedCapacity = xmlFile:getValue(planeKey .. "#capacity"),
+        defaultFillTypeIndex = defaultFillTypeIndex,
+        maxDelta = xmlFile:getValue(planeKey .. "#maxDelta", 1),
+        maxSurfaceAngle = xmlFile:getValue(planeKey .. "#maxAllowedHeapAngle", 35),
+        maxPhysicalSurfaceAngle = DEFAULT_MAX_PHYSICAL_SURFACE_ANGLE,
+        maxSurfaceDistanceError = xmlFile:getValue(planeKey .. "#maxSurfaceDistanceError", 0.05),
+        maxSubDivEdgeLength = xmlFile:getValue(planeKey .. "#maxSubDivEdgeLength", 0.9),
+        syncMaxSubDivEdgeLength = xmlFile:getValue(planeKey .. "#syncMaxSubDivEdgeLength", 1.35),
+        allSidePlanes = xmlFile:getValue(planeKey .. "#allSidePlanes", true),
+        retessellateTop = xmlFile:getValue(planeKey .. "#retessellateTop", false),
+    }
+end
+
+local function getDynamicFillPlaneCapacity(storage, params)
+    local capacity = tonumber(params.fixedCapacity)
+    if capacity == nil and params.defaultFillTypeIndex ~= nil and storage.capacities ~= nil then
+        capacity = tonumber(storage.capacities[params.defaultFillTypeIndex])
+    end
+    return capacity or tonumber(storage.capacity)
+end
+
+local function rebuildDynamicFillPlane(storage)
+    local params = storage.adjustSuiteDynamicFillPlane
+    if params == nil or storage.dynamicFillPlane == nil or storage.dynamicFillPlaneBaseNode == nil then
+        return
+    end
+
+    local fillPlane =
+        Suite.createFillPlane(storage.dynamicFillPlaneBaseNode, getDynamicFillPlaneCapacity(storage, params), params)
+    if fillPlane == nil then
+        return
+    end
+
+    delete(storage.dynamicFillPlane)
+    storage.dynamicFillPlane = fillPlane
+
+    local totalFillLevel = 0
+    local fillType = nil
+    for fillTypeIndex, fillLevel in pairs(storage.fillLevels or {}) do
+        fillLevel = tonumber(fillLevel) or 0
+        if fillLevel > 0 then
+            totalFillLevel = totalFillLevel + fillLevel
+            fillType = fillType or fillTypeIndex
+        end
+    end
+    fillType = fillType or params.defaultFillTypeIndex
+
+    if fillType ~= nil and g_fillTypeManager ~= nil then
+        local textureArrayIndex = g_fillTypeManager:getTextureArrayIndexByFillTypeIndex(fillType)
+        if textureArrayIndex ~= nil then
+            setShaderParameter(fillPlane, "fillTypeId", textureArrayIndex - 1, 0, 0, 0, false)
+        end
+    end
+
+    if totalFillLevel > 0 then
+        local x, y, z = localToWorld(fillPlane, 0, 0, 0)
+        local d1x, d1y, d1z = localDirectionToWorld(fillPlane, 1, 0, 0)
+        local d2x, d2y, d2z = localDirectionToWorld(fillPlane, 0, 0, 1)
+        local steps = math.min(math.max(math.floor(totalFillLevel / 400), 1), 50)
+        for _ = 1, steps do
+            fillPlaneAdd(fillPlane, totalFillLevel / steps, x, y, z, d1x, d1y, d1z, d2x, d2y, d2z)
+        end
+    end
+end
+
+local function refreshStorageVisuals(storage)
+    if storage.updateFillPlanes ~= nil then
+        storage:updateFillPlanes()
+    end
+    rebuildDynamicFillPlane(storage)
+end
+
+local function refreshHusbandryPlanes(changedStorages)
+    local placeableSystem = g_currentMission ~= nil and g_currentMission.placeableSystem or nil
+    for _, placeable in ipairs(placeableSystem ~= nil and placeableSystem.placeables or {}) do
+        local husbandry = placeable.spec_husbandry
+        if husbandry ~= nil and husbandry.storage ~= nil and changedStorages[husbandry.storage] then
+            if placeable.updateStrawPlane ~= nil then
+                placeable:updateStrawPlane()
+            end
+            if placeable.updateWaterPlane ~= nil then
+                placeable:updateWaterPlane()
+            end
+        end
+    end
+end
+
+local function resolveCapacity(current, applied, respectExternal)
+    local resolved = reconcileCapacity(current, applied, respectExternal)
+    return resolved, resolved ~= nil and current ~= nil and math.abs(resolved - current) > 0.5
+end
+
 function AFVP.verifyStorageCapacities()
     local respectExternal = Suite.respectExternalCapacityOverrides == true
+    local changedStorages = {}
+    local anyChanged = false
 
     for storage in pairs(AFVP.storages) do
-        local resolved =
-            reconcileCapacity(tonumber(storage.capacity), tonumber(storage.adjustSuiteAFVPCapacity), respectExternal)
+        local resolved, changed =
+            resolveCapacity(tonumber(storage.capacity), tonumber(storage.adjustSuiteAFVPCapacity), respectExternal)
         if resolved ~= nil then
             storage.capacity = resolved
             storage.adjustSuiteAFVPCapacity = resolved
@@ -90,22 +199,35 @@ function AFVP.verifyStorageCapacities()
         local capacities = storage.capacities
         if applied ~= nil and capacities ~= nil then
             for fillType, value in pairs(applied) do
-                local resolvedFillType = reconcileCapacity(tonumber(capacities[fillType]), value, respectExternal)
+                local resolvedFillType, fillTypeChanged =
+                    resolveCapacity(tonumber(capacities[fillType]), value, respectExternal)
                 if resolvedFillType ~= nil then
                     capacities[fillType] = resolvedFillType
                     applied[fillType] = resolvedFillType
+                    changed = changed or fillTypeChanged
                 end
             end
         end
+
+        if changed then
+            changedStorages[storage] = true
+            anyChanged = true
+            refreshStorageVisuals(storage)
+        end
+    end
+
+    if anyChanged then
+        refreshHusbandryPlanes(changedStorages)
     end
 end
 
 if AFVP.storageHookInstalled ~= true and Storage ~= nil and Storage.load ~= nil then
     AFVP.storageHookInstalled = true
-    Storage.load = Utils.overwrittenFunction(Storage.load, function(storage, superFunc, ...)
-        local loaded = superFunc(storage, ...)
+    Storage.load = Utils.overwrittenFunction(Storage.load, function(storage, superFunc, components, xmlFile, key, ...)
+        local loaded = superFunc(storage, components, xmlFile, key, ...)
         if loaded ~= false then
             AFVP.rememberStorageCapacities(storage)
+            AFVP.rememberDynamicFillPlane(storage, xmlFile, key)
         end
         return loaded
     end)
@@ -544,31 +666,13 @@ local function recreateFillVolume(fillVolume, capacity, fillLevel, fillTypeIndex
     end
 
     fillVolume.capacity = capacity
-    if
-        fillVolume.volume == nil
-        or fillVolume.volume == 0
-        or fillVolume.baseNode == nil
-        or fillVolume.baseNode == 0
-        or createFillPlaneShape == nil
-    then
+    if fillVolume.volume == nil or fillVolume.volume == 0 then
         return
     end
 
     local visualCapacity = capacity / factor
-    local newVolume = createFillPlaneShape(
-        fillVolume.baseNode,
-        "fillPlane",
-        visualCapacity,
-        fillVolume.maxDelta,
-        fillVolume.maxSurfaceAngle,
-        fillVolume.maxPhysicalSurfaceAngle,
-        fillVolume.maxSurfaceDistanceError,
-        fillVolume.maxSubDivEdgeLength,
-        fillVolume.syncMaxSubDivEdgeLength,
-        fillVolume.allSidePlanes,
-        fillVolume.retessellateTop
-    )
-    if newVolume == nil or newVolume == 0 then
+    local newVolume = Suite.createFillPlane(fillVolume.baseNode, visualCapacity, fillVolume)
+    if newVolume == nil then
         return
     end
 
@@ -576,15 +680,6 @@ local function recreateFillVolume(fillVolume, capacity, fillLevel, fillTypeIndex
     updateFillPlaneHook()
     delete(fillVolume.volume)
     fillVolume.volume = newVolume
-    link(fillVolume.baseNode, newVolume)
-
-    local material = g_materialManager ~= nil and g_materialManager:getBaseMaterialByName("fillPlane") or nil
-    if material ~= nil then
-        setMaterial(newVolume, material, 0)
-        if g_fillTypeManager ~= nil and g_terrainNode ~= nil then
-            g_fillTypeManager:assignFillTypeTextureArraysFromTerrain(newVolume, g_terrainNode, true, true, true)
-        end
-    end
 
     AFVP.baseFillPlaneAdd(newVolume, 1, 0, 1, 0, 11, 0, 0, 0, 0, 11)
     fillVolume.heightOffset = getFillPlaneHeightAtLocalPos(newVolume, 0, 0)
