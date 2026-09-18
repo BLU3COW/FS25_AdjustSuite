@@ -1937,6 +1937,18 @@ if Suite.placeableSaveHookInstalled ~= true and Placeable ~= nil and Placeable.s
     end)
 end
 
+function Suite.captureFillUnitBaseCapacities(vehicle)
+    local spec = vehicle ~= nil and vehicle.spec_fillUnit or nil
+    for _, fillUnit in pairs(spec ~= nil and spec.fillUnits or {}) do
+        Suite.getCapacityBase(fillUnit)
+    end
+end
+
+if Suite.fillUnitBaseHookInstalled ~= true and FillUnit ~= nil and FillUnit.onLoad ~= nil then
+    Suite.fillUnitBaseHookInstalled = true
+    FillUnit.onLoad = Utils.appendedFunction(FillUnit.onLoad, Suite.captureFillUnitBaseCapacities)
+end
+
 function Suite.refreshProductionPoints()
     local manager = g_currentMission ~= nil and g_currentMission.productionChainManager or nil
     for _, productionPoint in ipairs(manager ~= nil and manager.productionPoints or {}) do
