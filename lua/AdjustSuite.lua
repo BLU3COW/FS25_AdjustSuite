@@ -799,11 +799,11 @@ function Suite.capacityLooksExternallyOverridden(object, fillUnit, sourceModuleI
     local baseCapacity = Suite.getCapacityBase(fillUnit)
     local currentCapacity = fillUnit ~= nil and tonumber(fillUnit.capacity) or nil
     local trackedOffset = Suite.getCapacityOffset(object, sourceModuleId)
-    if baseCapacity == nil or currentCapacity == nil or trackedOffset == nil then
+    if baseCapacity == nil or currentCapacity == nil then
         return false
     end
 
-    local expectedCapacity = baseCapacity * Suite.getFactorFromOffset(trackedOffset)
+    local expectedCapacity = baseCapacity * Suite.getFactorFromOffset(trackedOffset or 0)
     return math.abs(currentCapacity - expectedCapacity) > 0.5
 end
 
