@@ -329,13 +329,25 @@ The <strong>“modSettings.xml”</strong> file is created automatically when th
 
 <div align="center">
 
-### v1.0.0.3 (released)
+### v1.0.0.4 (released)
 
-### <strong>Farming Simulator 25 Patch 1.23</strong>
-Updates AdjustSuite for compatibility with Patch 1.23.
+### <strong>SILONETWORK</strong> - Connect Silos Into One Network
+New setting with three states, switched off by default so nothing changes until an administrator asks for it. With <code>&lt;siloNetwork module="true" connectAll="true"/&gt;</code> silos within reach of each other form one shared network regardless of the order in which they were placed, and a demolished silo stops counting towards its neighbours at once. With <code>connectAll="false"</code> every silo keeps its own storage to itself.
 
-### <strong>EXTERNALCAPACITY</strong> - Respect External Capacity Changes
-Adds an optional setting so AFV, AFC, and APC recognize and keep a capacity changed at runtime by AdjustStorageCapacity or similar mods, instead of overwriting it. <code>&lt;externalCapacity respect="false"/&gt;</code> must be changed to <code>"true"</code> in modSettings.
+### <strong>PRODUCTIONSTORAGE</strong> - Decide Whether Productions Use Nearby Silos
+New setting: <code>&lt;productionStorage connectSilos="false"/&gt;</code> stops productions from using silos and silo extensions in their surroundings as additional storage, so the production menu shows only the production's own capacity and contents. Modular plants from Pumps N' Hoses are exempt, because they depend on the storages around them.
+
+### <strong>EXTERNALCAPACITY</strong> - Now Covers Placeables and Productions
+The setting introduced in 1.0.0.3 now applies to AFV-P as well. With <code>respect="true"</code> a storage capacity changed by AdjustStorageCapacity or a similar mod is kept; with the default <code>"false"</code> the AFV-P selection is applied again after loading.
+
+### <strong>Specification Sheet Follows The Selected Stage</strong>
+Power, top speed, tank contents, capacity, working width, weight, additional weight, speed limit, silo volume, manure heap capacity and income per hour now show the stage that actually applies, in the shop and in construction mode. A value lowered by a range switch is displayed as it will be.
+
+### <strong>A Stage Is No Longer Stranded By A Range Switch</strong>
+A stage an administrator no longer allows is lowered to the highest stage still permitted in the same direction instead of staying active. The originally purchased stage is remembered, so everything returns on its own once the range is allowed again.
+
+### <strong>Pumps N' Hoses Biogas Plant</strong> - ACR-P and ACA-P
+ACA-P now takes effect on the modular biogas plant, which used to restore its own cycle amounts every game hour. ACR-P and ACA-P also raise how much the fermenter may draw from its bunker silos per minute, so a higher stage no longer starves the plant.
 
 <br>
 
@@ -347,13 +359,25 @@ Adds an optional setting so AFV, AFC, and APC recognize and keep a capacity chan
 
 <div align="center">
 
-### v1.0.0.3 (Veröffentlicht)
+### v1.0.0.4 (Veröffentlicht)
 
-### <strong>Farming Simulator 25 Patch 1.23</strong>
-Aktualisiert AdjustSuite für die Kompatibilität mit Patch 1.23.
+### <strong>SILONETWORK</strong> – Silos zu einem Netz verbinden
+Neue Einstellung mit drei Zuständen, standardmäßig abgeschaltet, damit sich ohne Zutun eines Administrators nichts ändert. Mit <code>&lt;siloNetwork module="true" connectAll="true"/&gt;</code> bilden Silos in Reichweite zueinander ein gemeinsames Netz, unabhängig von der Reihenfolge, in der sie gesetzt wurden, und ein abgerissenes Silo zählt bei seinen Nachbarn sofort nicht mehr mit. Mit <code>connectAll="false"</code> behält jedes Silo seinen Speicher für sich.
 
-### <strong>EXTERNALCAPACITY</strong> – Externe Kapazitätsänderungen respektieren
-Fügt eine optionale Einstellung hinzu, mit der AFV, AFC und APC eine von AdjustStorageCapacity oder ähnlichen Mods zur Laufzeit geänderte Kapazität erkennen und beibehalten, statt sie zu überschreiben. Dafür muss <code>&lt;externalCapacity respect="false"/&gt;</code> in der modSettings-Datei auf <code>"true"</code> gesetzt werden.
+### <strong>PRODUCTIONSTORAGE</strong> – Bestimmen, ob Produktionen Silos in der Nähe nutzen
+Neue Einstellung: Mit <code>&lt;productionStorage connectSilos="false"/&gt;</code> nutzen Produktionen keine Silos und Silo-Erweiterungen in ihrer Umgebung mehr als zusätzliches Lager, das Produktionsmenü zeigt dann nur noch Kapazität und Inhalt der Produktion selbst. Modulare Anlagen aus Pumps N' Hoses sind ausgenommen, weil sie auf die Speicher in ihrer Umgebung angewiesen sind.
+
+### <strong>EXTERNALCAPACITY</strong> – Gilt jetzt auch für platzierbare Objekte und Produktionen
+Die mit 1.0.0.3 eingeführte Einstellung gilt jetzt auch für AFV-P. Mit <code>respect="true"</code> bleibt eine von AdjustStorageCapacity oder einem ähnlichen Mod geänderte Lagerkapazität erhalten, mit dem Standardwert <code>"false"</code> wird die AFV-P-Auswahl nach dem Laden wieder angewendet.
+
+### <strong>Spezifikationsblatt folgt der gewählten Stufe</strong>
+Leistung, Höchstgeschwindigkeit, Tankinhalt, Kapazität, Arbeitsbreite, Gewicht, Zusatzgewicht, Tempolimit, Silovolumen, Misthaufen-Kapazität und Einkommen pro Stunde zeigen jetzt im Shop und im Baumenü die tatsächlich wirksame Stufe. Ein durch einen Bereichsschalter herabgestufter Wert wird so angezeigt, wie er gilt.
+
+### <strong>Eine Stufe bleibt bei einem Bereichsschalter nicht mehr hängen</strong>
+Eine Stufe, die ein Administrator nicht mehr erlaubt, fällt auf die höchste noch erlaubte Stufe derselben Richtung, statt aktiv zu bleiben. Die ursprünglich gekaufte Stufe wird gemerkt, es kommt also alles von selbst zurück, sobald der Bereich wieder freigegeben ist.
+
+### <strong>Biogasanlage aus Pumps N' Hoses</strong> – ACR-P und ACA-P
+ACA-P wirkt jetzt auch auf der modularen Biogasanlage, die ihre Zyklusmengen bisher stündlich wieder zurückgesetzt hat. ACR-P und ACA-P erhöhen zusätzlich die Menge, die der Fermenter pro Minute aus seinen Fahrsilos ziehen darf, sodass eine höhere Stufe die Anlage nicht mehr aushungert.
 
 </div>
 </details>
