@@ -980,6 +980,29 @@ local function applyPerMonthValue(production, baseField, monthField, hourField, 
     production[minuteField] = value / 1440
 end
 
+Suite.SANDBOX_PATH = "placeable.sandbox"
+local SANDBOX_DISTRIBUTION_PATH = Suite.SANDBOX_PATH .. ".distributionsPerFillType.fillType"
+
+function Suite.isSandboxPlaceableXML(xmlFile)
+    return xmlFile ~= nil and xmlFile:hasProperty(Suite.SANDBOX_PATH)
+end
+
+function Suite.scaleSandboxDistributions(xmlFile, factor)
+    factor = tonumber(factor) or 1
+    local handle = xmlFile ~= nil and xmlFile.handle or nil
+    if handle == nil or factor == 1 or factor <= 0 then
+        return
+    end
+
+    xmlFile:iterate(SANDBOX_DISTRIBUTION_PATH, function(_, key)
+        local attribute = key .. "#litersPerMinute"
+        local value = tonumber(getXMLString(handle, attribute))
+        if value ~= nil and value > 0 then
+            setXMLString(handle, attribute, tostring(value * factor))
+        end
+    end)
+end
+
 local function applyCycleAmounts(entries, factor)
     for _, entry in ipairs(entries or {}) do
         local baseAmount = tonumber(entry.adjustSuiteACAPBaseAmount)
@@ -1012,8 +1035,10 @@ function Suite.applyProductionAdjustments(productionPoint)
             rateFactor,
             0.000001
         )
-        applyCycleAmounts(production.inputs, amountFactor)
-        applyCycleAmounts(production.outputs, amountFactor)
+        if placeable == nil or placeable.adjustSuiteACAPScaledInXML ~= true then
+            applyCycleAmounts(production.inputs, amountFactor)
+            applyCycleAmounts(production.outputs, amountFactor)
+        end
         applyPerMonthValue(
             production,
             "adjustSuiteBaseCostsPerActiveMonth",

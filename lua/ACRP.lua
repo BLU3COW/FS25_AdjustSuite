@@ -25,3 +25,12 @@ function ACRP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds
 
     return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
+
+function ACRP.applyToPlaceableXML(placeable, offset)
+    local factor = Suite.getFactorFromOffset(offset)
+    if factor == 1 then
+        return
+    end
+
+    Suite.scaleSandboxDistributions(placeable.xmlFile, factor)
+end
