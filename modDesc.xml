@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="113">
     <author>BLU3COW</author>
-    <version>1.0.0.3</version>
+    <version>1.0.0.4</version>
 
     <title>
         <en>AdjustSuite</en>
@@ -37,7 +37,30 @@ ACR-P - Cycle Rate
 ACA-P - Cycle Amount
 AIP-P - Income Payments
 
+Good to know: ACR-P and ACA-P act on the same production one after the other, so their effects multiply rather than add. Both set to +200 % means three times the cycles at three times the amount, which is nine times the throughput. The surcharge of the two modules is added up, so a combination of both is comparatively cheap.
+
+Ballast added by ABW raises the base mass of the vehicle, and the game derives braking force from that mass. A heavily ballasted vehicle therefore brakes relatively worse than without the ballast. ABP compensates for this if needed.
+
 Source code, help and issue reports: https://github.com/BLU3COW/FS25_AdjustSuite
+
+Changelog 1.0.0.4:
+- Tested with Farming Simulator 25 Patch 1.24.
+- A stage that an admin no longer allows is now lowered to the highest stage still permitted in the same direction instead of staying active. The originally purchased stage is remembered, so everything returns on its own once the range is allowed again.
+- A switched-off module now disappears from the shop and from construction mode for all sixteen modules instead of leaving a dead row behind.
+- Fixed placeable and production configurations always showing a surcharge of +0. They are now priced like vehicle configurations.
+- APC no longer runs into the vehicle mass limit on negative stages, and the help menu now states the resulting payload mass so the direction of the setting is visible.
+- AWS is now only offered on vehicles with a work function, and a tractor no longer raises the speed limit of its implement. The lower of the two applies, as before.
+- ADR now explains in the help menu that a forage harvester couples its throughput to working width and speed.
+- AFC no longer lists DEF next to diesel in the help menu.
+- The specification sheet in the shop and in construction mode now follows the selected stage: power, top speed, tank contents, capacity, working width, weight, additional weight, speed limit, silo volume, manure heap capacity and income per hour. It always shows the stage that actually applies, so a value lowered by a range switch is displayed as it will be.
+- A price percentage above roughly 500 could produce a negative total price. The discount is now limited to the base price.
+- The EXTERNALCAPACITY setting now also covers placeables and productions. With respect="true" a storage capacity changed by AdjustStorageCapacity or a similar mod is kept; with the default "false" the AFV-P selection is re-applied after loading.
+- New SILONETWORK setting with three states, switched off by default so nothing changes until an administrator asks for it. With <siloNetwork module="true" connectAll="true"/> silos within reach of each other form one shared network regardless of the order in which they were placed, and a removed silo stops counting towards its neighbours at once. With connectAll="false" every silo keeps its own storage to itself and no longer takes over the silos next to it. With module="false", the default, everything stays as in the base game, where a silo only picks up the silos that already existed before it, so every silo reports a different capacity. Whether productions use silos in their surroundings is set separately with PRODUCTIONSTORAGE.
+- Fixed AFV and AFC leaving a vehicle at its base capacity after loading while the help menu and the workshop showed the selected stage. This happened with EXTERNALCAPACITY set to respect="true": the check compared the freshly loaded capacity against the stage stored in the savegame, but the game never stores a capacity, so the comparison always reported a change by another mod. The protection now only applies to a capacity that is changed while the game is running, which is what it was meant for. Fixed as well that AFC took the capacity set by such a mod for the base capacity and therefore showed a plainly wrong value, for example 21,600 litres instead of 720. The base capacity of every fill unit is now read before another mod can change it.
+- Fixed a trailer whose capacity AFV changes showing far too little content when another mod such as AdjustStorageCapacity sets a capacity as well. That mod builds the fill volume for its own, much larger value; AFV then reset only the capacity and left the volume untouched, so a full trailer looked like a small heap. The fill volume is now rebuilt and refilled whenever AFV changes a capacity.
+- The same correction for buildings: when AFV-P resets a capacity that another mod changed, the silo fill planes, the heaps in storages and the straw and water planes in an animal pen are now refreshed as well, instead of keeping the fill height that belonged to the other mod's capacity.
+- New PRODUCTIONSTORAGE setting: <productionStorage connectSilos="false"/> stops productions from using silos and silo extensions in their surroundings as additional storage, so the production menu only shows the production's own capacity and contents. The default "true" keeps the base game behaviour. It applies no matter whether the production or the silo was built first. Modular plants from Pumps N' Hoses are exempt, because they depend on the storages around them.
+- ACA-P now takes effect on the modular biogas plant from Pumps N' Hoses. The plant kept its own copy of the cycle amounts and restored it every game hour, which undid the setting again shortly after loading. In addition, ACR-P and ACA-P now also raise how much the fermenter may draw from its bunker silos per minute. That limit used to stay fixed, so a higher stage made the plant consume far more than could ever be supplied to it; it now grows by the same factor and keeps the original ratio between intake and consumption.
 
 Changelog 1.0.0.3 (Patch 1.23):
 - Updated for Farming Simulator 25 Patch 1.23.
@@ -71,7 +94,30 @@ ACR-P - Zyklusrate
 ACA-P - Zyklusmenge
 AIP-P - Einkommenszahlungen
 
+Gut zu wissen: ACR-P und ACA-P greifen nacheinander an derselben Produktion an, ihre Wirkungen multiplizieren sich also, statt sich zu addieren. Beide auf +200 % bedeuten dreifache Takte bei dreifacher Menge, also den neunfachen Durchsatz. Der Aufpreis beider Module wird dagegen nur addiert, eine Kombination aus beiden ist damit vergleichsweise günstig.
+
+Ballast aus ABW erhöht die Grundmasse des Fahrzeugs, und das Spiel leitet die Bremskraft aus dieser Masse ab. Ein stark beballastetes Fahrzeug bremst deshalb verhältnismäßig schlechter als ohne den Ballast. ABP gleicht das bei Bedarf wieder aus.
+
 Quellcode, Hilfe und Fehlermeldungen: https://github.com/BLU3COW/FS25_AdjustSuite
+
+Changelog 1.0.0.4:
+- Getestet mit Farming Simulator 25 Patch 1.24.
+- Eine Stufe, die ein Administrator nicht mehr erlaubt, fällt jetzt auf die höchste noch erlaubte Stufe derselben Richtung, statt aktiv zu bleiben. Die ursprünglich gekaufte Stufe wird gemerkt, es kommt also alles von selbst zurück, sobald der Bereich wieder freigegeben ist.
+- Ein abgeschaltetes Modul verschwindet jetzt bei allen sechzehn Modulen aus Shop und Baumenü, statt eine tote Zeile stehen zu lassen.
+- Behoben, dass Konfigurationen an platzierbaren Objekten und Produktionen immer einen Aufpreis von +0 zeigten. Sie werden jetzt wie Fahrzeugkonfigurationen bepreist.
+- APC läuft bei Minusstufen nicht mehr in die Massenobergrenze des Fahrzeugs, und das Hilfemenü nennt jetzt die resultierende Nutzlastmasse, damit die Wirkungsrichtung sichtbar ist.
+- AWS wird nur noch bei Fahrzeugen mit Arbeitsfunktion angeboten, und ein Traktor hebt das Tempolimit seines Anbaugeräts nicht mehr mit an. Es gilt wie bisher der niedrigere Wert.
+- ADR erklärt jetzt im Hilfemenü, dass ein Feldhäcksler seinen Durchsatz an Arbeitsbreite und Geschwindigkeit koppelt.
+- AFC führt DEF im Hilfemenü nicht mehr neben dem Diesel auf.
+- Das Spezifikationsblatt im Shop und im Baumenü folgt jetzt der gewählten Stufe: Leistung, Höchstgeschwindigkeit, Tankinhalt, Kapazität, Arbeitsbreite, Gewicht, Zusatzgewicht, Tempolimit, Silovolumen, Misthaufen-Kapazität und Einkommen pro Stunde. Es zeigt immer die wirksame Stufe, ein durch einen Bereichsschalter herabgestufter Wert wird also so angezeigt, wie er tatsächlich gilt.
+- Ein Preiswert über etwa 500 Prozent konnte einen negativen Gesamtpreis erzeugen. Der Abschlag ist jetzt auf den Grundpreis begrenzt.
+- Die Einstellung EXTERNALCAPACITY gilt jetzt auch für platzierbare Objekte und Produktionen. Mit respect="true" bleibt eine von AdjustStorageCapacity oder einem ähnlichen Mod geänderte Lagerkapazität erhalten, mit dem Standardwert "false" wird die AFV-P-Auswahl nach dem Laden wieder angewendet.
+- Neue Einstellung SILONETWORK mit drei Zuständen, standardmäßig abgeschaltet, damit sich ohne Zutun eines Administrators nichts ändert. Mit <siloNetwork module="true" connectAll="true"/> bilden Silos in Reichweite zueinander bilden ein gemeinsames Netz, unabhängig von der Reihenfolge, in der sie gesetzt wurden, und ein abgerissenes Silo zählt bei seinen Nachbarn sofort nicht mehr mit. Mit connectAll="false" behält jedes Silo seinen Speicher für sich und übernimmt die Silos daneben nicht mehr. Mit module="false", dem Standard, bleibt alles wie im Basisspiel, wo ein Silo nur die Silos übernimmt, die schon vor ihm existierten, und deshalb jedes Silo eine andere Kapazität meldet. Ob Produktionen Silos in der Umgebung nutzen, wird getrennt über PRODUCTIONSTORAGE eingestellt.
+- Behoben, dass AFV und AFC ein Fahrzeug nach dem Laden auf der Grundkapazität stehen ließen, obwohl Hilfemenü und Werkstatt die gewählte Stufe anzeigten. Das trat mit EXTERNALCAPACITY auf respect="true" auf: Die Prüfung verglich die frisch geladene Kapazität mit der im Spielstand gespeicherten Stufe, das Spiel speichert aber nie eine Kapazität, wodurch die Prüfung immer eine fremde Änderung meldete. Der Schutz greift jetzt nur noch für eine Kapazität, die im laufenden Spiel geändert wird – so war er gemeint. Ebenfalls behoben, dass AFC die von einem solchen Mod gesetzte Kapazität für die Grundkapazität hielt und dadurch einen schlicht falschen Wert anzeigte, etwa 21.600 Liter statt 720. Die Grundkapazität jeder Fill Unit wird jetzt gelesen, bevor ein anderer Mod sie ändern kann.
+- Behoben, dass ein Anhänger, dessen Kapazität AFV ändert, viel zu wenig Inhalt zeigte, wenn zusätzlich ein Mod wie AdjustStorageCapacity eine Kapazität setzt. Dieser Mod baut die Füllfläche für seinen eigenen, deutlich größeren Wert; AFV setzte danach nur die Kapazität zurück und ließ die Fläche unberührt, wodurch ein voller Anhänger wie ein kleiner Haufen aussah. Die Füllfläche wird jetzt bei jeder Kapazitätsänderung durch AFV neu aufgebaut und wieder befüllt.
+- Dieselbe Korrektur für Gebäude: Setzt AFV-P eine von einem anderen Mod geänderte Kapazität zurück, werden jetzt auch die Füllflächen im Silo, die Haufen in Lagern sowie Stroh- und Wasserflächen im Stall nachgezogen, statt die Füllhöhe zur Kapazität des anderen Mods beizubehalten.
+- Neue Einstellung PRODUCTIONSTORAGE: Mit <productionStorage connectSilos="false"/> nutzen Produktionen keine Silos und Silo-Erweiterungen in ihrer Umgebung mehr als zusätzliches Lager, das Produktionsmenü zeigt dann nur noch Kapazität und Inhalt der Produktion selbst. Der Standardwert "true" behält das Verhalten des Basisspiels bei. Es spielt keine Rolle, ob zuerst die Produktion oder das Silo gebaut wurde. Modulare Anlagen aus Pumps N' Hoses sind ausgenommen, weil sie auf die Speicher in ihrer Umgebung angewiesen sind.
+- ACA-P wirkt jetzt auch auf der modularen Biogasanlage aus Pumps N' Hoses. Die Anlage hielt eine eigene Kopie der Zyklusmengen und stellte sie stündlich wieder her, wodurch die Einstellung kurz nach dem Laden wieder verworfen wurde. Zusätzlich erhöhen ACR-P und ACA-P jetzt auch die Menge, die der Fermenter pro Minute aus seinen Fahrsilos ziehen darf. Diese Grenze blieb bisher fest, sodass eine höhere Stufe die Anlage deutlich mehr verbrauchen ließ, als je nachgeliefert werden konnte; sie wächst jetzt mit demselben Faktor und behält das ursprüngliche Verhältnis zwischen Zufuhr und Verbrauch bei.
 
 Changelog 1.0.0.3 (Patch 1.23):
 - Aktualisiert für Farming Simulator 25 Patch 1.23.
@@ -105,7 +151,30 @@ ACR-P - Vitesse de cycle
 ACA-P - Quantité par cycle
 AIP-P - Revenus
 
+Bon à savoir : ACR-P et ACA-P agissent l'un après l'autre sur la même production, leurs effets se multiplient donc au lieu de s'additionner. Les deux réglés sur +200 % donnent trois fois les cycles pour trois fois la quantité, soit neuf fois le débit. Le supplément de prix des deux modules n'est en revanche qu'additionné, une combinaison des deux reste donc relativement abordable.
+
+Le lestage ajouté par ABW augmente la masse de base du véhicule, et le jeu calcule la force de freinage à partir de cette masse. Un véhicule fortement lesté freine donc relativement moins bien que sans ce lestage. ABP compense cela si nécessaire.
+
 Code source, aide et signalement des problèmes : https://github.com/BLU3COW/FS25_AdjustSuite
+
+Changelog 1.0.0.4 :
+- Testé avec Farming Simulator 25 Patch 1.24.
+- Un niveau qu'un administrateur n'autorise plus redescend désormais au niveau le plus élevé encore permis dans le même sens, au lieu de rester actif. Le niveau acheté à l'origine est mémorisé, tout revient donc de soi-même dès que la plage est réautorisée.
+- Un module désactivé disparaît désormais de la boutique et du mode construction pour les seize modules, au lieu de laisser une ligne morte.
+- Correction des configurations d'objets plaçables et de productions qui affichaient toujours un supplément de +0. Elles sont désormais tarifées comme les configurations de véhicules.
+- APC ne bute plus sur la limite de masse du véhicule aux niveaux négatifs, et le menu d'aide indique désormais la masse de charge utile obtenue, afin que le sens du réglage soit visible.
+- AWS n'est plus proposé que sur les véhicules dotés d'une fonction de travail, et un tracteur n'augmente plus la limite de vitesse de son outil. C'est la valeur la plus basse qui s'applique, comme auparavant.
+- ADR explique désormais dans le menu d'aide qu'une ensileuse lie son débit à la largeur et à la vitesse de travail.
+- AFC ne liste plus le DEF à côté du diesel dans le menu d'aide.
+- La fiche technique dans la boutique et en mode construction suit désormais le niveau choisi : puissance, vitesse maximale, contenu du réservoir, capacité, largeur de travail, poids, poids supplémentaire, limite de vitesse, volume de silo, capacité du tas de fumier et revenu horaire. Elle affiche toujours le niveau réellement appliqué.
+- Un pourcentage de prix supérieur à environ 500 pouvait produire un prix total négatif. La remise est désormais limitée au prix de base.
+- Le réglage EXTERNALCAPACITY couvre désormais aussi les objets plaçables et les productions. Avec respect="true", une capacité de stockage modifiée par AdjustStorageCapacity ou un mod similaire est conservée ; avec la valeur par défaut "false", la sélection AFV-P est réappliquée après le chargement.
+- Nouveau réglage SILONETWORK avec trois états, désactivé par défaut afin que rien ne change sans décision d'un administrateur. Avec <siloNetwork module="true" connectAll="true"/>, les silos à portée les uns des autres forment un réseau commun, quel que soit l'ordre dans lequel ils ont été posés, et un silo démoli cesse aussitôt de compter chez ses voisins. Avec connectAll="false", chaque silo garde son stockage pour lui et ne reprend plus les silos voisins. Avec module="false", la valeur par défaut, tout reste comme dans le jeu de base, où un silo ne reprend que les silos qui existaient déjà avant lui et où chaque silo affiche donc une capacité différente. L'utilisation des silos environnants par les productions se règle séparément avec PRODUCTIONSTORAGE.
+- Correction d'AFV et AFC qui laissaient un véhicule à sa capacité de base après le chargement, alors que le menu d'aide et l'atelier affichaient le niveau choisi. Cela se produisait avec EXTERNALCAPACITY réglé sur respect="true" : la vérification comparait la capacité fraîchement chargée au niveau enregistré dans la sauvegarde, or le jeu n'enregistre jamais de capacité, si bien que la vérification signalait toujours une modification par un autre mod. La protection ne s'applique désormais qu'à une capacité modifiée en cours de partie, ce pour quoi elle était prévue. Correction également du fait qu'AFC prenait la capacité définie par un tel mod pour la capacité de base et affichait donc une valeur tout simplement fausse, par exemple 21 600 litres au lieu de 720. La capacité de base de chaque unité de remplissage est désormais lue avant qu'un autre mod puisse la modifier.
+- Correction d'une remorque dont AFV modifie la capacité et qui affichait bien trop peu de contenu lorsqu'un autre mod comme AdjustStorageCapacity définit également une capacité. Ce mod construit le volume de remplissage pour sa propre valeur, bien plus grande ; AFV ne réinitialisait ensuite que la capacité sans toucher au volume, si bien qu'une remorque pleine ressemblait à un petit tas. Le volume de remplissage est désormais reconstruit et rempli à nouveau à chaque changement de capacité par AFV.
+- La même correction pour les bâtiments : lorsque AFV-P réinitialise une capacité modifiée par un autre mod, les plans de remplissage du silo, les tas dans les stockages ainsi que les plans de paille et d'eau de l'enclos sont désormais mis à jour, au lieu de conserver la hauteur de remplissage correspondant à la capacité de l'autre mod.
+- Nouveau réglage PRODUCTIONSTORAGE : avec <productionStorage connectSilos="false"/>, les productions n'utilisent plus les silos et extensions de silo environnants comme stockage supplémentaire ; le menu de production n'affiche alors que la capacité et le contenu propres à la production. La valeur par défaut "true" conserve le comportement du jeu de base. Peu importe que la production ou le silo ait été construit en premier. Les installations modulaires de Pumps N' Hoses sont exclues, car elles dépendent des stockages qui les entourent.
+- ACA-P agit désormais aussi sur l'installation de biogaz modulaire de Pumps N' Hoses. L'installation conservait sa propre copie des quantités par cycle et la restaurait à chaque heure de jeu, ce qui annulait de nouveau le réglage peu après le chargement. De plus, ACR-P et ACA-P augmentent désormais aussi la quantité que le fermenteur peut prélever par minute dans ses silos-couloirs. Cette limite restait jusqu'ici fixe, si bien qu'un niveau élevé faisait consommer à l'installation bien plus que ce qui pouvait lui être fourni ; elle croît maintenant du même facteur et conserve le rapport d'origine entre l'apport et la consommation.
 
 Changelog 1.0.0.3 (Patch 1.23) :
 - Mis à jour pour Farming Simulator 25 Patch 1.23.
@@ -123,17 +192,6 @@ Changelog 1.0.0.3 (Patch 1.23) :
         <sourceFile filename="lua/ACRP.lua" />
         <sourceFile filename="lua/ACAP.lua" />
         <sourceFile filename="lua/AIPP.lua" />
-		<sourceFile filename="lua/AFV.lua" />
-		<sourceFile filename="lua/AFC.lua" />
-		<sourceFile filename="lua/APC.lua" />
-		<sourceFile filename="lua/ABW.lua" />
-		<sourceFile filename="lua/AMP.lua" />
-		<sourceFile filename="lua/AWS.lua" />
-		<sourceFile filename="lua/AWW.lua" />
-		<sourceFile filename="lua/APW.lua" />
-		<sourceFile filename="lua/ADS.lua" />
-		<sourceFile filename="lua/ABP.lua" />
-		<sourceFile filename="lua/ADR.lua" />
         <sourceFile filename="lua/AdjustSuite_PrecisionFarming.lua" />
         <sourceFile filename="lua/AdjustSuite_Courseplay.lua" />
         <sourceFile filename="lua/AdjustSuite_AutoDrive.lua" />

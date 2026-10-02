@@ -1,4 +1,13 @@
 local safeCall = pcall
+
+if AdjustSuite == nil then
+    print(
+        "Error: AdjustSuite - lua/AdjustSuite.lua was not loaded first. "
+            .. "Check the sourceFile order in modDesc.xml."
+    )
+    return
+end
+
 local Suite = AdjustSuite
 local MOD_DIRECTORY = g_currentModDirectory
 local MOD_NAME = g_currentModName
@@ -7,24 +16,22 @@ local function getModuleClassName(moduleId)
     return "AdjustSuite" .. moduleId
 end
 
-for _, moduleId in ipairs(Suite.vehicleModuleIds) do
-    local className = getModuleClassName(moduleId)
-    _G[className] = _G[className] or {}
-end
-
-local AFV = _G[getModuleClassName("AFV")]
-AFV.ignoredFillTypeNames = AFV.ignoredFillTypeNames or Suite.ignoredFillTypeNames
-
 local function hasSpecialization(specialization, specializations)
     return specialization ~= nil
         and specializations ~= nil
         and SpecializationUtil.hasSpecialization(specialization, specializations)
 end
 
+local function getIgnoredFillTypeNames()
+    local module = Suite.moduleClasses["AFV"]
+    local ignored = module ~= nil and module.ignoredFillTypeNames or nil
+    return ignored or Suite.ignoredFillTypeNames
+end
+
 local function fillTypeTokenIsIgnored(token)
     token = string.upper(tostring(token or ""))
     token = string.gsub(token, "%s", "")
-    return AFV.ignoredFillTypeNames[token] == true
+    return getIgnoredFillTypeNames()[token] == true
 end
 
 local function tokenListAllowsUsableFillType(value)
@@ -418,10 +425,7 @@ local function getStoreWorkingWidth(xmlFile, storeItem)
     return width ~= nil and width > 0 and width or nil
 end
 
-local pickupWorkAreaFunctions = {
-    processBalerArea = true,
-    processForageWagonArea = true,
-}
+local pickupWorkAreaFunctions = Suite.pickupWorkAreaFunctions
 
 local function workAreaCollectionHasPickupFunction(xmlFile, collectionKey)
     local index = 0
@@ -603,14 +607,20 @@ local function getBasePriceContext(storeItem, xmlFile)
     return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
-local function isRoadVehicleType(vehicleTypeName, vehicleType)
+local function isRoadVehicleType(_vehicleTypeName, vehicleType)
     return not hasSpecialization(Locomotive, vehicleType.specializations)
         and hasSpecialization(Motorized, vehicleType.specializations)
         and hasSpecialization(Drivable, vehicleType.specializations)
         and hasSpecialization(Wheels, vehicleType.specializations)
 end
 
-local function getMotorizedStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+local function getMotorizedStoreContext(
+    xmlFile,
+    _configurations,
+    _defaultConfigurationIds,
+    _customEnvironment,
+    storeItem
+)
     if not xmlFile:hasProperty("vehicle.motorized") then
         return nil
     end
@@ -632,7 +642,7 @@ local function isBrakeVehicleType(vehicleTypeName, vehicleType)
         )
 end
 
-local function getBrakeStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+local function getBrakeStoreContext(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
     if xmlFile:hasProperty("vehicle.motorized") then
         return getBasePriceContext(storeItem, xmlFile)
     end
@@ -654,7 +664,9 @@ local function getBallastConfigurationContexts(xmlFile, configurations)
     local hasUsable = false
 
     for configurationName, items in pairs(configurations or {}) do
-        local configurationDesc = g_vehicleConfigurationManager:getConfigurationDescByName(configurationName)
+        local configurationDesc = Suite.configurationNames[configurationName] ~= true
+                and g_vehicleConfigurationManager:getConfigurationDescByName(configurationName)
+            or nil
         if configurationDesc ~= nil then
             local optionContexts = {}
             local optionHasUsable = false
@@ -672,7 +684,7 @@ local function getBallastConfigurationContexts(xmlFile, configurations)
                         configurationDesc.configurationKey
                     )
                 end
-                optionContexts[index] = { hasUsable = mass > 0 }
+                optionContexts[index] = { hasUsable = mass > 0, mass = mass }
                 optionHasUsable = optionHasUsable or mass > 0
             end
 
@@ -686,23 +698,24 @@ local function getBallastConfigurationContexts(xmlFile, configurations)
     return next(contexts) ~= nil and contexts or nil, hasUsable
 end
 
-local function isBallastVehicleType(vehicleTypeName, vehicleType)
+local function isBallastVehicleType(_vehicleTypeName, vehicleType)
     return hasSpecialization(Attachable, vehicleType.specializations)
         or hasSpecialization(Motorized, vehicleType.specializations)
         or hasSpecialization(Drivable, vehicleType.specializations)
 end
 
-local function isMotorizedFillUnitVehicleType(vehicleTypeName, vehicleType)
+local function isMotorizedFillUnitVehicleType(_vehicleTypeName, vehicleType)
     return hasSpecialization(Motorized, vehicleType.specializations)
         and hasSpecialization(FillUnit, vehicleType.specializations)
 end
 
 local definitions = {
     AFV = {
+        usableFlagField = "AFVHasUsableConfiguration",
         typeFilter = function(vehicleTypeName, vehicleType)
             return hasSpecialization(FillUnit, vehicleType.specializations) or isCarFillableVehicleType(vehicleTypeName)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, customEnvironment, storeItem)
             local operatingIndices = getOperatingConsumerFillUnitIndices(xmlFile)
             local capacityByFillUnit, hasUsable = getFillUnitConfigurationContexts(xmlFile, nil, nil, operatingIndices)
             local vehicleTypeContexts, hasUsableVehicleType =
@@ -725,13 +738,14 @@ local definitions = {
             storeItem.AFVVehicleTypeByConfiguration = context.vehicleTypeContexts
             storeItem.AFVHasUsableConfiguration = context.hasUsableConfiguration == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
     AFC = {
+        usableFlagField = "AFCHasUsableConfiguration",
         typeFilter = isMotorizedFillUnitVehicleType,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, customEnvironment, storeItem)
             local capacityByFillUnit, hasUsable = getOperatingFillUnitConfigurationContexts(xmlFile)
             local vehicleTypeContexts, hasUsableVehicleType =
                 getVehicleTypeConfigurationContexts(xmlFile, customEnvironment, Motorized)
@@ -753,15 +767,16 @@ local definitions = {
             storeItem.AFCVehicleTypeByConfiguration = context.vehicleTypeContexts
             storeItem.AFCHasUsableConfiguration = context.hasUsableConfiguration == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
     APC = {
+        usableFlagField = "APCHasUsableConfiguration",
         typeFilter = function(vehicleTypeName, vehicleType)
             return hasSpecialization(FillUnit, vehicleType.specializations) or isCarFillableVehicleType(vehicleTypeName)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, customEnvironment, storeItem)
             local operatingIndices = getOperatingConsumerFillUnitIndices(xmlFile)
             local massByFillUnit, hasUsable = getFillUnitConfigurationContexts(xmlFile, true, nil, operatingIndices)
             local vehicleTypeContexts, hasUsableVehicleType =
@@ -784,13 +799,14 @@ local definitions = {
             storeItem.APCVehicleTypeByConfiguration = context.vehicleTypeContexts
             storeItem.APCHasUsableConfiguration = context.hasUsableConfiguration == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
     ABW = {
+        usableFlagField = "ABWHasUsableConfiguration",
         typeFilter = isBallastVehicleType,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             local standalone = Suite.xmlIsStandaloneWeight(xmlFile)
             local ballastConfigurations, hasConfiguredBallast = getBallastConfigurationContexts(xmlFile, configurations)
             if storeItem == nil or (not standalone and not hasConfiguredBallast) then
@@ -809,16 +825,16 @@ local definitions = {
             storeItem.ABWIsStandaloneWeight = context.standalone == true
             storeItem.ABWHasUsableConfiguration = context.active == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
     AMP = {
-        typeFilter = function(vehicleTypeName, vehicleType)
+        typeFilter = function(_vehicleTypeName, vehicleType)
             return not hasSpecialization(Locomotive, vehicleType.specializations)
                 and hasSpecialization(Motorized, vehicleType.specializations)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             local isMotorVehicle = storeItem ~= nil
                 and (
                     xmlFile:hasProperty("vehicle.motorized")
@@ -836,25 +852,18 @@ local definitions = {
         end,
     },
     AWS = {
+        usableFlagField = "AWSHasUsableConfiguration",
         baseValueField = "AWSStandardSpeedLimit",
         typeFilter = function(vehicleTypeName, vehicleType)
-            local isMotorized = hasSpecialization(Motorized, vehicleType.specializations)
-            local isEnterable = hasSpecialization(Enterable, vehicleType.specializations)
-            local isSelfPropelledWorkMachine = (isMotorized or isEnterable)
-                and hasSpecialization(WorkArea, vehicleType.specializations)
-            return not hasSpecialization(Locomotive, vehicleType.specializations)
-                and (not isMotorized or isSelfPropelledWorkMachine)
-                and (not isEnterable or isSelfPropelledWorkMachine)
+            return hasSpecialization(WorkArea, vehicleType.specializations)
+                and not hasSpecialization(Locomotive, vehicleType.specializations)
                 and vehicleTypeName ~= "trainTimberTrailer"
                 and vehicleTypeName ~= "trainTrailer"
                 and vehicleTypeName ~= "pallet"
                 and vehicleTypeName ~= "horse"
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
-            local isMotorVehicle = xmlFile:hasProperty("vehicle.motorized") or xmlFile:hasProperty("vehicle.enterable")
-            local isSelfPropelledWorkMachine = isMotorVehicle and hasWorkAreas(xmlFile)
-            local speedLimit = (not isMotorVehicle or isSelfPropelledWorkMachine)
-                    and tonumber(xmlFile:getValue("vehicle.base.speedLimit#value"))
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, customEnvironment, storeItem)
+            local speedLimit = hasWorkAreas(xmlFile) and tonumber(xmlFile:getValue("vehicle.base.speedLimit#value"))
                 or nil
             local vehicleTypeContexts, hasUsableVehicleType
             if xmlFile:hasProperty("vehicle.sprayer") then
@@ -901,7 +910,7 @@ local definitions = {
                 and vehicleTypeName ~= "pallet"
                 and vehicleTypeName ~= "horse"
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             local workingWidth = getStoreWorkingWidth(xmlFile, storeItem)
             local isEligible = storeItem ~= nil
                 and not xmlFile:hasProperty("vehicle.pickup")
@@ -917,12 +926,12 @@ local definitions = {
         end,
     },
     APW = {
-        typeFilter = function(vehicleTypeName, vehicleType)
+        typeFilter = function(_vehicleTypeName, vehicleType)
             return not hasSpecialization(Locomotive, vehicleType.specializations)
                 and hasSpecialization(Pickup, vehicleType.specializations)
                 and hasSpecialization(WorkArea, vehicleType.specializations)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             if storeItem == nil or not hasPickupWorkArea(xmlFile) then
                 return nil
             end
@@ -936,10 +945,11 @@ local definitions = {
         getStoreContext = getBrakeStoreContext,
     },
     ADR = {
-        typeFilter = function(vehicleTypeName, vehicleType)
+        usableFlagField = "ADRHasUsableConfiguration",
+        typeFilter = function(_vehicleTypeName, vehicleType)
             return hasSpecialization(Dischargeable, vehicleType.specializations)
         end,
-        getStoreContext = function(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+        getStoreContext = function(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
             local dischargeByConfiguration, hasUsable = getDischargeableConfigurationContexts(xmlFile)
             local fillUnitByConfiguration = getFillUnitConfigurationContexts(xmlFile, false, true)
             if
@@ -965,7 +975,7 @@ local definitions = {
             storeItem.ADRFillUnitByConfiguration = context.fillUnitByConfiguration
             storeItem.ADRHasUsableConfiguration = context.hasUsableConfiguration == true
         end,
-        isSelectable = function(baseValue, offset, context)
+        isSelectable = function(_baseValue, offset, context)
             return offset == 0 or (context ~= nil and context.active == true)
         end,
     },
@@ -979,7 +989,6 @@ for _, moduleId in ipairs(Suite.vehicleModuleIds) do
     definition.specializationName = string.format("%s.%s", MOD_NAME, definition.registrationName)
     definition.specializationClassName = definition.registrationName
     definition.titleKey = string.format("CONFIG_%s_TITLE", moduleId)
-    definition.specialization = _G[definition.specializationClassName]
     definition.specializationFile = string.format("lua/%s.lua", definition.configName)
 end
 
@@ -995,9 +1004,15 @@ end
 function AdjustSuitePlaceableConfigurationItem:onPreLoad(placeable, configId)
     AdjustSuitePlaceableConfigurationItem:superClass().onPreLoad(self, placeable, configId)
 
-    local module = _G[getModuleClassName(self.configName)]
+    Suite.loadStoredOffsets(placeable, self.configName, placeable.savegame, self.configName)
+    local effectiveOffset = Suite.resolveConfiguration(placeable, self.configName, placeable.isServer)
+    if effectiveOffset == nil then
+        effectiveOffset = Suite.getOffsetFromConfigId(configId)
+    end
+
+    local module = Suite.moduleClasses[self.configName]
     if module ~= nil and module.applyToPlaceableXML ~= nil then
-        local ok, message = safeCall(module.applyToPlaceableXML, placeable, Suite.getOffsetFromConfigId(configId))
+        local ok, message = safeCall(module.applyToPlaceableXML, placeable, effectiveOffset)
         if not ok then
             Logging.xmlError(
                 placeable.xmlFile,
@@ -1023,7 +1038,7 @@ end
 
 local placeableDefinitions = {}
 for _, moduleId in ipairs(Suite.placeableModuleIds) do
-    local module = _G[getModuleClassName(moduleId)]
+    local module = Suite.moduleClasses[moduleId]
     placeableDefinitions[moduleId] = {
         id = moduleId,
         configName = moduleId,
@@ -1055,7 +1070,7 @@ local function xmlVehicleTypeHasModule(definition, xmlFile, customEnvironment)
     end
 
     local vehicleType = getVehicleType(xmlFile, customEnvironment)
-    return vehicleType ~= nil and hasSpecialization(definition.specialization, vehicleType.specializations)
+    return vehicleType ~= nil and hasSpecialization(Suite.moduleClasses[definition.id], vehicleType.specializations)
 end
 
 local function updateConfigurationItems(definition, configItems, context)
@@ -1130,18 +1145,8 @@ function Suite.refreshStoreConfigurations(moduleId)
                 active = true,
             }
 
-            if moduleId == "AFV" then
-                context.active = storeItem.AFVHasUsableConfiguration == true
-            elseif moduleId == "AFC" then
-                context.active = storeItem.AFCHasUsableConfiguration == true
-            elseif moduleId == "APC" then
-                context.active = storeItem.APCHasUsableConfiguration == true
-            elseif moduleId == "ABW" then
-                context.active = storeItem.ABWHasUsableConfiguration == true
-            elseif moduleId == "AWS" then
-                context.active = storeItem.AWSHasUsableConfiguration == true
-            elseif moduleId == "ADR" then
-                context.active = storeItem.ADRHasUsableConfiguration == true
+            if definition.usableFlagField ~= nil then
+                context.active = storeItem[definition.usableFlagField] == true
             end
 
             updateConfigurationItems(definition, configItems, context)
@@ -1149,13 +1154,7 @@ function Suite.refreshStoreConfigurations(moduleId)
     end
 end
 
-local SUITE_CONFIGURATION_NAMES = {}
-for _, moduleId in ipairs(Suite.vehicleModuleIds) do
-    SUITE_CONFIGURATION_NAMES[moduleId] = true
-end
-for _, moduleId in ipairs(Suite.placeableModuleIds) do
-    SUITE_CONFIGURATION_NAMES[moduleId] = true
-end
+local SUITE_CONFIGURATION_NAMES = Suite.configurationNames
 
 local function getConfigurationLayout(screen)
     local layout = screen ~= nil and screen.configurationLayout or nil
@@ -1268,6 +1267,97 @@ local function getActiveConfigurationId(screen, storeItem, configurationName)
     return configurationId
 end
 
+local function getFillUnitDynamicState(screen, storeItem, moduleId)
+    local isPayloadCompensation = moduleId == "APC"
+    local isFuelCapacity = moduleId == "AFC"
+    local fillUnitContexts = isPayloadCompensation and storeItem.APCMassByFillUnit
+        or isFuelCapacity and storeItem.AFCCapacityByFillUnit
+        or storeItem.AFVCapacityByFillUnit
+    if fillUnitContexts == nil then
+        return nil, nil
+    end
+
+    local fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
+    local fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
+    local vehicleTypeContexts = isPayloadCompensation and storeItem.APCVehicleTypeByConfiguration
+        or isFuelCapacity and storeItem.AFCVehicleTypeByConfiguration
+        or storeItem.AFVVehicleTypeByConfiguration
+    local vehicleTypeId = nil
+    local vehicleTypeContext = nil
+    if vehicleTypeContexts ~= nil then
+        vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
+        vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
+    end
+
+    return fillUnitContext.hasUsable == true and (vehicleTypeContext == nil or vehicleTypeContext.hasUsable == true),
+        string.format("%s:%s", tostring(fillUnitId), tostring(vehicleTypeId or 0))
+end
+
+local function getDischargeDynamicState(screen, storeItem)
+    local dischargeContexts = storeItem.ADRDischargeByConfiguration
+    if dischargeContexts == nil then
+        return nil, nil
+    end
+
+    local dischargeId = getActiveConfigurationId(screen, storeItem, "dischargeable")
+    local dischargeContext = dischargeContexts[dischargeId] or dischargeContexts[1] or { hasUsable = false }
+    local fillUnitContexts = storeItem.ADRFillUnitByConfiguration
+    local fillUnitId = nil
+    local fillUnitContext = nil
+    if fillUnitContexts ~= nil then
+        fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
+        fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
+    end
+
+    return dischargeContext.hasUsable == true and (fillUnitContext == nil or fillUnitContext.hasUsable == true),
+        string.format("%s:%s", tostring(dischargeId), tostring(fillUnitId or 0))
+end
+
+local function getBallastDynamicState(screen, storeItem)
+    if storeItem.ABWIsStandaloneWeight == true then
+        return true, "standalone"
+    end
+
+    local ballastConfigurations = storeItem.ABWBallastConfigurations
+    if ballastConfigurations == nil then
+        return nil, nil
+    end
+
+    local active = false
+    local stateParts = {}
+    local configurationNames = {}
+    for configurationName in pairs(ballastConfigurations) do
+        table.insert(configurationNames, configurationName)
+    end
+    table.sort(configurationNames)
+
+    for _, configurationName in ipairs(configurationNames) do
+        local configurationId = getActiveConfigurationId(screen, storeItem, configurationName)
+        local context = ballastConfigurations[configurationName][configurationId] or { hasUsable = false }
+        active = active or context.hasUsable == true
+        table.insert(stateParts, string.format("%s:%s", configurationName, tostring(configurationId)))
+    end
+    return active, table.concat(stateParts, "|")
+end
+
+local function getWorkSpeedDynamicState(screen, storeItem)
+    local vehicleTypeContexts = storeItem.AWSVehicleTypeByConfiguration
+    if vehicleTypeContexts == nil then
+        return nil, nil
+    end
+
+    local vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
+    local vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
+    return vehicleTypeContext.hasUsable == true, tostring(vehicleTypeId)
+end
+
+definitions.AFV.getDynamicState = getFillUnitDynamicState
+definitions.AFC.getDynamicState = getFillUnitDynamicState
+definitions.APC.getDynamicState = getFillUnitDynamicState
+definitions.ADR.getDynamicState = getDischargeDynamicState
+definitions.ABW.getDynamicState = getBallastDynamicState
+definitions.AWS.getDynamicState = getWorkSpeedDynamicState
+
 local function getDynamicShopState(screen, moduleId)
     local storeItem = screen ~= nil and screen.storeItem or nil
     if storeItem == nil then
@@ -1278,91 +1368,12 @@ local function getDynamicShopState(screen, moduleId)
         return false, "disabled"
     end
 
-    if moduleId == "AFV" or moduleId == "AFC" or moduleId == "APC" then
-        local isPayloadCompensation = moduleId == "APC"
-        local isFuelCapacity = moduleId == "AFC"
-        local fillUnitContexts = isPayloadCompensation and storeItem.APCMassByFillUnit
-            or isFuelCapacity and storeItem.AFCCapacityByFillUnit
-            or storeItem.AFVCapacityByFillUnit
-        if fillUnitContexts == nil then
-            return nil, nil
-        end
-
-        local fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
-        local fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
-        local vehicleTypeContexts = isPayloadCompensation and storeItem.APCVehicleTypeByConfiguration
-            or isFuelCapacity and storeItem.AFCVehicleTypeByConfiguration
-            or storeItem.AFVVehicleTypeByConfiguration
-        local vehicleTypeId = nil
-        local vehicleTypeContext = nil
-        if vehicleTypeContexts ~= nil then
-            vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
-            vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
-        end
-
-        return fillUnitContext.hasUsable == true and (vehicleTypeContext == nil or vehicleTypeContext.hasUsable == true),
-            string.format("%s:%s", tostring(fillUnitId), tostring(vehicleTypeId or 0))
+    local definition = definitions[moduleId]
+    if definition == nil or definition.getDynamicState == nil then
+        return nil, nil
     end
 
-    if moduleId == "ADR" then
-        local dischargeContexts = storeItem.ADRDischargeByConfiguration
-        if dischargeContexts == nil then
-            return nil, nil
-        end
-
-        local dischargeId = getActiveConfigurationId(screen, storeItem, "dischargeable")
-        local dischargeContext = dischargeContexts[dischargeId] or dischargeContexts[1] or { hasUsable = false }
-        local fillUnitContexts = storeItem.ADRFillUnitByConfiguration
-        local fillUnitId = nil
-        local fillUnitContext = nil
-        if fillUnitContexts ~= nil then
-            fillUnitId = getActiveConfigurationId(screen, storeItem, "fillUnit")
-            fillUnitContext = fillUnitContexts[fillUnitId] or fillUnitContexts[1] or { hasUsable = false }
-        end
-
-        return dischargeContext.hasUsable == true and (fillUnitContext == nil or fillUnitContext.hasUsable == true),
-            string.format("%s:%s", tostring(dischargeId), tostring(fillUnitId or 0))
-    end
-
-    if moduleId == "ABW" then
-        if storeItem.ABWIsStandaloneWeight == true then
-            return true, "standalone"
-        end
-
-        local ballastConfigurations = storeItem.ABWBallastConfigurations
-        if ballastConfigurations == nil then
-            return nil, nil
-        end
-
-        local active = false
-        local stateParts = {}
-        local configurationNames = {}
-        for configurationName in pairs(ballastConfigurations) do
-            table.insert(configurationNames, configurationName)
-        end
-        table.sort(configurationNames)
-
-        for _, configurationName in ipairs(configurationNames) do
-            local configurationId = getActiveConfigurationId(screen, storeItem, configurationName)
-            local context = ballastConfigurations[configurationName][configurationId] or { hasUsable = false }
-            active = active or context.hasUsable == true
-            table.insert(stateParts, string.format("%s:%s", configurationName, tostring(configurationId)))
-        end
-        return active, table.concat(stateParts, "|")
-    end
-
-    if moduleId == "AWS" then
-        local vehicleTypeContexts = storeItem.AWSVehicleTypeByConfiguration
-        if vehicleTypeContexts == nil then
-            return nil, nil
-        end
-
-        local vehicleTypeId = getActiveConfigurationId(screen, storeItem, "vehicleType")
-        local vehicleTypeContext = vehicleTypeContexts[vehicleTypeId] or vehicleTypeContexts[1] or { hasUsable = false }
-        return vehicleTypeContext.hasUsable == true, tostring(vehicleTypeId)
-    end
-
-    return nil, nil
+    return definition.getDynamicState(screen, storeItem, moduleId)
 end
 
 local function updateShopPrice(screen)
@@ -1452,7 +1463,7 @@ local function updateSuiteShopControls(screen, force)
     collectSuiteShopOptions(layout, options)
     local layoutChanged = false
 
-    for _, moduleId in ipairs({ "AFV", "AFC", "APC", "ABW", "AWS", "ADR" }) do
+    for _, moduleId in ipairs(Suite.vehicleModuleIds) do
         local shouldShow, stateKey = getDynamicShopState(screen, moduleId)
         local option = options[moduleId]
         local row = getConfigurationRow(option, layout)
@@ -1622,11 +1633,11 @@ local function getConstructionSelection(screen, storeItem, layout, configuration
         or 1
 end
 
-local function resetConstructionSelection(screen, option)
+local function resetConstructionSelection(screen, storeItem, option, moduleId)
     local defaultIndex = Suite.getDefaultIndex()
-    setConstructionConfigurationId(screen, "AIPP", defaultIndex)
+    setConstructionConfigurationId(screen, moduleId, defaultIndex)
 
-    local items = getConstructionStoreItem(screen).configurations["AIPP"]
+    local items = storeItem.configurations ~= nil and storeItem.configurations[moduleId] or nil
     local defaultItem = items ~= nil and items[defaultIndex] or nil
     if defaultItem ~= nil and option.setState ~= nil then
         for state, text in ipairs(option.texts or {}) do
@@ -1638,20 +1649,89 @@ local function resetConstructionSelection(screen, option)
     end
 end
 
+local function hideDisabledConstructionRows(screen, storeItem, layout, options)
+    local layoutChanged = false
+
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        if not Suite.getIsModuleEnabled(moduleId) and storeItem.configurations[moduleId] ~= nil then
+            local option = options[moduleId]
+            local row = getConfigurationRow(option, layout)
+            if option ~= nil and row ~= nil and row.setVisible ~= nil and row.visible == true then
+                if getConstructionSelection(screen, storeItem, layout, moduleId) ~= Suite.getDefaultIndex() then
+                    resetConstructionSelection(screen, storeItem, option, moduleId)
+                end
+
+                row:setVisible(false)
+                layoutChanged = true
+            end
+        end
+    end
+
+    return layoutChanged
+end
+
+local function refreshConstructionAttributes(screen, storeItem, selectionParts)
+    if screen.configurations == nil or screen.assignItemAttributeData == nil or g_shopController == nil then
+        screen.AdjustSuiteSpecStateKey = nil
+        return
+    end
+
+    if #selectionParts == 0 then
+        return
+    end
+
+    local stateKey = string.format("%s|%s", tostring(storeItem.xmlFilename), table.concat(selectionParts, "|"))
+    if screen.AdjustSuiteSpecStateKey == stateKey then
+        return
+    end
+    screen.AdjustSuiteSpecStateKey = stateKey
+
+    local configurations = table.clone(screen.configurations)
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        local selection = Suite.constructionSelections[moduleId]
+        if selection ~= nil then
+            configurations[moduleId] = selection.configurationId
+        end
+    end
+
+    local displayItem = g_shopController:makeDisplayItem(storeItem, nil, configurations)
+    screen:assignItemAttributeData({ name = storeItem.name, displayItem = displayItem })
+end
+
 local function updateSuiteConstructionControls(screen)
     local storeItem = getConstructionStoreItem(screen)
     local layout = getConfigurationLayout(screen)
-    if
-        storeItem == nil
-        or layout == nil
-        or storeItem.configurations == nil
-        or storeItem.configurations["AIPP"] == nil
-    then
+    if storeItem == nil or layout == nil or storeItem.configurations == nil then
         return
     end
 
     local options = {}
     collectSuiteShopOptions(layout, options)
+
+    local selectionParts = {}
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        if storeItem.configurations[moduleId] ~= nil then
+            local configurationId = getConstructionSelection(screen, storeItem, layout, moduleId)
+            Suite.constructionSelections[moduleId] = {
+                xmlFilename = storeItem.xmlFilename,
+                configurationId = configurationId,
+            }
+            table.insert(selectionParts, string.format("%s:%s", moduleId, tostring(configurationId)))
+        else
+            Suite.constructionSelections[moduleId] = nil
+        end
+    end
+
+    if hideDisabledConstructionRows(screen, storeItem, layout, options) and layout.invalidateLayout ~= nil then
+        layout:invalidateLayout()
+    end
+
+    refreshConstructionAttributes(screen, storeItem, selectionParts)
+
+    if storeItem.configurations["AIPP"] == nil then
+        return
+    end
+
     local option = options["AIPP"]
     local row = getConfigurationRow(option, layout)
     if option == nil or row == nil or row.setVisible == nil then
@@ -1674,7 +1754,7 @@ local function updateSuiteConstructionControls(screen)
     if not shouldShow then
         local selectedIndex = getConstructionSelection(screen, storeItem, layout, "AIPP")
         if selectedIndex ~= Suite.getDefaultIndex() then
-            resetConstructionSelection(screen, option)
+            resetConstructionSelection(screen, storeItem, option, "AIPP")
         end
     end
 
@@ -1828,22 +1908,480 @@ for _, moduleId in ipairs(Suite.placeableModuleIds) do
     end
 end
 
-ConfigurationUtil.getConfigurationsFromXML =
-    Utils.overwrittenFunction(ConfigurationUtil.getConfigurationsFromXML, addSuiteStoreConfigurations)
+if Suite.storeConfigurationHookInstalled ~= true and ConfigurationUtil.getConfigurationsFromXML ~= nil then
+    Suite.storeConfigurationHookInstalled = true
+    ConfigurationUtil.getConfigurationsFromXML =
+        Utils.overwrittenFunction(ConfigurationUtil.getConfigurationsFromXML, addSuiteStoreConfigurations)
+end
 
-function Suite:update(dt)
+function Suite:update(_dt)
     if AdjustSuiteAutoDrive ~= nil then
         AdjustSuiteAutoDrive.install()
     end
 
-    if self.useMiles ~= g_gameSettings.useMiles then
-        self.useMiles = g_gameSettings.useMiles
-        self.refreshStoreConfigurations("AWS")
+    local pending = tonumber(Suite.storageVerificationDelay)
+    if pending ~= nil then
+        if pending > 0 then
+            Suite.storageVerificationDelay = pending - 1
+        else
+            Suite.storageVerificationDelay = nil
+            Suite.verifyPlaceableStorageCapacities()
+        end
+    end
+end
+
+if Suite.placeableSaveHookInstalled ~= true and Placeable ~= nil and Placeable.saveToXMLFile ~= nil then
+    Suite.placeableSaveHookInstalled = true
+    Placeable.saveToXMLFile = Utils.appendedFunction(Placeable.saveToXMLFile, function(self, xmlFile, key)
+        Suite.savePlaceableStoredOffsets(self, xmlFile, key)
+    end)
+end
+
+function Suite.captureFillUnitBaseCapacities(vehicle)
+    local spec = vehicle ~= nil and vehicle.spec_fillUnit or nil
+    for _, fillUnit in pairs(spec ~= nil and spec.fillUnits or {}) do
+        Suite.getCapacityBase(fillUnit)
+    end
+end
+
+if Suite.fillUnitBaseHookInstalled ~= true and FillUnit ~= nil and FillUnit.onLoad ~= nil then
+    Suite.fillUnitBaseHookInstalled = true
+    FillUnit.onLoad = Utils.appendedFunction(FillUnit.onLoad, Suite.captureFillUnitBaseCapacities)
+end
+
+function Suite.refreshProductionPoints()
+    local manager = g_currentMission ~= nil and g_currentMission.productionChainManager or nil
+    for _, productionPoint in ipairs(manager ~= nil and manager.productionPoints or {}) do
+        Suite.applyProductionAdjustments(productionPoint)
+    end
+end
+
+if Suite.productionHookInstalled ~= true and ProductionPoint ~= nil and ProductionPoint.register ~= nil then
+    Suite.productionHookInstalled = true
+    ProductionPoint.register = Utils.appendedFunction(ProductionPoint.register, function(productionPoint)
+        Suite.applyProductionAdjustments(productionPoint)
+    end)
+end
+
+if
+    Suite.productionSettingsHookInstalled ~= true
+    and AdjustSuiteSettingsEvent ~= nil
+    and AdjustSuiteSettingsEvent.run ~= nil
+then
+    Suite.productionSettingsHookInstalled = true
+    AdjustSuiteSettingsEvent.run = Utils.appendedFunction(AdjustSuiteSettingsEvent.run, function()
+        Suite.refreshProductionPoints()
+        Suite.verifyPlaceableStorageCapacities()
+    end)
+end
+
+function Suite.verifyPlaceableStorageCapacities()
+    local module = Suite.moduleClasses["AFVP"]
+    if module ~= nil and module.verifyStorageCapacities ~= nil then
+        module.verifyStorageCapacities()
+    end
+end
+
+local function createSpecRestore()
+    local entries = {}
+
+    local function set(target, key, value)
+        table.insert(entries, { target = target, key = key, value = target[key] })
+        target[key] = value
+    end
+
+    local function restore()
+        for index = #entries, 1, -1 do
+            local entry = entries[index]
+            entry.target[entry.key] = entry.value
+        end
+    end
+
+    return set, restore
+end
+
+local function scaleSpecNumber(specName)
+    return function(storeItem, factor)
+        local specs = storeItem.specs
+        local value = specs ~= nil and tonumber(specs[specName]) or nil
+        if value == nil then
+            return nil
+        end
+
+        local set, restore = createSpecRestore()
+        set(specs, specName, value * factor)
+        return restore
+    end
+end
+
+local function scaleFillUnitCapacities(storeItem, factor)
+    local capacityConfigurations = storeItem.specs ~= nil and storeItem.specs.capacity or nil
+    if capacityConfigurations == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for _, configuration in pairs(capacityConfigurations) do
+        for _, fillUnit in ipairs(configuration.fillUnits or {}) do
+            local value = tonumber(fillUnit.capacity)
+            if value ~= nil then
+                set(fillUnit, "capacity", value * factor)
+            end
+        end
+    end
+    return restore
+end
+
+local function scaleFuelCapacities(storeItem, factor)
+    local fuel = storeItem.specs ~= nil and storeItem.specs.fuel or nil
+    if fuel == nil or fuel.consumers == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for _, consumerConfiguration in pairs(fuel.consumers) do
+        for _, unitConsumer in ipairs(consumerConfiguration) do
+            local value = tonumber(unitConsumer.capacity)
+            if value ~= nil then
+                set(unitConsumer, "capacity", value * factor)
+            end
+        end
+    end
+    return restore
+end
+
+local function scaleWorkingWidth(storeItem, factor)
+    local workingWidth = storeItem.specs ~= nil and storeItem.specs.workingWidth or nil
+    if workingWidth == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for _, key in ipairs({ "width", "minWidth" }) do
+        local value = tonumber(workingWidth[key])
+        if value ~= nil then
+            set(workingWidth, key, value * factor)
+        end
+    end
+    return restore
+end
+
+local function scaleWorkingWidthConfig(storeItem, factor)
+    local widthsByConfiguration = storeItem.specs ~= nil and storeItem.specs.workingWidthConfig or nil
+    if widthsByConfiguration == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for _, widths in pairs(widthsByConfiguration) do
+        for _, entry in pairs(widths) do
+            local value = tonumber(entry.width)
+            if value ~= nil then
+                set(entry, "width", value * factor)
+            end
+        end
+    end
+    return restore
+end
+
+local function scaleMaxSpeed(storeItem, factor)
+    local set, restore = createSpecRestore()
+
+    local specs = storeItem.specs
+    local declaredMaxSpeed = specs ~= nil and tonumber(specs.maxSpeed) or nil
+    if declaredMaxSpeed ~= nil then
+        set(specs, "maxSpeed", declaredMaxSpeed * factor)
+    end
+
+    local configurations = storeItem.configurations or {}
+    for _, configItem in ipairs(configurations["motor"] or {}) do
+        local value = tonumber(configItem.maxSpeed)
+        if value ~= nil then
+            set(configItem, "maxSpeed", value * factor)
+        end
+    end
+
+    for _, configItem in ipairs(configurations["wheel"] or {}) do
+        local value = tonumber(configItem.maxForwardSpeedShop)
+        if value ~= nil then
+            set(configItem, "maxForwardSpeedShop", value * factor)
+        end
+    end
+
+    return restore
+end
+
+local function scaleMotorPower(storeItem, factor)
+    local set, restore = createSpecRestore()
+
+    local specs = storeItem.specs
+    local declaredPower = specs ~= nil and tonumber(specs.power) or nil
+    if declaredPower ~= nil then
+        set(specs, "power", declaredPower * factor)
+    end
+
+    local motorItems = storeItem.configurations ~= nil and storeItem.configurations["motor"] or nil
+    for _, configItem in ipairs(motorItems or {}) do
+        local value = tonumber(configItem.power)
+        if value ~= nil then
+            set(configItem, "power", value * factor)
+        end
+    end
+
+    return restore
+end
+
+local function scaleIncomePerHour(storeItem, factor)
+    local income = storeItem.specs ~= nil and storeItem.specs.incomePerHour or nil
+    if type(income) ~= "table" then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    for index, value in ipairs(income) do
+        local number = tonumber(value)
+        if number ~= nil then
+            set(income, index, number * factor)
+        end
+    end
+    return restore
+end
+
+local function getSelectedConfigurationId(realItem, configurations, configurationName)
+    if realItem ~= nil and realItem.configurations ~= nil and realItem.configurations[configurationName] ~= nil then
+        return tonumber(realItem.configurations[configurationName]) or 1
+    end
+
+    if configurations ~= nil and configurations[configurationName] ~= nil then
+        return tonumber(configurations[configurationName]) or 1
+    end
+
+    return 1
+end
+
+local function getBallastMassDelta(storeItem, factor, realItem, configurations)
+    local weight = storeItem.specs ~= nil and storeItem.specs.weight or nil
+    if weight == nil then
+        return 0
+    end
+
+    if storeItem.ABWIsStandaloneWeight == true then
+        local base = tonumber(weight.componentMass) or 0
+        local componentId = configurations ~= nil and configurations["component"] or nil
+        if componentId ~= nil and weight.configurations ~= nil then
+            base = tonumber(weight.configurations[componentId]) or base
+        end
+        return base * (factor - 1)
+    end
+
+    local ballastConfigurations = storeItem.ABWBallastConfigurations
+    if ballastConfigurations == nil then
+        return 0
+    end
+
+    local ballastMass = 0
+    for configurationName, contexts in pairs(ballastConfigurations) do
+        local context = contexts[getSelectedConfigurationId(realItem, configurations, configurationName)]
+        ballastMass = ballastMass + (context ~= nil and tonumber(context.mass) or 0)
+    end
+
+    return ballastMass * 0.001 * (factor - 1)
+end
+
+local function scaleVehicleWeight(storeItem, factor, realItem, configurations)
+    local weight = storeItem.specs ~= nil and storeItem.specs.weight or nil
+    local delta = getBallastMassDelta(storeItem, factor, realItem, configurations)
+    if weight == nil or delta == 0 then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+
+    local componentMass = tonumber(weight.componentMass)
+    if componentMass ~= nil then
+        set(weight, "componentMass", componentMass + delta)
+    end
+
+    for index, value in pairs(weight.configurations or {}) do
+        local number = tonumber(value)
+        if number ~= nil then
+            set(weight.configurations, index, number + delta)
+        end
+    end
+
+    return restore
+end
+
+local function scaleAdditionalWeight(storeItem, factor, realItem, configurations)
+    local specs = storeItem.specs
+    local maxMass = specs ~= nil and tonumber(specs.additionalWeight) or nil
+    local delta = getBallastMassDelta(storeItem, factor, realItem, configurations)
+    if maxMass == nil or delta == 0 then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    set(specs, "additionalWeight", maxMass + delta)
+
+    local weightRestore = scaleVehicleWeight(storeItem, factor, realItem, configurations)
+    if weightRestore == nil then
+        return restore
+    end
+
+    return function()
+        weightRestore()
+        restore()
+    end
+end
+
+local SPEC_SCALERS = {
+    { name = "speedLimit", moduleId = "AWS", apply = scaleSpecNumber("speedLimit") },
+    { name = "maxSpeed", moduleId = "ADS", apply = scaleMaxSpeed },
+    { name = "capacity", moduleId = "AFV", apply = scaleFillUnitCapacities },
+    { name = "fuel", moduleId = "AFC", apply = scaleFuelCapacities },
+    { name = "electricCharge", moduleId = "AFC", apply = scaleFuelCapacities },
+    { name = "methane", moduleId = "AFC", apply = scaleFuelCapacities },
+    { name = "workingWidth", moduleId = "AWW", apply = scaleWorkingWidth },
+    { name = "workingWidthConfig", moduleId = "AWW", apply = scaleWorkingWidthConfig },
+    { name = "power", moduleId = "AMP", apply = scaleMotorPower },
+    { name = "weight", moduleId = "ABW", apply = scaleVehicleWeight },
+    { name = "additionalWeight", moduleId = "ABW", apply = scaleAdditionalWeight },
+    { name = "siloVolume", moduleId = "AFVP", apply = scaleSpecNumber("siloVolume") },
+    { name = "siloExtensionVolume", moduleId = "AFVP", apply = scaleSpecNumber("siloExtensionVolume") },
+    { name = "manureHeapCapacity", moduleId = "AFVP", apply = scaleSpecNumber("manureHeapCapacity") },
+    { name = "incomePerHour", moduleId = "AIPP", apply = scaleIncomePerHour },
+}
+
+Suite.constructionSelections = Suite.constructionSelections or {}
+
+local function getSpecConfigurationId(storeItem, realItem, configurations, moduleId)
+    if realItem ~= nil and realItem.configurations ~= nil and realItem.configurations[moduleId] ~= nil then
+        return tonumber(realItem.configurations[moduleId])
+    end
+
+    if configurations ~= nil and configurations[moduleId] ~= nil then
+        return tonumber(configurations[moduleId])
+    end
+
+    local selection = Suite.constructionSelections[moduleId]
+    if selection ~= nil and storeItem ~= nil and selection.xmlFilename == storeItem.xmlFilename then
+        return tonumber(selection.configurationId)
+    end
+
+    return nil
+end
+
+local function getSpecScaleFactor(storeItem, realItem, configurations, moduleId)
+    if storeItem == nil or not Suite.getIsModuleEnabled(moduleId) then
+        return 1
+    end
+
+    local configId = getSpecConfigurationId(storeItem, realItem, configurations, moduleId)
+    if configId == nil then
+        return 1
+    end
+
+    return Suite.getFactorFromOffset(Suite.getEffectiveOffset(moduleId, Suite.getOffsetFromConfigId(configId)))
+end
+
+function Suite.installSpecValueScaling()
+    if g_storeManager == nil or g_storeManager.getSpecTypeByName == nil then
+        return
+    end
+
+    for _, entry in ipairs(SPEC_SCALERS) do
+        local specType = g_storeManager:getSpecTypeByName(entry.name)
+        if specType ~= nil and specType.getValueFunc ~= nil and specType.adjustSuiteScaled ~= true then
+            specType.adjustSuiteScaled = true
+
+            local originalFunc = specType.getValueFunc
+            specType.getValueFunc = function(storeItem, realItem, configurations, saleItem, returnValues, returnRange)
+                local factor = getSpecScaleFactor(storeItem, realItem, configurations, entry.moduleId)
+                if factor == 1 then
+                    return originalFunc(storeItem, realItem, configurations, saleItem, returnValues, returnRange)
+                end
+
+                local restore = entry.apply(storeItem, factor, realItem, configurations)
+                local ok, first, second =
+                    safeCall(originalFunc, storeItem, realItem, configurations, saleItem, returnValues, returnRange)
+                if restore ~= nil then
+                    restore()
+                end
+
+                if not ok then
+                    return nil
+                end
+                return first, second
+            end
+        end
+    end
+end
+
+local CONFIG_SCREEN_SPEC_NAMES = {
+    power = true,
+    maxSpeed = true,
+    speedLimit = true,
+    workingWidth = true,
+    workingWidthConfig = true,
+}
+
+local function applyConfigScreenSpecScaling(storeItem, configurations)
+    local restores = {}
+
+    for _, entry in ipairs(SPEC_SCALERS) do
+        if CONFIG_SCREEN_SPEC_NAMES[entry.name] == true then
+            local factor = getSpecScaleFactor(storeItem, nil, configurations, entry.moduleId)
+            if factor ~= 1 then
+                local restore = entry.apply(storeItem, factor, nil, configurations)
+                if restore ~= nil then
+                    table.insert(restores, restore)
+                end
+            end
+        end
+    end
+
+    if #restores == 0 then
+        return nil
+    end
+
+    return function()
+        for index = #restores, 1, -1 do
+            restores[index]()
+        end
+    end
+end
+
+if
+    Suite.attributeHooksInstalled ~= true
+    and ShopConfigScreen ~= nil
+    and ShopConfigScreen.processAttributeData ~= nil
+then
+    Suite.attributeHooksInstalled = true
+    ShopConfigScreen.processAttributeData = Utils.overwrittenFunction(
+        ShopConfigScreen.processAttributeData,
+        function(screen, superFunc, storeItem, vehicle, saleItem)
+            local restore = applyConfigScreenSpecScaling(storeItem, screen.configurations)
+            if restore == nil then
+                return superFunc(screen, storeItem, vehicle, saleItem)
+            end
+
+            safeCall(superFunc, screen, storeItem, vehicle, saleItem)
+            restore()
+        end
+    )
+end
+
+function Suite:loadMap()
+    Suite.registerPlaceableOffsetSavegamePaths()
+    Suite.installSpecValueScaling()
+    Suite.storageVerificationDelay = 600
+
+    for _, moduleId in ipairs(Suite.moduleIds) do
+        Suite.refreshStoreConfigurations(moduleId)
     end
 end
 
 if Suite.modEventListenerInstalled ~= true then
     Suite.modEventListenerInstalled = true
-    Suite.useMiles = g_gameSettings.useMiles
     addModEventListener(Suite)
 end

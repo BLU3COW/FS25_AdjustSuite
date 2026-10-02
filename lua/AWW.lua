@@ -3,6 +3,8 @@ AdjustSuiteAWW = AdjustSuiteAWW or {}
 local AWW = AdjustSuiteAWW
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AWW"] = AWW
+local getAreaNodes = Suite.getWorkAreaNodes
 local clampOffset = Suite.clampOffset
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getIsLoweredForWork = Suite.getIsLoweredForWork
@@ -21,7 +23,6 @@ local function distance3(x1, y1, z1, x2, y2, z2)
     return math.sqrt(dx * dx + dy * dy + dz * dz)
 end
 
-local resolveNode = Suite.resolveNode
 local getNodePositionInReference = Suite.getNodePosition
 local setNodePositionFromReference = Suite.setNodePosition
 
@@ -42,25 +43,6 @@ local function getConfiguredWorkingWidth(vehicle)
 
     spec.configuredBaseWidth = width ~= nil and width > 0 and width or 0
     return spec.configuredBaseWidth
-end
-
-local function getAreaNodes(workArea)
-    if workArea == nil then
-        return nil, nil, nil
-    end
-
-    local startNode =
-        resolveNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
-    local widthNode =
-        resolveNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
-    local heightNode =
-        resolveNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
-
-    if startNode ~= nil and widthNode ~= nil and startNode ~= 0 and widthNode ~= 0 then
-        return startNode, widthNode, heightNode
-    end
-
-    return nil, nil, nil
 end
 
 local function getWorkAreas(vehicle)
@@ -414,7 +396,7 @@ local function getSyntheticAreaGeometry(spec, areas)
     local count = 0
 
     for _, area in ipairs(areas) do
-        local sx, sy, sz = getNodePositionInReference(area.startNode, spec.referenceNode)
+        local sx, _sy, sz = getNodePositionInReference(area.startNode, spec.referenceNode)
         local wx, _, wz = getNodePositionInReference(area.widthNode, spec.referenceNode)
         local hx, _, hz = getNodePositionInReference(area.heightNode, spec.referenceNode)
         if sx ~= nil and wx ~= nil and hx ~= nil then
@@ -1321,7 +1303,7 @@ local function applyAIMarkerWidth(vehicle, spec, factor, appliedNodes)
 
     local applyMarkerSet = scaleMarkerSet
     if spec.usePlowWidthAxis then
-        applyMarkerSet = function(unusedSpec, leftMarker, rightMarker, backMarker, unusedFactor, nodes)
+        applyMarkerSet = function(_unusedSpec, leftMarker, rightMarker, backMarker, _unusedFactor, nodes)
             setPlowMarkerSet(spec, leftMarker, rightMarker, backMarker, nodes)
         end
     end
@@ -1439,7 +1421,9 @@ end
 local function collectSprayerVisualEffectNodes(vehicle)
     local nodes = {}
     local seen = {}
-    local extendedNodes = AdjustSuitePrecisionFarming.getVisualEffectNodes(vehicle)
+    local extendedNodes = AdjustSuitePrecisionFarming ~= nil
+            and AdjustSuitePrecisionFarming.getVisualEffectNodes(vehicle)
+        or nil
     if extendedNodes ~= nil then
         for _, entry in pairs(extendedNodes) do
             addEffectNode(nodes, seen, entry.node, entry.effectData)
@@ -1930,6 +1914,7 @@ function AWW.prerequisitesPresent(specializations)
 end
 
 function AWW.initSpecialization()
+    Suite.registerOffsetSavegamePaths("AWW")
     Vehicle.xmlSchemaSavegame:register(
         XMLValueType.BOOL,
         "vehicles.vehicle(?).FS25_AdjustSuite.AWW#useWindrowDropAreas",
@@ -1937,7 +1922,13 @@ function AWW.initSpecialization()
     )
 end
 
+function AWW:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "AWW", savegame)
+    Suite.resolveConfiguration(self, "AWW", self.isServer)
+end
+
 function AWW.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", AWW)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", AWW)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", AWW)
     SpecializationUtil.registerEventListener(vehicleType, "onUpdate", AWW)
@@ -1994,7 +1985,7 @@ function AWW:processCultivatorArea(superFunc, workArea, dt)
     return processSyntheticArea(superFunc, self, workArea, dt, getSpec(self).syntheticPlowPackerArea)
 end
 
-function AWW:onStartWorkAreaProcessing(dt, workAreas)
+function AWW:onStartWorkAreaProcessing(_dt, _workAreas)
     local spec = getSpec(self)
     if spec.syntheticPlowArea ~= nil then
         updateSyntheticAreaSetGeometry(spec, spec.syntheticPlowArea)
@@ -2034,14 +2025,18 @@ local function queueSprayerVisualEffectUpdate(vehicle)
     end
 end
 
-function AWW:onChangedFillType(fillUnitIndex, fillTypeIndex, oldFillTypeIndex)
+function AWW:onChangedFillType(_fillUnitIndex, _fillTypeIndex, _oldFillTypeIndex)
     queueSprayerVisualEffectUpdate(self)
-    AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    if AdjustSuitePrecisionFarming ~= nil then
+        AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    end
 end
 
-function AWW:onSprayTypeChange(sprayType)
+function AWW:onSprayTypeChange(_sprayType)
     queueSprayerVisualEffectUpdate(self)
-    AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    if AdjustSuitePrecisionFarming ~= nil then
+        AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    end
 end
 
 function AWW:onTurnedOn()
@@ -2049,10 +2044,12 @@ function AWW:onTurnedOn()
 end
 
 function AWW:onTurnedOff()
-    AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    if AdjustSuitePrecisionFarming ~= nil then
+        AdjustSuitePrecisionFarming.stopLimeFallback(self, getSpec(self))
+    end
 end
 
-function AWW:onPostLoad(savegame)
+function AWW:onPostLoad(_savegame)
     if not Suite.getIsModuleEnabled("AWW") then
         return
     end
@@ -2116,7 +2113,7 @@ local function updateNativeMowerModeAction(vehicle)
     g_inputBinding:setActionEventActive(actionEvent.actionEventId, isAllowed)
 end
 
-function AWW.actionEventToggleMowerDropMode(vehicle, actionName, inputValue, callbackState, isAnalog)
+function AWW.actionEventToggleMowerDropMode(vehicle, _actionName, _inputValue, _callbackState, _isAnalog)
     local mowerSpec = vehicle.spec_mower
     if mowerSpec ~= nil and vehicle.setUseMowerWindrowDropAreas ~= nil then
         vehicle:setUseMowerWindrowDropAreas(not mowerSpec.useWindrowDropAreas)
@@ -2169,7 +2166,7 @@ function AWW:setWorkMode(superFunc, state, noEventSend)
     return result
 end
 
-function AWW:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSelection)
+function AWW:onRegisterActionEvents(_isActiveForInput, isActiveForInputIgnoreSelection)
     if self.isClient ~= true or not Suite.getIsModuleEnabled("AWW") then
         return
     end
@@ -2214,7 +2211,7 @@ function AWW:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSele
     end
 end
 
-function AWW:onWriteStream(streamId, connection)
+function AWW:onWriteStream(streamId, _connection)
     local spec = getSpec(self)
     local useWindrowDropAreas = Suite.getIsModuleEnabled("AWW")
         and spec.syntheticMowerModes == true
@@ -2223,7 +2220,7 @@ function AWW:onWriteStream(streamId, connection)
     streamWriteBool(streamId, useWindrowDropAreas)
 end
 
-function AWW:onReadStream(streamId, connection)
+function AWW:onReadStream(streamId, _connection)
     local spec = getSpec(self)
     local useWindrowDropAreas = streamReadBool(streamId)
     spec.requestedUseWindrowDropAreas = useWindrowDropAreas
@@ -2237,35 +2234,38 @@ function AWW:onReadStream(streamId, connection)
     end
 end
 
-function AWW:saveToXMLFile(xmlFile, key, usedModNames)
+function AWW:saveToXMLFile(xmlFile, key, _usedModNames)
+    Suite.saveStoredOffsets(self, "AWW", xmlFile, key)
     local spec = getSpec(self)
     if Suite.getIsModuleEnabled("AWW") and spec.syntheticMowerModes == true and self.spec_mower ~= nil then
         xmlFile:setValue(key .. "#useWindrowDropAreas", self.spec_mower.useWindrowDropAreas == true)
     end
 end
 
-function AWW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AWW:onUpdate(_dt, _isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.getIsModuleEnabled("AWW") then
         return
     end
 
     local spec = getSpec(self)
 
-    local canApply = self.spec_mower == nil
-        or self.spec_foldable == nil
-        or not hasNativeMowerModes(self)
-        or getIsLoweredForWork(self)
-    if
-        canApply
-        and getSelectedOffset(self) ~= 0
-        and (self.spec_windrower ~= nil or self.spec_tedder ~= nil)
-        and self.spec_foldable ~= nil
-    then
-        canApply = getVisualEffectPoseIsReady(self)
-    end
+    if spec.pendingApply == true then
+        local canApply = self.spec_mower == nil
+            or self.spec_foldable == nil
+            or not hasNativeMowerModes(self)
+            or getIsLoweredForWork(self)
+        if
+            canApply
+            and getSelectedOffset(self) ~= 0
+            and (self.spec_windrower ~= nil or self.spec_tedder ~= nil)
+            and self.spec_foldable ~= nil
+        then
+            canApply = getVisualEffectPoseIsReady(self)
+        end
 
-    if spec.pendingApply == true and canApply and applyWidth(self) then
-        spec.pendingApply = false
+        if canApply and applyWidth(self) then
+            spec.pendingApply = false
+        end
     end
 
     if spec.visualEffectsPending == true and getVisualEffectPoseIsReady(self) then
@@ -2285,7 +2285,7 @@ function AWW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isS
     end
 end
 
-function AWW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AWW:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if spec.currentWidth == nil or spec.baseWidth == nil or spec.baseWidth <= 0 then
         return
@@ -2320,8 +2320,15 @@ function AWW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelecte
     )
 end
 
-function AWW:onUpdateTick(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AWW:onUpdateTick(_dt, _isActiveForInput, _isActiveForInputIgnoreSelection, _isSelected)
+    if AdjustSuitePrecisionFarming == nil then
+        return
+    end
+
+    local spec = getSpec(self)
     if Suite.getIsModuleEnabled("AWW") then
-        AdjustSuitePrecisionFarming.updateLimeFallback(self, getSpec(self))
+        AdjustSuitePrecisionFarming.updateLimeFallback(self, spec)
+    elseif spec.precisionFarmingLimeEffectActive == true then
+        AdjustSuitePrecisionFarming.stopLimeFallback(self, spec)
     end
 end

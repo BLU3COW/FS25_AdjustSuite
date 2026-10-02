@@ -16,6 +16,7 @@
         <text name="CONFIG_AFV_TITLE" text="Füllvolumen" />
         <text name="CONFIG_AFC_TITLE" text="Kraftstoffkapazität" />
         <text name="CONFIG_APC_TITLE" text="Nutzlastausgleich" />
+        <text name="CONFIG_APC_PAYLOAD_MASS" text="Nutzlastmasse" />
         <text name="CONFIG_ABW_TITLE" text="Ballastgewicht" />
         <text name="CONFIG_AMP_TITLE" text="Motorleistung" />
         <text name="CONFIG_AWS_TITLE" text="Arbeitsgeschwindigkeit" />
@@ -24,6 +25,7 @@
         <text name="CONFIG_ADS_TITLE" text="Fahrgeschwindigkeit" />
         <text name="CONFIG_ABP_TITLE" text="Bremskraft" />
         <text name="CONFIG_ADR_TITLE" text="Entladerate" />
+        <text name="CONFIG_ADR_COUPLED" text="Durchsatz folgt Arbeitsbreite und Arbeitsgeschwindigkeit" />
         <text name="CONFIG_AFVP_TITLE" text="Füllvolumen" />
         <text name="CONFIG_ADRP_TITLE" text="Entladerate" />
         <text name="CONFIG_ACRP_TITLE" text="Zyklusrate" />

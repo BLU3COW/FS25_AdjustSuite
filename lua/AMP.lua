@@ -3,6 +3,7 @@ AdjustSuiteAMP = AdjustSuiteAMP or {}
 local AMP = AdjustSuiteAMP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AMP"] = AMP
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("AMP")
 
@@ -19,12 +20,23 @@ function AMP.prerequisitesPresent(specializations)
     return Motorized ~= nil and SpecializationUtil.hasSpecialization(Motorized, specializations)
 end
 
+function AMP.initSpecialization()
+    Suite.registerOffsetSavegamePaths("AMP")
+end
+
+function AMP:saveToXMLFile(xmlFile, key, _usedModNames)
+    Suite.saveStoredOffsets(self, "AMP", xmlFile, key)
+end
+
 function AMP.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", AMP)
     SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", AMP)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", AMP)
 end
 
-function AMP:onPreLoad()
+function AMP:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "AMP", savegame)
+    Suite.resolveConfiguration(self, "AMP", self.isServer)
     if self.loadMotor ~= nil then
         self.loadMotor = Utils.overwrittenFunction(self.loadMotor, AMP.loadMotor)
     end
@@ -87,7 +99,7 @@ function AMP:loadMotor(superFunc, xmlFile, motorId)
     return motor
 end
 
-function AMP:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AMP:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
         return
     end

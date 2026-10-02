@@ -2,6 +2,7 @@ AdjustSuiteABP = AdjustSuiteABP or {}
 local ABP = AdjustSuiteABP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ABP"] = ABP
 local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ABP")
 
 function ABP.prerequisitesPresent(specializations)
@@ -18,12 +19,27 @@ function ABP.registerOverwrittenFunctions(vehicleType)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getBrakeForce", ABP.getBrakeForce)
 end
 
+function ABP.initSpecialization()
+    Suite.registerOffsetSavegamePaths("ABP")
+end
+
+function ABP:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "ABP", savegame)
+    Suite.resolveConfiguration(self, "ABP", self.isServer)
+end
+
+function ABP:saveToXMLFile(xmlFile, key, _usedModNames)
+    Suite.saveStoredOffsets(self, "ABP", xmlFile, key)
+end
+
 function ABP.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", ABP)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", ABP)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ABP)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ABP)
 end
 
-function ABP:onLoad(savegame)
+function ABP:onLoad(_savegame)
     if hasSelectedConfiguration(self) then
         getFactor(self)
     end
@@ -38,7 +54,7 @@ function ABP:getBrakeForce(superFunc)
     return brakeForce * getFactor(self)
 end
 
-function ABP:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ABP:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or not hasSelectedConfiguration(self) then
         return
     end

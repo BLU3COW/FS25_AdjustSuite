@@ -3,12 +3,17 @@ AdjustSuiteAFV = AdjustSuiteAFV or {}
 local AFV = AdjustSuiteAFV
 
 local Suite = AdjustSuite
+Suite.moduleClasses["AFV"] = AFV
 local clampOffset = Suite.clampOffset
 local getFactorFromOffset = Suite.getFactorFromOffset
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("AFV")
 
-local IGNORED_FILLTYPE_NAMES = Suite.ignoredFillTypeNames
-AFV.ignoredFillTypeNames = IGNORED_FILLTYPE_NAMES
+AFV.ignoredFillTypeNames = Suite.ignoredFillTypeNames
+local getFillUnits = Suite.getFillUnits
+local fillTypeIsIgnored = Suite.fillTypeIsIgnored
+local getFillUnitXMLKey = Suite.getFillUnitXMLKey
+local fillUnitIsTechnicalHidden = Suite.fillUnitIsTechnicalHidden
+local captureSavedFillLevels = Suite.captureSavedFillLevels
 
 local function roundCapacityUp(capacity)
     return math.max(math.ceil((tonumber(capacity) or 0) - 0.000001), 1)
@@ -42,22 +47,6 @@ local function formatCapacity(capacity, displayUnit)
     return string.format("%s %s", value, g_i18n:getText("CONFIG_AS_M3"))
 end
 
-local function getFillUnits(vehicle)
-    if vehicle == nil then
-        return nil
-    end
-
-    if vehicle.spec_fillUnit ~= nil and vehicle.spec_fillUnit.fillUnits ~= nil then
-        return vehicle.spec_fillUnit.fillUnits
-    end
-
-    if vehicle.fillUnits ~= nil then
-        return vehicle.fillUnits
-    end
-
-    return nil
-end
-
 local function vehicleIsExcluded(vehicle)
     if vehicle == nil then
         return true
@@ -74,38 +63,6 @@ local function vehicleIsExcluded(vehicle)
         or vehicle.spec_pallet ~= nil
         or vehicle.spec_bigBag ~= nil
         or vehicle.spec_multipleItemPurchase ~= nil
-end
-
-local function getFillTypeName(fillTypeIndex)
-    if fillTypeIndex == nil then
-        return nil
-    end
-
-    if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
-        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
-        if ok then
-            return name
-        end
-    end
-
-    if FillType ~= nil then
-        for name, index in pairs(FillType) do
-            if index == fillTypeIndex then
-                return name
-            end
-        end
-    end
-
-    return nil
-end
-
-local function fillTypeIsIgnored(fillTypeIndex)
-    local name = getFillTypeName(fillTypeIndex)
-    if name == nil then
-        return false
-    end
-
-    return IGNORED_FILLTYPE_NAMES[string.upper(tostring(name))] == true
 end
 
 local function fillUnitHasUsableFillTypes(fillUnit)
@@ -148,53 +105,6 @@ local function fillUnitHasUsableFillTypes(fillUnit)
     end
 
     return true
-end
-
-local function getBaseCapacity(fillUnit)
-    if fillUnit == nil then
-        return nil
-    end
-
-    local baseCapacity = tonumber(fillUnit.AFVBaseCapacity)
-        or tonumber(fillUnit.defaultCapacity)
-        or tonumber(fillUnit.capacity)
-    if baseCapacity ~= nil and baseCapacity > 0 and baseCapacity < math.huge then
-        fillUnit.AFVBaseCapacity = baseCapacity
-        return baseCapacity
-    end
-
-    return nil
-end
-
-local function getFillUnitXMLKey(vehicle, fillUnitIndex)
-    if vehicle == nil or vehicle.xmlFile == nil or tonumber(fillUnitIndex) == nil then
-        return nil
-    end
-
-    local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
-    configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
-    local configurationKey =
-        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
-    local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
-
-    if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
-        fillUnitKey = string.format("vehicle.fillUnit.fillUnits.fillUnit(%d)", fillUnitIndex - 1)
-    end
-
-    return vehicle.xmlFile:hasProperty(fillUnitKey) and fillUnitKey or nil
-end
-
-local function fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
-    if fillUnit == nil or fillUnit.showOnHud ~= false then
-        return false
-    end
-
-    local fillUnitKey = getFillUnitXMLKey(vehicle, fillUnitIndex)
-    return fillUnitKey ~= nil
-        and (
-            vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
-            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false
-        )
 end
 
 local function getFillUnitDisplayUnit(vehicle, fillUnitIndex, capacity)
@@ -263,8 +173,6 @@ local function clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity)
 end
 
 local function applyFillUnitCapacity(vehicle, fillUnitIndex, fillUnit, capacity)
-    fillUnit.defaultCapacity = capacity
-
     local applied = false
     if vehicle.setFillUnitCapacity ~= nil then
         applied = safeCall(vehicle.setFillUnitCapacity, vehicle, fillUnitIndex, capacity, true)
@@ -283,6 +191,7 @@ local function applyFillUnitCapacity(vehicle, fillUnitIndex, fillUnit, capacity)
     end
 
     clampFillLevel(vehicle, fillUnitIndex, fillUnit, capacity)
+    Suite.syncVehicleFillVolumes(vehicle, fillUnitIndex, capacity)
 end
 
 local function collectFillUnits(vehicle, force)
@@ -309,7 +218,7 @@ local function collectFillUnits(vehicle, force)
 
     local operatingIndices = Suite.getOperatingConsumerFillUnitIndices(vehicle)
     for index, fillUnit in pairs(fillUnits) do
-        local capacity = getBaseCapacity(fillUnit)
+        local capacity = Suite.getCapacityBase(fillUnit)
 
         if
             capacity ~= nil
@@ -335,35 +244,6 @@ local function collectFillUnits(vehicle, force)
     return #spec.units > 0
 end
 
-local function captureSavedFillLevels(savegame, spec)
-    spec.savedFillLevels = nil
-    if savegame == nil or savegame.resetVehicles or savegame.xmlFile == nil or savegame.key == nil then
-        return
-    end
-
-    local savedLevels = {}
-    local i = 0
-    while true do
-        local unitKey = string.format("%s.fillUnit.unit(%d)", savegame.key, i)
-        if not savegame.xmlFile:hasProperty(unitKey) then
-            break
-        end
-
-        local fillUnitIndex = savegame.xmlFile:getValue(unitKey .. "#index")
-        local fillLevel = savegame.xmlFile:getValue(unitKey .. "#fillLevel")
-        if fillUnitIndex ~= nil and fillLevel ~= nil then
-            savedLevels[math.floor(fillUnitIndex + 0.5)] = fillLevel
-        end
-
-        i = i + 1
-    end
-
-    spec.savedFillLevels = savedLevels
-end
-
--- The base game clamps a loaded fillLevel to the vehicle's default (unadjusted)
--- capacity before this mod's onPostLoad gets a chance to enlarge it, so a level
--- saved above the default capacity would otherwise be lost on every restart.
 local function restoreSavedFillLevels(vehicle, spec)
     local savedLevels = spec.savedFillLevels
     spec.savedFillLevels = nil
@@ -410,36 +290,31 @@ local function applyOffset(vehicle)
         return false
     end
 
-    local offset = Utils.getNoNil(tonumber(spec.currentOffset), getSelectedOffset(vehicle))
+    local offset = clampOffset(Utils.getNoNil(tonumber(spec.currentOffset), getSelectedOffset(vehicle)))
     local factor = getFactorFromOffset(offset)
-
-    spec.currentOffset = clampOffset(offset)
+    spec.currentOffset = offset
 
     for _, entry in ipairs(spec.units) do
         local fillUnit = entry.fillUnit
-        local computedCapacity = roundCapacityUp(entry.baseCapacity * factor)
-        local lastApplied = tonumber(fillUnit.AFVLastAppliedCapacity)
-        local currentCapacity = tonumber(fillUnit.capacity)
 
-        if
-            Suite.respectExternalCapacityOverrides == true
-            and lastApplied ~= nil
-            and currentCapacity ~= nil
-            and math.abs(currentCapacity - lastApplied) > 0.5
-        then
-            entry.adjustedCapacity = currentCapacity
-            fillUnit.AFVLastAppliedCapacity = currentCapacity
+        if Suite.capacityLooksExternallyOverridden(vehicle, fillUnit, "AFV") then
+            entry.adjustedCapacity = tonumber(fillUnit.capacity)
         else
-            entry.adjustedCapacity = computedCapacity
-            fillUnit.AFVLastAppliedCapacity = computedCapacity
-            applyFillUnitCapacity(vehicle, entry.index, fillUnit, computedCapacity)
+            local targetCapacity = offset == 0 and entry.baseCapacity or roundCapacityUp(entry.baseCapacity * factor)
+            local currentCapacity = tonumber(fillUnit.capacity)
+            entry.adjustedCapacity = targetCapacity
+            Suite.setCapacityOffset(vehicle, "AFV", offset)
+
+            if currentCapacity == nil or math.abs(currentCapacity - targetCapacity) > 0.001 then
+                applyFillUnitCapacity(vehicle, entry.index, fillUnit, targetCapacity)
+            end
         end
     end
 
     return true
 end
 
-function AFV.prepareFillVolumeOnLoad(vehicle, savegame)
+function AFV.prepareFillVolumeOnLoad(vehicle, _savegame)
     if vehicle == nil or vehicle.configurations == nil or vehicle.configurations.AFV == nil then
         return
     end
@@ -448,11 +323,26 @@ function AFV.prepareFillVolumeOnLoad(vehicle, savegame)
     applyOffset(vehicle)
 end
 
-function AFV.prerequisitesPresent(specializations)
+function AFV.prerequisitesPresent(_specializations)
     return true
 end
 
+function AFV.initSpecialization()
+    Suite.registerOffsetSavegamePaths("AFV")
+end
+
+function AFV:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "AFV", savegame)
+    Suite.resolveConfiguration(self, "AFV", self.isServer)
+end
+
+function AFV:saveToXMLFile(xmlFile, key, _usedModNames)
+    Suite.saveStoredOffsets(self, "AFV", xmlFile, key)
+end
+
 function AFV.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", AFV)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", AFV)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", AFV)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", AFV)
 end
@@ -465,7 +355,7 @@ function AFV:onPostLoad(savegame)
     restoreSavedFillLevels(self, spec)
 end
 
-function AFV:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function AFV:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
         return
     end

@@ -2,6 +2,7 @@ AdjustSuiteABW = AdjustSuiteABW or {}
 local ABW = AdjustSuiteABW
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ABW"] = ABW
 local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ABW")
 
 local function getComponent(vehicle, node)
@@ -119,7 +120,7 @@ local function applyConfiguredBallast(vehicle, factor)
     local appliedMass = 0
 
     for configurationName, configurationId in pairs(vehicle.configurations or {}) do
-        if configurationName ~= "ABW" then
+        if Suite.configurationNames[configurationName] ~= true then
             local configurationDesc = g_vehicleConfigurationManager:getConfigurationDescByName(configurationName)
             if configurationDesc ~= nil then
                 local configurationKey =
@@ -162,12 +163,27 @@ function ABW.prerequisitesPresent(specializations)
     return isAttachable or isMotorized or isDrivable
 end
 
+function ABW.initSpecialization()
+    Suite.registerOffsetSavegamePaths("ABW")
+end
+
+function ABW:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "ABW", savegame)
+    Suite.resolveConfiguration(self, "ABW", self.isServer)
+end
+
+function ABW:saveToXMLFile(xmlFile, key, _usedModNames)
+    Suite.saveStoredOffsets(self, "ABW", xmlFile, key)
+end
+
 function ABW.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", ABW)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", ABW)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ABW)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ABW)
 end
 
-function ABW:onLoad(savegame)
+function ABW:onLoad(_savegame)
     if not hasSelectedConfiguration(self) then
         return
     end
@@ -201,7 +217,7 @@ function ABW:onLoad(savegame)
     end
 end
 
-function ABW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ABW:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if
         not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)

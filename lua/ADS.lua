@@ -2,6 +2,7 @@ AdjustSuiteADS = AdjustSuiteADS or {}
 local ADS = AdjustSuiteADS
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ADS"] = ADS
 local getSpec, getSelectedOffset, hasSelectedConfiguration = Suite.createModuleAccessors("ADS")
 
 local MAX_OVERDRIVE_SPEED_STEP = 1.25
@@ -147,19 +148,6 @@ local function applyDrivingSpeed(vehicle)
     return true
 end
 
-local function getDisplaySpeed(speed)
-    local displaySpeed = speed * 3.6
-    local displayUnit = g_i18n:getText("CONFIG_AS_KMH")
-
-    if g_gameSettings.useMiles == true then
-        displaySpeed = displaySpeed / 1.609344
-        displayUnit = g_i18n:getText("CONFIG_AS_MPH")
-    end
-
-    displaySpeed = math.floor(displaySpeed * 10 + 0.5) / 10
-    return displaySpeed, displayUnit
-end
-
 function ADS.prerequisitesPresent(specializations)
     return Motorized ~= nil
         and Drivable ~= nil
@@ -169,40 +157,55 @@ function ADS.prerequisitesPresent(specializations)
         and SpecializationUtil.hasSpecialization(Wheels, specializations)
 end
 
+function ADS.initSpecialization()
+    Suite.registerOffsetSavegamePaths("ADS")
+end
+
+function ADS:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "ADS", savegame)
+    Suite.resolveConfiguration(self, "ADS", self.isServer)
+end
+
+function ADS:saveToXMLFile(xmlFile, key, _usedModNames)
+    Suite.saveStoredOffsets(self, "ADS", xmlFile, key)
+end
+
 function ADS.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", ADS)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", ADS)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ADS)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", ADS)
     SpecializationUtil.registerEventListener(vehicleType, "onUpdate", ADS)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ADS)
 end
 
-function ADS:onLoad(savegame)
+function ADS:onLoad(_savegame)
     if hasSelectedConfiguration(self) then
         getSpec(self).pendingApply = true
     end
 end
 
-function ADS:onPostLoad(savegame)
+function ADS:onPostLoad(_savegame)
     local spec = getSpec(self)
     if spec.pendingApply == true and applyDrivingSpeed(self) then
         spec.pendingApply = false
     end
 end
 
-function ADS:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ADS:onUpdate(_dt, _isActiveForInput, _isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if spec.pendingApply == true and applyDrivingSpeed(self) then
         spec.pendingApply = false
     end
 end
 
-function ADS:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function ADS:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or spec.currentForwardSpeed == nil then
         return
     end
 
-    local displaySpeed, displayUnit = getDisplaySpeed(spec.currentForwardSpeed)
+    local displaySpeed, displayUnit = Suite.getSpeedDisplay(spec.currentForwardSpeed * 3.6)
     Suite.addHelpText(
         string.format(
             "ADS: %s [%s] - %s %s",

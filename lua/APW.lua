@@ -2,32 +2,14 @@ AdjustSuiteAPW = AdjustSuiteAPW or {}
 local APW = AdjustSuiteAPW
 
 local Suite = AdjustSuite
+Suite.moduleClasses["APW"] = APW
+local getAreaNodes = Suite.getWorkAreaNodes
 
-local pickupWorkAreaFunctions = {
-    processBalerArea = true,
-    processForageWagonArea = true,
-}
+local pickupWorkAreaFunctions = Suite.pickupWorkAreaFunctions
 local getSpec, getSelectedOffset = Suite.createModuleAccessors("APW")
 
-local getNode = Suite.resolveNode
 local getNodePosition = Suite.getNodePosition
 local setNodePosition = Suite.setNodePosition
-
-local function getAreaNodes(workArea)
-    if workArea == nil then
-        return nil, nil, nil
-    end
-
-    local startNode = getNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
-    local widthNode = getNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
-    local heightNode =
-        getNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
-    if startNode ~= nil and widthNode ~= nil and startNode ~= 0 and widthNode ~= 0 then
-        return startNode, widthNode, heightNode
-    end
-
-    return nil, nil, nil
-end
 
 local function isPickupWorkArea(workArea)
     return workArea ~= nil and pickupWorkAreaFunctions[workArea.functionName] == true
@@ -153,14 +135,29 @@ function APW.prerequisitesPresent(specializations)
         and SpecializationUtil.hasSpecialization(WorkArea, specializations)
 end
 
+function APW.initSpecialization()
+    Suite.registerOffsetSavegamePaths("APW")
+end
+
+function APW:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "APW", savegame)
+    Suite.resolveConfiguration(self, "APW", self.isServer)
+end
+
+function APW:saveToXMLFile(xmlFile, key, _usedModNames)
+    Suite.saveStoredOffsets(self, "APW", xmlFile, key)
+end
+
 function APW.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", APW)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", APW)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", APW)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", APW)
     SpecializationUtil.registerEventListener(vehicleType, "onUpdate", APW)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", APW)
 end
 
-function APW:onLoad(savegame)
+function APW:onLoad(_savegame)
     if self.configurations == nil or self.configurations.APW == nil then
         return
     end
@@ -168,21 +165,21 @@ function APW:onLoad(savegame)
     getSpec(self).pendingApply = true
 end
 
-function APW:onPostLoad(savegame)
+function APW:onPostLoad(_savegame)
     local spec = getSpec(self)
     if spec.pendingApply == true and applyPickupWidth(self) then
         spec.pendingApply = false
     end
 end
 
-function APW:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function APW:onUpdate(_dt, _isActiveForInput, _isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if spec.pendingApply == true and applyPickupWidth(self) then
         spec.pendingApply = false
     end
 end
 
-function APW:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+function APW:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
     local spec = getSpec(self)
     if
         not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection)

@@ -13,6 +13,11 @@ end
 for _, moduleId in ipairs(Suite.placeableModuleIds) do
     table.insert(Suite.moduleIds, moduleId)
 end
+Suite.moduleClasses = Suite.moduleClasses or {}
+Suite.configurationNames = {}
+for _, moduleId in ipairs(Suite.moduleIds) do
+    Suite.configurationNames[moduleId] = true
+end
 Suite.moduleLabels = {
     AFVP = "AFV-P",
     ADRP = "ADR-P",
@@ -123,6 +128,9 @@ Suite.configurationOffsets = Suite.configurationOffsets
 Suite.selectionSettings = Suite.selectionSettings or {}
 Suite.showHelpMenu = Suite.showHelpMenu ~= false
 Suite.respectExternalCapacityOverrides = Suite.respectExternalCapacityOverrides == true
+Suite.siloNetworkEnabled = Suite.siloNetworkEnabled == true
+Suite.connectSiloNetwork = Suite.connectSiloNetwork ~= false
+Suite.connectProductionStorage = Suite.connectProductionStorage ~= false
 
 local function normalizePricePercent(value)
     value = tonumber(value)
@@ -138,6 +146,8 @@ local SETTINGS_ROOT = "adjustSuiteSettings"
 local SETTINGS_HELP_MENU_KEY = SETTINGS_ROOT .. ".settings.helpmenu"
 local SETTINGS_PRICE_KEY = SETTINGS_ROOT .. ".settings.price"
 local SETTINGS_EXTERNAL_CAPACITY_KEY = SETTINGS_ROOT .. ".settings.externalCapacity"
+local SETTINGS_SILO_NETWORK_KEY = SETTINGS_ROOT .. ".settings.siloNetwork"
+local SETTINGS_PRODUCTION_STORAGE_KEY = SETTINGS_ROOT .. ".settings.productionStorage"
 local SETTINGS_MODULES_KEY = SETTINGS_ROOT .. ".modules"
 local DEFAULT_MODULE_SETTINGS = {
     module = true,
@@ -145,10 +155,6 @@ local DEFAULT_MODULE_SETTINGS = {
     unreal = true,
     extreme = false,
 }
-
-function Suite.getModuleIdFromConfigurationName(configurationName)
-    return string.match(tostring(configurationName or ""), "^(%u+)$")
-end
 
 function Suite.getModuleLabel(moduleId)
     return Suite.moduleLabels[moduleId] or moduleId
@@ -434,7 +440,11 @@ function Suite.getIsLoweredForWork(vehicle)
     return true
 end
 
-function Suite.roundToStep(value)
+local ORIGINAL_OFFSETS_KEY = "adjustSuiteOriginalOffsets"
+local EFFECTIVE_OFFSETS_KEY = "adjustSuiteEffectiveOffsets"
+local CAPACITY_OFFSETS_KEY = "adjustSuiteCapacityOffsets"
+
+function Suite.clampOffset(value)
     value = tonumber(value) or 0
     local nearestOffset = 0
     local nearestDistance = math.huge
@@ -448,10 +458,6 @@ function Suite.roundToStep(value)
     end
 
     return nearestOffset
-end
-
-function Suite.clampOffset(offset)
-    return Suite.roundToStep(offset)
 end
 
 function Suite.getFactorFromOffset(offset)
@@ -474,16 +480,471 @@ function Suite.getOffsetFromConfigId(configId)
 end
 
 function Suite.getSelectedOffset(vehicle, configurationName)
-    local moduleId = Suite.getModuleIdFromConfigurationName(configurationName)
-    if moduleId ~= nil and not Suite.getIsModuleEnabled(moduleId) then
-        return 0
-    end
-
     if vehicle ~= nil and vehicle.configurations ~= nil and vehicle.configurations[configurationName] ~= nil then
         return Suite.getOffsetFromConfigId(vehicle.configurations[configurationName])
     end
 
     return 0
+end
+
+function Suite.getConfigIdFromOffset(offset)
+    offset = Suite.clampOffset(offset)
+
+    for index, value in ipairs(Suite.configurationOffsets) do
+        if value == offset then
+            return index
+        end
+    end
+
+    return Suite.getDefaultIndex()
+end
+
+function Suite.getEffectiveOffset(moduleId, offset)
+    offset = Suite.clampOffset(offset)
+    if offset == 0 or Suite.getIsOffsetAllowed(moduleId, offset) then
+        return offset
+    end
+
+    local isPositive = offset > 0
+    local magnitude = math.abs(offset)
+    local best = 0
+
+    for _, value in ipairs(Suite.configurationOffsets) do
+        if value ~= 0 and (value > 0) == isPositive then
+            local candidate = math.abs(value)
+            if candidate < magnitude and candidate > math.abs(best) and Suite.getIsOffsetAllowed(moduleId, value) then
+                best = value
+            end
+        end
+    end
+
+    return best
+end
+
+local function getOffsetStore(object, storeKey)
+    if object == nil then
+        return nil
+    end
+
+    if object[storeKey] == nil then
+        object[storeKey] = {}
+    end
+
+    return object[storeKey]
+end
+
+function Suite.getOriginalOffset(object, moduleId)
+    local store = getOffsetStore(object, ORIGINAL_OFFSETS_KEY)
+    return store ~= nil and tonumber(store[moduleId]) or nil
+end
+
+function Suite.getAppliedOffset(object, moduleId)
+    local store = getOffsetStore(object, EFFECTIVE_OFFSETS_KEY)
+    return store ~= nil and tonumber(store[moduleId]) or nil
+end
+
+function Suite.registerOffsetSavegamePaths(moduleId)
+    if Vehicle == nil or Vehicle.xmlSchemaSavegame == nil or XMLValueType == nil then
+        return
+    end
+
+    Vehicle.xmlSchemaSavegame:register(
+        XMLValueType.FLOAT,
+        string.format("vehicles.vehicle(?).FS25_AdjustSuite.AdjustSuite%s#originalOffset", moduleId),
+        "AdjustSuite selection as chosen by the player"
+    )
+    Vehicle.xmlSchemaSavegame:register(
+        XMLValueType.FLOAT,
+        string.format("vehicles.vehicle(?).FS25_AdjustSuite.AdjustSuite%s#effectiveOffset", moduleId),
+        "AdjustSuite selection after applying the host rules"
+    )
+    Vehicle.xmlSchemaSavegame:register(
+        XMLValueType.FLOAT,
+        string.format("vehicles.vehicle(?).FS25_AdjustSuite.AdjustSuite%s#capacityOffset", moduleId),
+        "AdjustSuite offset last used to compute a fill unit capacity"
+    )
+end
+
+function Suite.loadStoredOffsets(object, moduleId, savegame, nodeName)
+    if object == nil or savegame == nil or savegame.resetVehicles == true or savegame.xmlFile == nil then
+        return
+    end
+
+    local basePath = string.format("%s.FS25_AdjustSuite.%s", savegame.key, nodeName or ("AdjustSuite" .. moduleId))
+    local original = tonumber(savegame.xmlFile:getValue(basePath .. "#originalOffset"))
+    local applied = tonumber(savegame.xmlFile:getValue(basePath .. "#effectiveOffset"))
+
+    if original ~= nil then
+        getOffsetStore(object, ORIGINAL_OFFSETS_KEY)[moduleId] = Suite.clampOffset(original)
+    end
+
+    if applied ~= nil then
+        getOffsetStore(object, EFFECTIVE_OFFSETS_KEY)[moduleId] = Suite.clampOffset(applied)
+    end
+end
+
+function Suite.saveStoredOffsets(object, moduleId, xmlFile, key)
+    if object == nil or xmlFile == nil or key == nil then
+        return
+    end
+
+    local original = Suite.getOriginalOffset(object, moduleId)
+    if original == nil then
+        return
+    end
+
+    xmlFile:setValue(key .. "#originalOffset", original)
+
+    local applied = Suite.getAppliedOffset(object, moduleId)
+    if applied ~= nil then
+        xmlFile:setValue(key .. "#effectiveOffset", applied)
+    end
+end
+
+function Suite.registerPlaceableOffsetSavegamePaths()
+    if Placeable == nil or Placeable.xmlSchemaSavegame == nil or XMLValueType == nil then
+        return
+    end
+
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        Placeable.xmlSchemaSavegame:register(
+            XMLValueType.FLOAT,
+            string.format("placeables.placeable(?).FS25_AdjustSuite.%s#originalOffset", moduleId),
+            "AdjustSuite selection as chosen by the player"
+        )
+        Placeable.xmlSchemaSavegame:register(
+            XMLValueType.FLOAT,
+            string.format("placeables.placeable(?).FS25_AdjustSuite.%s#effectiveOffset", moduleId),
+            "AdjustSuite selection after applying the host rules"
+        )
+        Placeable.xmlSchemaSavegame:register(
+            XMLValueType.FLOAT,
+            string.format("placeables.placeable(?).FS25_AdjustSuite.%s#capacityOffset", moduleId),
+            "AdjustSuite offset last used to compute a fill unit capacity"
+        )
+    end
+end
+
+function Suite.savePlaceableStoredOffsets(placeable, xmlFile, key)
+    if placeable == nil or xmlFile == nil or key == nil then
+        return
+    end
+
+    for _, moduleId in ipairs(Suite.placeableModuleIds) do
+        local original = Suite.getOriginalOffset(placeable, moduleId)
+        if original ~= nil then
+            local basePath = string.format("%s.FS25_AdjustSuite.%s", key, moduleId)
+            xmlFile:setValue(basePath .. "#originalOffset", original)
+
+            local applied = Suite.getAppliedOffset(placeable, moduleId)
+            if applied ~= nil then
+                xmlFile:setValue(basePath .. "#effectiveOffset", applied)
+            end
+        end
+    end
+end
+
+function Suite.getCapacityOffset(object, moduleId)
+    local store = getOffsetStore(object, CAPACITY_OFFSETS_KEY)
+    return store ~= nil and tonumber(store[moduleId]) or nil
+end
+
+function Suite.setCapacityOffset(object, moduleId, offset)
+    getOffsetStore(object, CAPACITY_OFFSETS_KEY)[moduleId] = offset
+end
+
+Suite.pickupWorkAreaFunctions = Suite.pickupWorkAreaFunctions
+    or {
+        processBalerArea = true,
+        processForageWagonArea = true,
+    }
+
+function Suite.getWorkAreaNodes(workArea)
+    if workArea == nil then
+        return nil, nil, nil
+    end
+
+    local startNode =
+        Suite.resolveNode(workArea.start or workArea.startNode or workArea.startNodeId or workArea.startNodeIndex)
+    local widthNode =
+        Suite.resolveNode(workArea.width or workArea.widthNode or workArea.widthNodeId or workArea.widthNodeIndex)
+    local heightNode =
+        Suite.resolveNode(workArea.height or workArea.heightNode or workArea.heightNodeId or workArea.heightNodeIndex)
+
+    if startNode ~= nil and widthNode ~= nil and startNode ~= 0 and widthNode ~= 0 then
+        return startNode, widthNode, heightNode
+    end
+
+    return nil, nil, nil
+end
+
+function Suite.getFillUnits(vehicle)
+    if vehicle == nil then
+        return nil
+    end
+
+    if vehicle.spec_fillUnit ~= nil and vehicle.spec_fillUnit.fillUnits ~= nil then
+        return vehicle.spec_fillUnit.fillUnits
+    end
+
+    return vehicle.fillUnits
+end
+
+function Suite.getFillTypeName(fillTypeIndex)
+    if fillTypeIndex == nil then
+        return nil
+    end
+
+    if g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeNameByIndex ~= nil then
+        local ok, name = safeCall(g_fillTypeManager.getFillTypeNameByIndex, g_fillTypeManager, fillTypeIndex)
+        if ok then
+            return name
+        end
+    end
+
+    if FillType ~= nil then
+        for name, index in pairs(FillType) do
+            if index == fillTypeIndex then
+                return name
+            end
+        end
+    end
+
+    return nil
+end
+
+function Suite.fillTypeIsIgnored(fillTypeIndex)
+    local name = Suite.getFillTypeName(fillTypeIndex)
+    return name ~= nil and Suite.ignoredFillTypeNames[string.upper(tostring(name))] == true
+end
+
+function Suite.getFillUnitXMLKey(vehicle, fillUnitIndex)
+    if vehicle == nil or vehicle.xmlFile == nil or tonumber(fillUnitIndex) == nil then
+        return nil
+    end
+
+    local configurationId = vehicle.configurations ~= nil and tonumber(vehicle.configurations.fillUnit) or 1
+    configurationId = math.max(math.floor((configurationId or 1) + 0.5), 1)
+    local configurationKey =
+        string.format("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(%d)", configurationId - 1)
+    local fillUnitKey = string.format("%s.fillUnits.fillUnit(%d)", configurationKey, fillUnitIndex - 1)
+
+    if not vehicle.xmlFile:hasProperty(fillUnitKey) and configurationId == 1 then
+        fillUnitKey = string.format("vehicle.fillUnit.fillUnits.fillUnit(%d)", fillUnitIndex - 1)
+    end
+
+    return vehicle.xmlFile:hasProperty(fillUnitKey) and fillUnitKey or nil
+end
+
+function Suite.fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
+    if fillUnit == nil or fillUnit.showOnHud ~= false then
+        return false
+    end
+
+    local fillUnitKey = Suite.getFillUnitXMLKey(vehicle, fillUnitIndex)
+    return fillUnitKey ~= nil
+        and (
+            vehicle.xmlFile:getValue(fillUnitKey .. "#showInShop", true) == false
+            or vehicle.xmlFile:getValue(fillUnitKey .. "#showCapacityInShop", true) == false
+        )
+end
+
+function Suite.captureSavedFillLevels(savegame, spec)
+    spec.savedFillLevels = nil
+    if savegame == nil or savegame.resetVehicles or savegame.xmlFile == nil or savegame.key == nil then
+        return
+    end
+
+    local savedLevels = {}
+    local i = 0
+    while true do
+        local unitKey = string.format("%s.fillUnit.unit(%d)", savegame.key, i)
+        if not savegame.xmlFile:hasProperty(unitKey) then
+            break
+        end
+
+        local fillUnitIndex = savegame.xmlFile:getValue(unitKey .. "#index")
+        local fillLevel = savegame.xmlFile:getValue(unitKey .. "#fillLevel")
+        if fillUnitIndex ~= nil and fillLevel ~= nil then
+            savedLevels[math.floor(fillUnitIndex + 0.5)] = fillLevel
+        end
+
+        i = i + 1
+    end
+
+    spec.savedFillLevels = savedLevels
+end
+
+function Suite.getCapacityBase(fillUnit)
+    if fillUnit == nil then
+        return nil
+    end
+
+    local base = tonumber(fillUnit.adjustSuiteBaseCapacity)
+        or tonumber(fillUnit.defaultCapacity)
+        or tonumber(fillUnit.capacity)
+    if base ~= nil and base > 0 and base < math.huge then
+        fillUnit.adjustSuiteBaseCapacity = base
+        return base
+    end
+
+    return nil
+end
+
+function Suite.createFillPlane(baseNode, capacity, params)
+    if baseNode == nil or baseNode == 0 or createFillPlaneShape == nil or capacity == nil or capacity <= 0 then
+        return nil
+    end
+
+    local fillPlane = createFillPlaneShape(
+        baseNode,
+        "fillPlane",
+        capacity,
+        params.maxDelta,
+        params.maxSurfaceAngle,
+        params.maxPhysicalSurfaceAngle,
+        params.maxSurfaceDistanceError,
+        params.maxSubDivEdgeLength,
+        params.syncMaxSubDivEdgeLength,
+        params.allSidePlanes,
+        params.retessellateTop
+    )
+    if fillPlane == nil or fillPlane == 0 then
+        return nil
+    end
+
+    link(baseNode, fillPlane)
+
+    local material = g_materialManager ~= nil and g_materialManager:getBaseMaterialByName("fillPlane") or nil
+    if material ~= nil then
+        setMaterial(fillPlane, material, 0)
+        if g_fillTypeManager ~= nil and g_terrainNode ~= nil then
+            g_fillTypeManager:assignFillTypeTextureArraysFromTerrain(fillPlane, g_terrainNode, true, true, true)
+        end
+    end
+
+    return fillPlane
+end
+
+local function rebuildVehicleFillVolume(fillVolume, capacity)
+    local newVolume = Suite.createFillPlane(fillVolume.baseNode, capacity, fillVolume)
+    if newVolume == nil then
+        return false
+    end
+
+    delete(fillVolume.volume)
+    fillVolume.volume = newVolume
+    fillVolume.capacity = capacity
+    setVisibility(newVolume, false)
+
+    for _, deformer in ipairs(fillVolume.deformers or {}) do
+        deformer.polyline = findPolyline(newVolume, deformer.posX, deformer.posZ)
+    end
+
+    fillPlaneAdd(newVolume, 1, 0, 1, 0, 11, 0, 0, 0, 0, 11)
+    fillVolume.heightOffset = getFillPlaneHeightAtLocalPos(newVolume, 0, 0)
+    fillPlaneAdd(newVolume, -1, 0, 1, 0, 11, 0, 0, 0, 0, 11)
+
+    fillVolume.fillLevel = 0
+    fillVolume.lastFillType = FillType ~= nil and FillType.UNKNOWN or nil
+    return true
+end
+
+function Suite.syncVehicleFillVolumes(vehicle, fillUnitIndex, capacity)
+    local spec = vehicle ~= nil and vehicle.spec_fillVolume or nil
+    local mapping = spec ~= nil
+            and spec.fillUnitFillVolumeMapping ~= nil
+            and spec.fillUnitFillVolumeMapping[fillUnitIndex]
+        or nil
+    capacity = tonumber(capacity)
+    if mapping == nil or mapping.fillVolumes == nil or capacity == nil or capacity <= 0 then
+        return
+    end
+
+    local rebuilt = false
+    for _, fillVolume in ipairs(mapping.fillVolumes) do
+        local targetCapacity = capacity * (tonumber(fillVolume.fillUnitFactor) or 1)
+        if
+            fillVolume.volume ~= nil
+            and fillVolume.volume ~= 0
+            and math.abs((tonumber(fillVolume.capacity) or 0) - targetCapacity) > 0.5
+        then
+            rebuilt = rebuildVehicleFillVolume(fillVolume, targetCapacity) or rebuilt
+        end
+    end
+
+    if rebuilt and FillVolume ~= nil and FillVolume.onFillUnitFillLevelChanged ~= nil then
+        local toolType = ToolType ~= nil and ToolType.UNDEFINED or nil
+        FillVolume.onFillUnitFillLevelChanged(vehicle, fillUnitIndex, 0, nil, toolType, nil, 0)
+    end
+end
+
+function Suite.capacityLooksExternallyOverridden(object, fillUnit, sourceModuleId)
+    if Suite.respectExternalCapacityOverrides ~= true then
+        return false
+    end
+
+    local baseCapacity = Suite.getCapacityBase(fillUnit)
+    local currentCapacity = fillUnit ~= nil and tonumber(fillUnit.capacity) or nil
+    local trackedOffset = Suite.getCapacityOffset(object, sourceModuleId)
+    if baseCapacity == nil or currentCapacity == nil then
+        return false
+    end
+
+    local expectedCapacity = baseCapacity * Suite.getFactorFromOffset(trackedOffset or 0)
+    return math.abs(currentCapacity - expectedCapacity) > 0.5
+end
+
+function Suite.resolveConfiguration(object, moduleId, isServer)
+    if object == nil or object.configurations == nil or object.configurations[moduleId] == nil then
+        return nil
+    end
+
+    local selected = Suite.getOffsetFromConfigId(object.configurations[moduleId])
+    local originalStore = getOffsetStore(object, ORIGINAL_OFFSETS_KEY)
+    local appliedStore = getOffsetStore(object, EFFECTIVE_OFFSETS_KEY)
+    local original = tonumber(originalStore[moduleId])
+    local applied = tonumber(appliedStore[moduleId])
+
+    if original == nil or applied == nil or selected ~= applied then
+        original = selected
+    end
+
+    originalStore[moduleId] = original
+
+    local effective = Suite.getEffectiveOffset(moduleId, original)
+    appliedStore[moduleId] = effective
+
+    local selectedIsAllowed = Suite.getIsOffsetAllowed(moduleId, selected)
+    local isRestore = math.abs(effective) > math.abs(selected)
+    if isServer == false or effective == selected or (selectedIsAllowed and not isRestore) then
+        return effective
+    end
+
+    local configId = Suite.getConfigIdFromOffset(effective)
+    object.configurations[moduleId] = configId
+
+    if
+        ConfigurationUtil ~= nil
+        and ConfigurationUtil.addBoughtConfiguration ~= nil
+        and object.boughtConfigurations ~= nil
+    then
+        local manager = nil
+        for _, candidate in ipairs({ g_vehicleConfigurationManager, g_placeableConfigurationManager }) do
+            if manager == nil and candidate ~= nil and candidate.getConfigurationIndexByName ~= nil then
+                local ok, index = safeCall(candidate.getConfigurationIndexByName, candidate, moduleId)
+                if ok and index ~= nil then
+                    manager = candidate
+                end
+            end
+        end
+
+        if manager ~= nil then
+            safeCall(ConfigurationUtil.addBoughtConfiguration, manager, object, moduleId, configId)
+        end
+    end
+
+    return effective
 end
 
 local function getBasePerMonthValue(production, baseField, monthField, hourField, minuteField)
@@ -519,6 +980,29 @@ local function applyPerMonthValue(production, baseField, monthField, hourField, 
     production[minuteField] = value / 1440
 end
 
+Suite.SANDBOX_PATH = "placeable.sandbox"
+local SANDBOX_DISTRIBUTION_PATH = Suite.SANDBOX_PATH .. ".distributionsPerFillType.fillType"
+
+function Suite.isSandboxPlaceableXML(xmlFile)
+    return xmlFile ~= nil and xmlFile:hasProperty(Suite.SANDBOX_PATH)
+end
+
+function Suite.scaleSandboxDistributions(xmlFile, factor)
+    factor = tonumber(factor) or 1
+    local handle = xmlFile ~= nil and xmlFile.handle or nil
+    if handle == nil or factor == 1 or factor <= 0 then
+        return
+    end
+
+    xmlFile:iterate(SANDBOX_DISTRIBUTION_PATH, function(_, key)
+        local attribute = key .. "#litersPerMinute"
+        local value = tonumber(getXMLString(handle, attribute))
+        if value ~= nil and value > 0 then
+            setXMLString(handle, attribute, tostring(value * factor))
+        end
+    end)
+end
+
 local function applyCycleAmounts(entries, factor)
     for _, entry in ipairs(entries or {}) do
         local baseAmount = tonumber(entry.adjustSuiteACAPBaseAmount)
@@ -551,8 +1035,10 @@ function Suite.applyProductionAdjustments(productionPoint)
             rateFactor,
             0.000001
         )
-        applyCycleAmounts(production.inputs, amountFactor)
-        applyCycleAmounts(production.outputs, amountFactor)
+        if placeable == nil or placeable.adjustSuiteACAPScaledInXML ~= true then
+            applyCycleAmounts(production.inputs, amountFactor)
+            applyCycleAmounts(production.outputs, amountFactor)
+        end
         applyPerMonthValue(
             production,
             "adjustSuiteBaseCostsPerActiveMonth",
@@ -611,6 +1097,18 @@ function Suite.getStatusText(offset)
     return g_i18n:getText(string.format("CONFIG_AS_%s", Suite.getStatusTier(offset)))
 end
 
+function Suite.getSpeedDisplay(speedKmh)
+    local displaySpeed = tonumber(speedKmh) or 0
+    local displayUnit = g_i18n:getText("CONFIG_AS_KMH")
+
+    if g_gameSettings ~= nil and g_gameSettings.useMiles == true then
+        displaySpeed = displaySpeed / 1.609344
+        displayUnit = g_i18n:getText("CONFIG_AS_MPH")
+    end
+
+    return math.floor(displaySpeed * 10 + 0.5) / 10, displayUnit
+end
+
 function Suite.getOffsetText(offset)
     return offset == 0 and g_i18n:getText("CONFIG_AS_STANDARD") or string.format("%+d %%", offset)
 end
@@ -625,6 +1123,11 @@ function Suite.buildConfigurationName(moduleId, offset)
 end
 
 function Suite.getStoreItemPrice(storeItem, xmlFile)
+    local remembered = storeItem ~= nil and tonumber(storeItem.adjustSuiteBasePrice) or nil
+    if remembered ~= nil and remembered > 0 then
+        return remembered
+    end
+
     local price = 0
 
     if storeItem ~= nil then
@@ -638,7 +1141,12 @@ function Suite.getStoreItemPrice(storeItem, xmlFile)
         end
     end
 
-    return math.max(price, 0)
+    price = math.max(price, 0)
+    if storeItem ~= nil and price > 0 then
+        storeItem.adjustSuiteBasePrice = price
+    end
+
+    return price
 end
 
 function Suite.getPriceScale(offset)
@@ -649,7 +1157,8 @@ end
 function Suite.getConfigurationPrice(basePrice, offset)
     local price = math.max(tonumber(basePrice) or 0, 0)
     local priceFactor = Suite.getPricePercent() / 100
-    return math.floor((price * (Suite.getPriceScale(offset) - 1) * priceFactor) + 0.5)
+    local adjustment = price * (Suite.getPriceScale(offset) - 1) * priceFactor
+    return math.floor(math.max(adjustment, -price) + 0.5)
 end
 
 local function getSettingsFilename()
@@ -663,14 +1172,6 @@ local function getSettingsFilename()
     end
 
     return settingsDirectory .. "/FS25_AdjustSuite.xml"
-end
-
-local function getBoolOrDefault(value, defaultValue)
-    if value == nil then
-        return defaultValue
-    end
-
-    return value == true
 end
 
 local function getDefaultModuleSettings()
@@ -724,13 +1225,8 @@ local function applyModuleSettings(moduleId, values)
     end
 end
 
-local function applyPricePercent(value, refreshStore)
+local function applyPricePercent(value)
     Suite.pricePercent = normalizePricePercent(value)
-    if refreshStore and Suite.refreshStoreConfigurations ~= nil then
-        for _, moduleId in ipairs(Suite.moduleIds) do
-            Suite.refreshStoreConfigurations(moduleId)
-        end
-    end
 end
 
 local function boolToString(value)
@@ -742,7 +1238,10 @@ local function writeSettingsTemplate(
     settingsByModule,
     showHelpMenu,
     pricePercent,
-    respectExternalCapacityOverrides
+    respectExternalCapacityOverrides,
+    siloNetworkEnabled,
+    connectSiloNetwork,
+    connectProductionStorage
 )
     if io == nil or io.open == nil then
         return false
@@ -764,6 +1263,19 @@ local function writeSettingsTemplate(
         string.format(
             '        <externalCapacity respect="%s"/>\n',
             boolToString(respectExternalCapacityOverrides == true)
+        )
+    )
+    file:write(
+        string.format(
+            '        <siloNetwork module="%s" connectAll="%s"/>\n',
+            boolToString(siloNetworkEnabled == true),
+            boolToString(connectSiloNetwork ~= false)
+        )
+    )
+    file:write(
+        string.format(
+            '        <productionStorage connectSilos="%s"/>\n',
+            boolToString(connectProductionStorage ~= false)
         )
     )
     file:write("    </settings>\n")
@@ -794,11 +1306,23 @@ local function writeSettingsXml(
     settingsByModule,
     showHelpMenu,
     pricePercent,
-    respectExternalCapacityOverrides
+    respectExternalCapacityOverrides,
+    siloNetworkEnabled,
+    connectSiloNetwork,
+    connectProductionStorage
 )
     pricePercent = normalizePricePercent(pricePercent)
     if
-        writeSettingsTemplate(filename, settingsByModule, showHelpMenu, pricePercent, respectExternalCapacityOverrides)
+        writeSettingsTemplate(
+            filename,
+            settingsByModule,
+            showHelpMenu,
+            pricePercent,
+            respectExternalCapacityOverrides,
+            siloNetworkEnabled,
+            connectSiloNetwork,
+            connectProductionStorage
+        )
     then
         return
     end
@@ -812,6 +1336,9 @@ local function writeSettingsXml(
     setXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show", showHelpMenu ~= false)
     setXMLFloat(xmlFile, SETTINGS_PRICE_KEY .. "#percent", pricePercent)
     setXMLBool(xmlFile, SETTINGS_EXTERNAL_CAPACITY_KEY .. "#respect", respectExternalCapacityOverrides == true)
+    setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#module", siloNetworkEnabled == true)
+    setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#connectAll", connectSiloNetwork ~= false)
+    setXMLBool(xmlFile, SETTINGS_PRODUCTION_STORAGE_KEY .. "#connectSilos", connectProductionStorage ~= false)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = settingsByModule[moduleId] or getDefaultModuleSettings()
@@ -844,6 +1371,9 @@ function Suite.loadSelectionSettings()
     local showHelpMenu = true
     local pricePercent = 100
     local respectExternalCapacityOverrides = false
+    local siloNetworkEnabled = false
+    local connectSiloNetwork = true
+    local connectProductionStorage = true
     if settingsFileExists then
         local configuredShowHelpMenu = getXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show")
         if configuredShowHelpMenu == nil then
@@ -868,10 +1398,38 @@ function Suite.loadSelectionSettings()
         else
             respectExternalCapacityOverrides = configuredRespectExternalCapacity == true
         end
+
+        local configuredSiloNetworkEnabled = getXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#module")
+        if configuredSiloNetworkEnabled == nil then
+            setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#module", siloNetworkEnabled)
+            settingsFileChanged = true
+        else
+            siloNetworkEnabled = configuredSiloNetworkEnabled == true
+        end
+
+        local configuredConnectSiloNetwork = getXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#connectAll")
+        if configuredConnectSiloNetwork == nil then
+            setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#connectAll", connectSiloNetwork)
+            settingsFileChanged = true
+        else
+            connectSiloNetwork = configuredConnectSiloNetwork == true
+        end
+
+        local configuredConnectProductionStorage =
+            getXMLBool(xmlFile, SETTINGS_PRODUCTION_STORAGE_KEY .. "#connectSilos")
+        if configuredConnectProductionStorage == nil then
+            setXMLBool(xmlFile, SETTINGS_PRODUCTION_STORAGE_KEY .. "#connectSilos", connectProductionStorage)
+            settingsFileChanged = true
+        else
+            connectProductionStorage = configuredConnectProductionStorage == true
+        end
     end
     Suite.showHelpMenu = showHelpMenu
     Suite.respectExternalCapacityOverrides = respectExternalCapacityOverrides
-    applyPricePercent(pricePercent, false)
+    Suite.siloNetworkEnabled = siloNetworkEnabled
+    Suite.connectSiloNetwork = connectSiloNetwork
+    Suite.connectProductionStorage = connectProductionStorage
+    applyPricePercent(pricePercent)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = getDefaultModuleSettings()
@@ -894,14 +1452,33 @@ function Suite.loadSelectionSettings()
     end
 
     if xmlFile ~= nil and xmlFile ~= 0 then
-        if settingsFileChanged then
-            saveXMLFile(xmlFile)
-        end
         delete(xmlFile)
     end
 
+    if settingsFileChanged then
+        writeSettingsXml(
+            filename,
+            settingsByModule,
+            showHelpMenu,
+            pricePercent,
+            respectExternalCapacityOverrides,
+            siloNetworkEnabled,
+            connectSiloNetwork,
+            connectProductionStorage
+        )
+    end
+
     if not settingsFileExists then
-        writeSettingsXml(filename, settingsByModule, showHelpMenu, pricePercent, respectExternalCapacityOverrides)
+        writeSettingsXml(
+            filename,
+            settingsByModule,
+            showHelpMenu,
+            pricePercent,
+            respectExternalCapacityOverrides,
+            siloNetworkEnabled,
+            connectSiloNetwork,
+            connectProductionStorage
+        )
     end
 end
 
@@ -913,12 +1490,23 @@ function AdjustSuiteSettingsEvent.emptyNew()
     return Event.new(AdjustSuiteSettingsEvent_mt)
 end
 
-function AdjustSuiteSettingsEvent.new(settingsByModule, showHelpMenu, pricePercent, respectExternalCapacityOverrides)
+function AdjustSuiteSettingsEvent.new(
+    settingsByModule,
+    showHelpMenu,
+    pricePercent,
+    respectExternalCapacityOverrides,
+    siloNetworkEnabled,
+    connectSiloNetwork,
+    connectProductionStorage
+)
     local self = AdjustSuiteSettingsEvent.emptyNew()
     self.settingsByModule = {}
     self.showHelpMenu = showHelpMenu ~= false
     self.pricePercent = normalizePricePercent(pricePercent)
     self.respectExternalCapacityOverrides = respectExternalCapacityOverrides == true
+    self.siloNetworkEnabled = siloNetworkEnabled == true
+    self.connectSiloNetwork = connectSiloNetwork ~= false
+    self.connectProductionStorage = connectProductionStorage ~= false
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         self.settingsByModule[moduleId] = copyModuleSettings(settingsByModule[moduleId])
@@ -932,6 +1520,9 @@ function AdjustSuiteSettingsEvent:readStream(streamId, connection)
     self.showHelpMenu = streamReadBool(streamId)
     self.pricePercent = normalizePricePercent(streamReadFloat32(streamId))
     self.respectExternalCapacityOverrides = streamReadBool(streamId)
+    self.siloNetworkEnabled = streamReadBool(streamId)
+    self.connectSiloNetwork = streamReadBool(streamId)
+    self.connectProductionStorage = streamReadBool(streamId)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = {}
@@ -944,10 +1535,13 @@ function AdjustSuiteSettingsEvent:readStream(streamId, connection)
     self:run(connection)
 end
 
-function AdjustSuiteSettingsEvent:writeStream(streamId, connection)
+function AdjustSuiteSettingsEvent:writeStream(streamId, _connection)
     streamWriteBool(streamId, self.showHelpMenu ~= false)
     streamWriteFloat32(streamId, self.pricePercent)
     streamWriteBool(streamId, self.respectExternalCapacityOverrides == true)
+    streamWriteBool(streamId, self.siloNetworkEnabled == true)
+    streamWriteBool(streamId, self.connectSiloNetwork ~= false)
+    streamWriteBool(streamId, self.connectProductionStorage ~= false)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = self.settingsByModule[moduleId]
@@ -961,26 +1555,40 @@ function AdjustSuiteSettingsEvent:run(connection)
     if connection ~= nil and connection:getIsServer() then
         Suite.showHelpMenu = self.showHelpMenu ~= false
         Suite.respectExternalCapacityOverrides = self.respectExternalCapacityOverrides == true
-        applyPricePercent(self.pricePercent, false)
+        Suite.siloNetworkEnabled = self.siloNetworkEnabled == true
+        Suite.connectSiloNetwork = self.connectSiloNetwork ~= false
+        Suite.connectProductionStorage = self.connectProductionStorage ~= false
+        applyPricePercent(self.pricePercent)
         for _, moduleId in ipairs(Suite.moduleIds) do
             applyModuleSettings(moduleId, self.settingsByModule[moduleId])
         end
     end
 end
 
-local function sendSelectionSettings(baseMission, connection, x, y, z, viewDistanceCoeff)
+local function sendSelectionSettings(_baseMission, connection, _x, _y, _z, _viewDistanceCoeff)
     if g_server ~= nil and connection ~= nil then
         connection:sendEvent(
             AdjustSuiteSettingsEvent.new(
                 Suite.selectionSettings,
                 Suite.showHelpMenu,
                 Suite.pricePercent,
-                Suite.respectExternalCapacityOverrides
+                Suite.respectExternalCapacityOverrides,
+                Suite.siloNetworkEnabled,
+                Suite.connectSiloNetwork,
+                Suite.connectProductionStorage
             )
         )
     end
 end
 
-FSBaseMission.onConnectionFinishedLoading =
-    Utils.prependedFunction(FSBaseMission.onConnectionFinishedLoading, sendSelectionSettings)
+if
+    Suite.connectionHookInstalled ~= true
+    and FSBaseMission ~= nil
+    and FSBaseMission.onConnectionFinishedLoading ~= nil
+then
+    Suite.connectionHookInstalled = true
+    FSBaseMission.onConnectionFinishedLoading =
+        Utils.prependedFunction(FSBaseMission.onConnectionFinishedLoading, sendSelectionSettings)
+end
+
 Suite.loadSelectionSettings()

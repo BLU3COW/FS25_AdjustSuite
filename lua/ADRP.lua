@@ -2,6 +2,7 @@ AdjustSuiteADRP = AdjustSuiteADRP or {}
 local ADRP = AdjustSuiteADRP
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ADRP"] = ADRP
 local LOAD_TRIGGER_PATHS = {
     "placeable.silo.loadingStation.loadTrigger",
     "placeable.buyingStation.loadTrigger",
@@ -46,7 +47,7 @@ local function visitSelectedLoadTriggers(placeable, callback)
     visitLoadTriggerPath(placeable.xmlFile, productionKey .. ".loadingStation.loadTrigger", callback)
 end
 
-function ADRP.getStoreContext(xmlFile, configurations, defaultConfigurationIds, customEnvironment, storeItem)
+function ADRP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds, _customEnvironment, storeItem)
     local hasTrigger = false
     visitStoreLoadTriggers(xmlFile, function()
         hasTrigger = true
@@ -66,6 +67,6 @@ function ADRP.applyToPlaceableXML(placeable, offset)
 
     visitSelectedLoadTriggers(placeable, function(key)
         local value = tonumber(placeable.xmlFile:getValue(key .. "#fillLitersPerSecond", 1000)) or 1000
-        placeable.xmlFile:setValue(key .. "#fillLitersPerSecond", math.max(math.floor(value * factor + 0.5), 1))
+        placeable.xmlFile:setValue(key .. "#fillLitersPerSecond", math.max(math.ceil(value * factor - 0.000001), 1))
     end)
 end

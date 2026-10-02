@@ -2,6 +2,7 @@ AdjustSuiteADR = AdjustSuiteADR or {}
 local ADR = AdjustSuiteADR
 
 local Suite = AdjustSuite
+Suite.moduleClasses["ADR"] = ADR
 local getSpec, _, hasSelectedConfiguration, getFactor = Suite.createModuleAccessors("ADR")
 local WIDTH_CONFIGURATION_NAMES = { "AWW", "APW" }
 
@@ -51,7 +52,7 @@ local function getBufferFlowFactor(vehicle)
 end
 
 local function applyBufferEmptySpeeds(vehicle)
-    if not getIsBufferCombine(vehicle) then
+    if not Suite.getIsModuleEnabled("ADR") or not getIsBufferCombine(vehicle) then
         return false
     end
 
@@ -148,7 +149,22 @@ function ADR.registerOverwrittenFunctions(vehicleType)
     )
 end
 
+function ADR.initSpecialization()
+    Suite.registerOffsetSavegamePaths("ADR")
+end
+
+function ADR:onPreLoad(savegame)
+    Suite.loadStoredOffsets(self, "ADR", savegame)
+    Suite.resolveConfiguration(self, "ADR", self.isServer)
+end
+
+function ADR:saveToXMLFile(xmlFile, key, _usedModNames)
+    Suite.saveStoredOffsets(self, "ADR", xmlFile, key)
+end
+
 function ADR.registerEventListeners(vehicleType)
+    SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", ADR)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", ADR)
     SpecializationUtil.registerEventListener(vehicleType, "onLoad", ADR)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", ADR)
     SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", ADR)
@@ -156,21 +172,21 @@ function ADR.registerEventListeners(vehicleType)
     SpecializationUtil.registerEventListener(vehicleType, "onDraw", ADR)
 end
 
-function ADR:onLoad(savegame)
+function ADR:onLoad(_savegame)
     if hasSelectedConfiguration(self) then
         getFactor(self)
     end
 end
 
-function ADR:onPostLoad(savegame)
+function ADR:onPostLoad(_savegame)
     applyBufferEmptySpeeds(self)
 end
 
-function ADR:onPostAttachImplement(attachable, inputJointDescIndex, jointDescIndex)
+function ADR:onPostAttachImplement(_attachable, _inputJointDescIndex, _jointDescIndex)
     applyBufferEmptySpeeds(self)
 end
 
-function ADR:onPostDetachImplement(implement)
+function ADR:onPostDetachImplement(_implement)
     applyBufferEmptySpeeds(self)
 end
 
@@ -187,8 +203,19 @@ function ADR:getDischargeNodeEmptyFactor(superFunc, dischargeNode)
     return emptyFactor * getFactor(self)
 end
 
-function ADR:onDraw(isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
-    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) or not hasSelectedConfiguration(self) then
+function ADR:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
+    if not Suite.canShowHelpText(self, isActiveForInputIgnoreSelection) then
+        return
+    end
+
+    if getIsBufferCombine(self) then
+        if Suite.getIsModuleEnabled("ADR") then
+            Suite.addHelpText(string.format("ADR: %s", g_i18n:getText("CONFIG_ADR_COUPLED")))
+        end
+        return
+    end
+
+    if not hasSelectedConfiguration(self) then
         return
     end
 
