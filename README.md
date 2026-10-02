@@ -331,6 +331,9 @@ The <strong>“modSettings.xml”</strong> file is created automatically when th
 
 ### v1.0.0.4 (released)
 
+### <strong>Farming Simulator 25 Patch 1.24</strong>
+Tested with Patch 1.24. No adjustment was needed, AdjustSuite runs unchanged.
+
 ### <strong>SILONETWORK</strong> - Connect Silos Into One Network
 New setting with three states, switched off by default so nothing changes until an administrator asks for it. With <code>&lt;siloNetwork module="true" connectAll="true"/&gt;</code> silos within reach of each other form one shared network regardless of the order in which they were placed, and a demolished silo stops counting towards its neighbours at once. With <code>connectAll="false"</code> every silo keeps its own storage to itself.
 
@@ -360,6 +363,9 @@ ACA-P now takes effect on the modular biogas plant, which used to restore its ow
 <div align="center">
 
 ### v1.0.0.4 (Veröffentlicht)
+
+### <strong>Farming Simulator 25 Patch 1.24</strong>
+Getestet mit Patch 1.24. Eine Anpassung war nicht nötig, AdjustSuite läuft unverändert.
 
 ### <strong>SILONETWORK</strong> – Silos zu einem Netz verbinden
 Neue Einstellung mit drei Zuständen, standardmäßig abgeschaltet, damit sich ohne Zutun eines Administrators nichts ändert. Mit <code>&lt;siloNetwork module="true" connectAll="true"/&gt;</code> bilden Silos in Reichweite zueinander ein gemeinsames Netz, unabhängig von der Reihenfolge, in der sie gesetzt wurden, und ein abgerissenes Silo zählt bei seinen Nachbarn sofort nicht mehr mit. Mit <code>connectAll="false"</code> behält jedes Silo seinen Speicher für sich.
