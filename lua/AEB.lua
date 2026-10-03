@@ -34,20 +34,22 @@ function AEB.registerEventListeners(vehicleType)
 end
 
 function AEB:loadMotor(superFunc, xmlFile, motorId)
-    local motor = superFunc(self, xmlFile, motorId)
-    if motor == nil or motor.lowBrakeForceScale == nil then
-        return motor
+    local result = superFunc(self, xmlFile, motorId)
+    local motorizedSpec = self.spec_motorized
+    local motor = motorizedSpec ~= nil and motorizedSpec.motor or nil
+    if motor == nil or motor.setLowBrakeForce == nil or tonumber(motor.lowBrakeForceScale) == nil then
+        return result
     end
 
     local factor = getFactor(self)
     if factor == 1 then
-        return motor
+        return result
     end
 
     local scale = math.min(motor.lowBrakeForceScale * factor, MAX_LOW_BRAKE_FORCE_SCALE)
     motor:setLowBrakeForce(scale, motor.lowBrakeForceSpeedLimit)
     getSpec(self).adjustedScale = scale
-    return motor
+    return result
 end
 
 function AEB:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
