@@ -19,11 +19,13 @@
         <text name="CONFIG_APC_PAYLOAD_MASS" text="Payload mass" />
         <text name="CONFIG_ABW_TITLE" text="Ballast Weight" />
         <text name="CONFIG_AMP_TITLE" text="Motor Power" />
+        <text name="CONFIG_AFE_TITLE" text="Fuel Efficiency" />
         <text name="CONFIG_AWS_TITLE" text="Working Speed" />
         <text name="CONFIG_AWW_TITLE" text="Working Width" />
         <text name="CONFIG_APW_TITLE" text="Pickup Width" />
         <text name="CONFIG_ADS_TITLE" text="Driving Speed" />
         <text name="CONFIG_ABP_TITLE" text="Brake Power" />
+        <text name="CONFIG_AEB_TITLE" text="Engine Brake" />
         <text name="CONFIG_ADR_TITLE" text="Discharge Rate" />
         <text name="CONFIG_ADR_COUPLED" text="Throughput follows working width and working speed" />
         <text name="CONFIG_AFVP_TITLE" text="Fill Volume" />

@@ -4,7 +4,7 @@ AdjustSuite = AdjustSuite or {}
 local Suite = AdjustSuite
 local MODULE_SETTING_KEYS = { "module", "real", "unreal", "extreme" }
 
-Suite.vehicleModuleIds = { "AFV", "AFC", "APC", "ABW", "AMP", "AWS", "AWW", "APW", "ADS", "ABP", "ADR" }
+Suite.vehicleModuleIds = { "AFV", "AFC", "APC", "ABW", "AMP", "AFE", "AWS", "AWW", "APW", "ADS", "ABP", "AEB", "ADR" }
 Suite.placeableModuleIds = { "AFVP", "ADRP", "ACRP", "ACAP", "AIPP" }
 Suite.moduleIds = {}
 for _, moduleId in ipairs(Suite.vehicleModuleIds) do
