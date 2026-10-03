@@ -851,6 +851,13 @@ local definitions = {
             return getBasePriceContext(storeItem, xmlFile)
         end,
     },
+    AFE = {
+        typeFilter = function(_vehicleTypeName, vehicleType)
+            return not hasSpecialization(Locomotive, vehicleType.specializations)
+                and hasSpecialization(Motorized, vehicleType.specializations)
+        end,
+        getStoreContext = getMotorizedStoreContext,
+    },
     AWS = {
         usableFlagField = "AWSHasUsableConfiguration",
         baseValueField = "AWSStandardSpeedLimit",
@@ -943,6 +950,13 @@ local definitions = {
     ABP = {
         typeFilter = isBrakeVehicleType,
         getStoreContext = getBrakeStoreContext,
+    },
+    AEB = {
+        typeFilter = function(_vehicleTypeName, vehicleType)
+            return not hasSpecialization(Locomotive, vehicleType.specializations)
+                and hasSpecialization(Motorized, vehicleType.specializations)
+        end,
+        getStoreContext = getMotorizedStoreContext,
     },
     ADR = {
         usableFlagField = "ADRHasUsableConfiguration",
