@@ -2028,6 +2028,18 @@ local function scaleSpecNumber(specName)
     end
 end
 
+local function scaleNumberAnimals(storeItem, factor)
+    local data = storeItem.specs ~= nil and storeItem.specs.numberAnimals or nil
+    local value = type(data) == "table" and tonumber(data.maxNumAnimals) or nil
+    if value == nil then
+        return nil
+    end
+
+    local set, restore = createSpecRestore()
+    set(data, "maxNumAnimals", math.max(math.floor(value * factor + 0.5), 1))
+    return restore
+end
+
 local function scaleFillUnitCapacities(storeItem, factor)
     local capacityConfigurations = storeItem.specs ~= nil and storeItem.specs.capacity or nil
     if capacityConfigurations == nil then
@@ -2264,6 +2276,7 @@ local SPEC_SCALERS = {
     { name = "siloExtensionVolume", moduleId = "AFVP", apply = scaleSpecNumber("siloExtensionVolume") },
     { name = "manureHeapCapacity", moduleId = "AFVP", apply = scaleSpecNumber("manureHeapCapacity") },
     { name = "incomePerHour", moduleId = "AIPP", apply = scaleIncomePerHour },
+    { name = "numberAnimals", moduleId = "AACP", apply = scaleNumberAnimals },
 }
 
 Suite.constructionSelections = Suite.constructionSelections or {}

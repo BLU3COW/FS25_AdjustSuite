@@ -192,6 +192,7 @@ Changelog 1.0.0.3 (Patch 1.23) :
         <sourceFile filename="lua/ACRP.lua" />
         <sourceFile filename="lua/ACAP.lua" />
         <sourceFile filename="lua/AIPP.lua" />
+        <sourceFile filename="lua/AACP.lua" />
         <sourceFile filename="lua/AdjustSuite_PrecisionFarming.lua" />
         <sourceFile filename="lua/AdjustSuite_Courseplay.lua" />
         <sourceFile filename="lua/AdjustSuite_AutoDrive.lua" />
