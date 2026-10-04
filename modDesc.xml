@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="113">
     <author>BLU3COW</author>
-    <version>1.0.0.4</version>
+    <version>1.0.0.5</version>
 
     <title>
         <en>AdjustSuite</en>
@@ -23,11 +23,13 @@ AFC - Fuel Capacity
 APC - Payload Compensation
 ABW - Ballast Weight
 AMP - Motor Power
+AFE - Fuel Efficiency
 AWS - Working Speed
 AWW - Working Width
 APW - Pickup Width
 ADS - Driving Speed
 ABP - Brake Power
+AEB - Engine Brake
 ADR - Discharge Rate
 
 Placeable and production modules:
@@ -36,12 +38,18 @@ ADR-P - Discharge Rate
 ACR-P - Cycle Rate
 ACA-P - Cycle Amount
 AIP-P - Income Payments
+AAC-P - Animal Capacity
 
 Good to know: ACR-P and ACA-P act on the same production one after the other, so their effects multiply rather than add. Both set to +200 % means three times the cycles at three times the amount, which is nine times the throughput. The surcharge of the two modules is added up, so a combination of both is comparatively cheap.
 
 Ballast added by ABW raises the base mass of the vehicle, and the game derives braking force from that mass. A heavily ballasted vehicle therefore brakes relatively worse than without the ballast. ABP compensates for this if needed.
 
 Source code, help and issue reports: https://github.com/BLU3COW/FS25_AdjustSuite
+
+Changelog 1.0.0.5:
+- New module AFE (Fuel Efficiency): scales the consumption of a vehicle's engine per shop configuration. A positive stage lowers consumption, so +100 % means half the fuel for the same work, in line with the other modules where a plus is always an improvement. Air consumers are left untouched.
+- New module AEB (Engine Brake): scales the braking force of the engine when the throttle is released, per shop configuration. The effect is capped at the full engine brake, so a higher stage cannot push it beyond what the motor can apply.
+- New module AAC-P (Animal Capacity): scales the number of animals a pen, barn or stable holds, selectable in construction mode. The specification sheet shows the resulting animal count. The horse stable limit of 16 is raised along with it, and animals already inside are never removed when a lower stage is chosen: only new purchases and births are blocked. AAC-P does not scale food or storage capacity, that remains the task of AFV-P, and buildings that are already placed on a map have no purchase selection and stay at their base value.
 
 Changelog 1.0.0.4:
 - Tested with Farming Simulator 25 Patch 1.24.
@@ -80,11 +88,13 @@ AFC - Kraftstoffkapazität
 APC - Nutzlastausgleich
 ABW - Ballastgewicht
 AMP - Motorleistung
+AFE - Kraftstoffeffizienz
 AWS - Arbeitsgeschwindigkeit
 AWW - Arbeitsbreite
 APW - Pickupbreite
 ADS - Fahrgeschwindigkeit
 ABP - Bremskraft
+AEB - Motorbremse
 ADR - Entladerate
 
 Platzierbare Objekte und Produktionen:
@@ -93,12 +103,18 @@ ADR-P - Entladerate
 ACR-P - Zyklusrate
 ACA-P - Zyklusmenge
 AIP-P - Einkommenszahlungen
+AAC-P - Tierkapazität
 
 Gut zu wissen: ACR-P und ACA-P greifen nacheinander an derselben Produktion an, ihre Wirkungen multiplizieren sich also, statt sich zu addieren. Beide auf +200 % bedeuten dreifache Takte bei dreifacher Menge, also den neunfachen Durchsatz. Der Aufpreis beider Module wird dagegen nur addiert, eine Kombination aus beiden ist damit vergleichsweise günstig.
 
 Ballast aus ABW erhöht die Grundmasse des Fahrzeugs, und das Spiel leitet die Bremskraft aus dieser Masse ab. Ein stark beballastetes Fahrzeug bremst deshalb verhältnismäßig schlechter als ohne den Ballast. ABP gleicht das bei Bedarf wieder aus.
 
 Quellcode, Hilfe und Fehlermeldungen: https://github.com/BLU3COW/FS25_AdjustSuite
+
+Changelog 1.0.0.5:
+- Neues Modul AFE (Kraftstoffeffizienz): skaliert den Verbrauch des Motors je Shop-Konfiguration. Eine positive Stufe senkt den Verbrauch, +100 % bedeuten also halb so viel Kraftstoff für dieselbe Arbeit, passend zu den anderen Modulen, bei denen ein Plus immer eine Verbesserung ist. Luftverbraucher bleiben unberührt.
+- Neues Modul AEB (Motorbremse): skaliert die Bremswirkung des Motors beim Gaswegnehmen je Shop-Konfiguration. Die Wirkung ist auf die volle Motorbremse begrenzt, eine höhere Stufe kann sie also nicht über das hinaustreiben, was der Motor aufbringen kann.
+- Neues Modul AAC-P (Tierkapazität): skaliert die Zahl der Tiere, die ein Stall, eine Scheune oder ein Pferdestall aufnimmt, wählbar im Baumodus. Das Spezifikationsblatt zeigt die resultierende Tierzahl. Die Pferdestall-Grenze von 16 wird mit angehoben, und bereits vorhandene Tiere werden bei einer niedrigeren Stufe nie entfernt: Es sind nur neue Käufe und Nachwuchs gesperrt. AAC-P skaliert weder Futter- noch Lagerkapazität, das bleibt Aufgabe von AFV-P, und bereits auf der Karte platzierte Gebäude haben keine Kaufauswahl und bleiben auf ihrem Grundwert.
 
 Changelog 1.0.0.4:
 - Getestet mit Farming Simulator 25 Patch 1.24.
@@ -137,11 +153,13 @@ AFC - Capacité de carburant
 APC - Compensation de charge utile
 ABW - Poids de lestage
 AMP - Puissance du moteur
+AFE - Efficacité énergétique
 AWS - Vitesse de travail
 AWW - Largeur de travail
 APW - Largeur du ramasseur
 ADS - Vitesse de conduite
 ABP - Force de freinage
+AEB - Frein moteur
 ADR - Débit de déchargement
 
 Modules objets plaçables et productions:
@@ -150,12 +168,18 @@ ADR-P - Débit de déchargement
 ACR-P - Vitesse de cycle
 ACA-P - Quantité par cycle
 AIP-P - Revenus
+AAC-P - Capacité animale
 
 Bon à savoir : ACR-P et ACA-P agissent l'un après l'autre sur la même production, leurs effets se multiplient donc au lieu de s'additionner. Les deux réglés sur +200 % donnent trois fois les cycles pour trois fois la quantité, soit neuf fois le débit. Le supplément de prix des deux modules n'est en revanche qu'additionné, une combinaison des deux reste donc relativement abordable.
 
 Le lestage ajouté par ABW augmente la masse de base du véhicule, et le jeu calcule la force de freinage à partir de cette masse. Un véhicule fortement lesté freine donc relativement moins bien que sans ce lestage. ABP compense cela si nécessaire.
 
 Code source, aide et signalement des problèmes : https://github.com/BLU3COW/FS25_AdjustSuite
+
+Changelog 1.0.0.5 :
+- Nouveau module AFE (Efficacité énergétique) : met à l'échelle la consommation du moteur d'un véhicule pour chaque configuration de la boutique. Un niveau positif réduit la consommation, +100 % signifie donc deux fois moins de carburant pour le même travail, comme pour les autres modules où un plus est toujours une amélioration. Les consommateurs d'air ne sont pas touchés.
+- Nouveau module AEB (Frein moteur) : met à l'échelle la force de freinage du moteur lorsque l'on relâche l'accélérateur, pour chaque configuration de la boutique. L'effet est plafonné au frein moteur maximal, un niveau plus élevé ne peut donc pas dépasser ce que le moteur peut fournir.
+- Nouveau module AAC-P (Capacité animale) : met à l'échelle le nombre d'animaux qu'un enclos, une étable ou une écurie peut accueillir, au choix en mode construction. La fiche technique affiche le nombre d'animaux obtenu. La limite de 16 de l'écurie à chevaux est relevée en conséquence, et les animaux déjà présents ne sont jamais retirés lorsqu'un niveau plus bas est choisi : seuls les nouveaux achats et les naissances sont bloqués. AAC-P ne modifie ni la capacité de nourriture ni celle de stockage, cela reste le rôle d'AFV-P, et les bâtiments déjà placés sur une carte n'ont pas de sélection à l'achat et restent à leur valeur de base.
 
 Changelog 1.0.0.4 :
 - Testé avec Farming Simulator 25 Patch 1.24.
