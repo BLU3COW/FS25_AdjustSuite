@@ -20,12 +20,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Mod-Repo auschecken
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: mod
 
       - name: Source-Repo auschecken
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: BLU3COW/FS25_Source
           token: ${{ secrets.SOURCE_REPO_PAT }}
