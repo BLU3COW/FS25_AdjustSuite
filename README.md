@@ -5,9 +5,9 @@
 
 
 
-<div align="center"><img width="500"  alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/logos/adjustsuite.svg" /></div>
+<div align="center"><img width="500"  alt="adjustsuite-title" src=".github/assets/logos/adjustsuite.svg" /></div>
 
-# <div align="center"><img width="860" height="80" alt="adjustsuite-title" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/adjustsuite-title.svg" /></div>
+# <div align="center"><img width="860" height="80" alt="adjustsuite-title" src=".github/assets/badges/adjustsuite-title.svg" /></div>
 
 <div align="center">
   
@@ -91,7 +91,7 @@ Egal ob du im Modus Real, Unreal oder Extreme spielen möchtest: Du entscheidest
 
 
 
-## <div align="center"><img width="190" height="40" alt="range" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/range.svg" /></div>
+## <div align="center"><img width="190" height="40" alt="range" src=".github/assets/badges/range.svg" /></div>
 <div align="center">
   
 | Range | - % | + % | Steps | Default |
@@ -145,7 +145,7 @@ Beachte stets die logischen und physikalischen Grenzen des Spiels, da extreme We
 
 
 
-## <div align="center"><img width="185" height="40" alt="module" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/module.svg" /></div>
+## <div align="center"><img width="185" height="40" alt="module" src=".github/assets/badges/module.svg" /></div>
 
 <div align="center">
 
@@ -228,7 +228,7 @@ Die neueste Version verbessert außerdem die Kompatibilität mit <strong>Coursep
 
 
 
-## <div align="center"><img width="300" height="40" alt="settings" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/settings.svg" /></div>
+## <div align="center"><img width="300" height="40" alt="settings" src=".github/assets/badges/settings.svg" /></div>
 
 <div align="center">
 
@@ -308,7 +308,7 @@ The <strong>“modSettings.xml”</strong> file is created automatically when th
 </div>
 
 <br>
-<img width="1600" height="900" alt="modsettings" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_modsettings.png" />
+<img width="1600" height="900" alt="modsettings" src=".github/assets/screenshots/adjustsuite_modsettings.png" />
 </details>
 
 <br>
@@ -328,7 +328,7 @@ The <strong>“modSettings.xml”</strong> file is created automatically when th
 
 
 
-## <div align="center"><img width="460" height="40" alt="planned-updates" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/planned-updates.svg" /></div>
+## <div align="center"><img width="460" height="40" alt="planned-updates" src=".github/assets/badges/planned-updates.svg" /></div>
 
 <div align="center">
 
@@ -440,7 +440,7 @@ Eine eigene grafische Benutzeroberfläche ist geplant, um die Verwaltung der Ein
 
 
   
-## <div align="center"><img width="160" height="40" alt="blu3cow" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/blu3cow.svg" /></div>
+## <div align="center"><img width="160" height="40" alt="blu3cow" src=".github/assets/badges/blu3cow.svg" /></div>
 
 <div align="center">So far, many mods and customizations have been created primarily for personal use. Now, some of these projects will gradually be shared with the community. <strong>BLU3COW</strong> isn’t just about script mods. It also includes prefabs, objects, models, and practical customizations for <strong>Farming Simulator</strong>.
 <br>
@@ -466,7 +466,7 @@ Da sich viele Projekte noch in der Entwicklung befinden, sind Feedback, Ideen un
 
 
 
-## <div align="center"><img width="610" height="40" alt="support-the-project" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/support-the-project.svg" /></div>
+## <div align="center"><img width="610" height="40" alt="support-the-project" src=".github/assets/badges/support-the-project.svg" /></div>
 
 <div align="center">If you like AdjustSuite and find it helpful in the game, you’re welcome to support its continued development via PayPal or with a virtual “Buy Me a Beer.” Every contribution helps us continue to develop new features, improvements, and modules.
 <br>
@@ -494,24 +494,24 @@ Du kannst das Projekt auch aktiv unterstützen, indem du Wünsche, Ideen, Verbes
 </div>
 <br>
 
-## <div align="center"><img width="250" height="40" alt="screenshots" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/3bf6e53b300c81b830e039462e644b8eb96ebcdf/.github/assets/badges/screenshots.svg" /></div>
+## <div align="center"><img width="250" height="40" alt="screenshots" src=".github/assets/badges/screenshots.svg" /></div>
 
 <div align="center">
 
-<img width="1600" height="900" alt="000" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_000.png" />
-<img width="1600" height="900" alt="001" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_001.png" />
-<img width="1600" height="900" alt="002" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_002.png" />
-<img width="1600" height="900" alt="003" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_003.png" />
-<img width="1600" height="900" alt="004" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_004.png" />
-<img width="1600" height="900" alt="005" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_005.png" />
-<img width="1600" height="900" alt="006" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_006.png" />
-<img width="1600" height="900" alt="007" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_007.png" />
-<img width="1600" height="900" alt="008" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_008.png" />
-<img width="1600" height="900" alt="009" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_009.png" />
-<img width="1600" height="900" alt="010" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_010.png" />
-<img width="1600" height="900" alt="011" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_011.png" />
-<img width="1600" height="900" alt="012" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_012.png" />
-<img width="1600" height="900" alt="moddesc" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_moddesc.png" />
-<img width="1600" height="900" alt="modsettings" src="https://github.com/BLU3COW/FS25_AdjustSuite/blob/main/.github/assets/screenshots/adjustsuite_modsettings.png" />
+<img width="1600" height="900" alt="000" src=".github/assets/screenshots/adjustsuite_000.png" />
+<img width="1600" height="900" alt="001" src=".github/assets/screenshots/adjustsuite_001.png" />
+<img width="1600" height="900" alt="002" src=".github/assets/screenshots/adjustsuite_002.png" />
+<img width="1600" height="900" alt="003" src=".github/assets/screenshots/adjustsuite_003.png" />
+<img width="1600" height="900" alt="004" src=".github/assets/screenshots/adjustsuite_004.png" />
+<img width="1600" height="900" alt="005" src=".github/assets/screenshots/adjustsuite_005.png" />
+<img width="1600" height="900" alt="006" src=".github/assets/screenshots/adjustsuite_006.png" />
+<img width="1600" height="900" alt="007" src=".github/assets/screenshots/adjustsuite_007.png" />
+<img width="1600" height="900" alt="008" src=".github/assets/screenshots/adjustsuite_008.png" />
+<img width="1600" height="900" alt="009" src=".github/assets/screenshots/adjustsuite_009.png" />
+<img width="1600" height="900" alt="010" src=".github/assets/screenshots/adjustsuite_010.png" />
+<img width="1600" height="900" alt="011" src=".github/assets/screenshots/adjustsuite_011.png" />
+<img width="1600" height="900" alt="012" src=".github/assets/screenshots/adjustsuite_012.png" />
+<img width="1600" height="900" alt="moddesc" src=".github/assets/screenshots/adjustsuite_moddesc.png" />
+<img width="1600" height="900" alt="modsettings" src=".github/assets/screenshots/adjustsuite_modsettings.png" />
 
 </div>
