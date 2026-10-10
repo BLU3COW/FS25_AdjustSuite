@@ -36,17 +36,47 @@ local function getMaxFillTypeMassPerLiter(fillUnit)
     return best or getFillTypeMassPerLiter(fillUnit.fillType)
 end
 
+local storageCapacityEnvironment
+
+local function getStorageCapacityEnvironment()
+    if storageCapacityEnvironment ~= nil then
+        return storageCapacityEnvironment or nil
+    end
+
+    if type(g_modIsLoaded) ~= "table" then
+        return nil
+    end
+
+    storageCapacityEnvironment = false
+    for modName, isLoaded in pairs(g_modIsLoaded) do
+        local environment = isLoaded == true and _G[modName] or nil
+        if
+            type(environment) == "table"
+            and type(rawget(environment, "RmAdjustStorageCapacity")) == "table"
+            and type(rawget(environment, "RmVehicleStorageCapacity")) == "table"
+        then
+            storageCapacityEnvironment = environment
+            break
+        end
+    end
+
+    return storageCapacityEnvironment or nil
+end
+
 local function externalMassScalingCoversFillUnit(vehicle, fillUnitIndex, fillUnit)
+    local environment = getStorageCapacityEnvironment()
+    local storageCapacity = environment ~= nil and rawget(environment, "RmAdjustStorageCapacity") or nil
+    local vehicleStorageCapacity = environment ~= nil and rawget(environment, "RmVehicleStorageCapacity") or nil
     if
-        RmAdjustStorageCapacity == nil
-        or RmAdjustStorageCapacity.autoScaleMass ~= true
-        or RmVehicleStorageCapacity == nil
-        or RmVehicleStorageCapacity.SPEC_TABLE_NAME == nil
+        storageCapacity == nil
+        or storageCapacity.autoScaleMass ~= true
+        or vehicleStorageCapacity == nil
+        or vehicleStorageCapacity.SPEC_TABLE_NAME == nil
     then
         return false
     end
 
-    local spec = vehicle[RmVehicleStorageCapacity.SPEC_TABLE_NAME]
+    local spec = vehicle[vehicleStorageCapacity.SPEC_TABLE_NAME]
     local originalCapacities = spec ~= nil and spec.originalCapacities or nil
     local originalCapacity = originalCapacities ~= nil and tonumber(originalCapacities[fillUnitIndex]) or nil
     return originalCapacity ~= nil and (tonumber(fillUnit.capacity) or 0) > originalCapacity
