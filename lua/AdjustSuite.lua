@@ -87,6 +87,30 @@ function Suite.fillUnitIsOperatingConsumer(vehicle, fillUnitIndex)
     local indices = Suite.getOperatingConsumerFillUnitIndices(vehicle)
     return indices ~= nil and indices[fillUnitIndex] == true
 end
+
+Suite.foreignModEnvironments = Suite.foreignModEnvironments or {}
+
+function Suite.getForeignModGlobal(globalName)
+    local environment = Suite.foreignModEnvironments[globalName]
+    if environment ~= nil then
+        return environment ~= false and rawget(environment, globalName) or nil
+    end
+
+    if type(g_modIsLoaded) ~= "table" then
+        return nil
+    end
+
+    Suite.foreignModEnvironments[globalName] = false
+    for modName, isLoaded in pairs(g_modIsLoaded) do
+        local candidate = isLoaded == true and _G[modName] or nil
+        if type(candidate) == "table" and rawget(candidate, globalName) ~= nil then
+            Suite.foreignModEnvironments[globalName] = candidate
+            return rawget(candidate, globalName)
+        end
+    end
+
+    return nil
+end
 Suite.range = Suite.range
     or {
         minFactor = 0.20,

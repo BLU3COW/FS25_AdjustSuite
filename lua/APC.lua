@@ -36,39 +36,12 @@ local function getMaxFillTypeMassPerLiter(fillUnit)
     return best or getFillTypeMassPerLiter(fillUnit.fillType)
 end
 
-local storageCapacityEnvironment
-
-local function getStorageCapacityEnvironment()
-    if storageCapacityEnvironment ~= nil then
-        return storageCapacityEnvironment or nil
-    end
-
-    if type(g_modIsLoaded) ~= "table" then
-        return nil
-    end
-
-    storageCapacityEnvironment = false
-    for modName, isLoaded in pairs(g_modIsLoaded) do
-        local environment = isLoaded == true and _G[modName] or nil
-        if
-            type(environment) == "table"
-            and type(rawget(environment, "RmAdjustStorageCapacity")) == "table"
-            and type(rawget(environment, "RmVehicleStorageCapacity")) == "table"
-        then
-            storageCapacityEnvironment = environment
-            break
-        end
-    end
-
-    return storageCapacityEnvironment or nil
-end
-
 local function externalMassScalingCoversFillUnit(vehicle, fillUnitIndex, fillUnit)
-    local environment = getStorageCapacityEnvironment()
-    local storageCapacity = environment ~= nil and rawget(environment, "RmAdjustStorageCapacity") or nil
-    local vehicleStorageCapacity = environment ~= nil and rawget(environment, "RmVehicleStorageCapacity") or nil
+    local storageCapacity = Suite.getForeignModGlobal("RmAdjustStorageCapacity")
+    local vehicleStorageCapacity = Suite.getForeignModGlobal("RmVehicleStorageCapacity")
     if
-        storageCapacity == nil
+        type(storageCapacity) ~= "table"
+        or type(vehicleStorageCapacity) ~= "table"
         or storageCapacity.autoScaleMass ~= true
         or vehicleStorageCapacity == nil
         or vehicleStorageCapacity.SPEC_TABLE_NAME == nil
