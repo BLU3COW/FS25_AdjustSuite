@@ -34,6 +34,7 @@
         <text name="CONFIG_ACAP_TITLE" text="Quantité par cycle" />
         <text name="CONFIG_AIPP_TITLE" text="Revenus" />
         <text name="CONFIG_AACP_TITLE" text="Capacité animale" />
+        <text name="CONFIG_AFEP_TITLE" text="Efficacité alimentaire" />
         <text name="ACTION_AWW_BROAD" text="Dépose en largeur" />
         <text name="ACTION_AWW_SWATH" text="Dépose en andains" />
     </texts>

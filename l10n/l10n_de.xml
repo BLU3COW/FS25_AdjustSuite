@@ -34,6 +34,7 @@
         <text name="CONFIG_ACAP_TITLE" text="Zyklusmenge" />
         <text name="CONFIG_AIPP_TITLE" text="Einkommen" />
         <text name="CONFIG_AACP_TITLE" text="Tierkapazität" />
+        <text name="CONFIG_AFEP_TITLE" text="Fütterungseffizienz" />
         <text name="ACTION_AWW_BROAD" text="Breitablage" />
         <text name="ACTION_AWW_SWATH" text="Schwadablage" />
     </texts>
