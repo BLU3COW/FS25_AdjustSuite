@@ -5,7 +5,7 @@ local Suite = AdjustSuite
 local MODULE_SETTING_KEYS = { "module", "real", "unreal", "extreme" }
 
 Suite.vehicleModuleIds = { "AFV", "AFC", "APC", "ABW", "AMP", "AFE", "AWS", "AWW", "APW", "ADS", "ABP", "AEB", "ADR" }
-Suite.placeableModuleIds = { "AFVP", "ADRP", "ACRP", "ACAP", "AIPP", "AACP" }
+Suite.placeableModuleIds = { "AFVP", "ADRP", "ACRP", "ACAP", "AIPP", "AACP", "AFEP" }
 Suite.moduleIds = {}
 for _, moduleId in ipairs(Suite.vehicleModuleIds) do
     table.insert(Suite.moduleIds, moduleId)
@@ -25,6 +25,7 @@ Suite.moduleLabels = {
     ACAP = "ACA-P",
     AIPP = "AIP-P",
     AACP = "AAC-P",
+    AFEP = "AFE-P",
 }
 Suite.ignoredFillTypeNames = Suite.ignoredFillTypeNames
     or {

@@ -34,6 +34,7 @@
         <text name="CONFIG_ACAP_TITLE" text="Cycle Amount" />
         <text name="CONFIG_AIPP_TITLE" text="Income Payment" />
         <text name="CONFIG_AACP_TITLE" text="Animal Capacity" />
+        <text name="CONFIG_AFEP_TITLE" text="Feeding Efficiency" />
         <text name="ACTION_AWW_BROAD" text="Wide Spreading" />
         <text name="ACTION_AWW_SWATH" text="Swath Spreading" />
     </texts>
