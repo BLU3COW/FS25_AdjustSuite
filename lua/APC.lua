@@ -36,6 +36,22 @@ local function getMaxFillTypeMassPerLiter(fillUnit)
     return best or getFillTypeMassPerLiter(fillUnit.fillType)
 end
 
+local function externalMassScalingCoversFillUnit(vehicle, fillUnitIndex, fillUnit)
+    if
+        RmAdjustStorageCapacity == nil
+        or RmAdjustStorageCapacity.autoScaleMass ~= true
+        or RmVehicleStorageCapacity == nil
+        or RmVehicleStorageCapacity.SPEC_TABLE_NAME == nil
+    then
+        return false
+    end
+
+    local spec = vehicle[RmVehicleStorageCapacity.SPEC_TABLE_NAME]
+    local originalCapacities = spec ~= nil and spec.originalCapacities or nil
+    local originalCapacity = originalCapacities ~= nil and tonumber(originalCapacities[fillUnitIndex]) or nil
+    return originalCapacity ~= nil and (tonumber(fillUnit.capacity) or 0) > originalCapacity
+end
+
 local function getPayloadMassFactor(vehicle)
     local selectionFactor = getSelectionFactor(vehicle)
     return selectionFactor > 0 and 1 / selectionFactor or 1
@@ -48,6 +64,7 @@ local function fillUnitIsEligible(vehicle, fillUnitIndex, fillUnit, fillTypeInde
         and fillUnit.fillMassNode ~= 0
         and not Suite.fillUnitIsOperatingConsumer(vehicle, fillUnitIndex)
         and not fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
+        and not externalMassScalingCoversFillUnit(vehicle, fillUnitIndex, fillUnit)
         and getFillTypeMassPerLiter(fillTypeIndex) ~= nil
 end
 
@@ -61,6 +78,7 @@ local function hasEligibleFillUnit(vehicle)
         if
             not fillUnitIsTechnicalHidden(vehicle, fillUnitIndex, fillUnit)
             and not Suite.fillUnitIsOperatingConsumer(vehicle, fillUnitIndex)
+            and not externalMassScalingCoversFillUnit(vehicle, fillUnitIndex, fillUnit)
             and fillUnit.updateMass == true
             and fillUnit.fillMassNode ~= nil
             and fillUnit.fillMassNode ~= 0
@@ -131,6 +149,7 @@ function APC:onPostLoad(_savegame)
                 and not fillUnitIsTechnicalHidden(self, fillUnitIndex, fillUnit)
                 and not Suite.fillUnitIsOperatingConsumer(self, fillUnitIndex)
                 and not Suite.capacityLooksExternallyOverridden(self, fillUnit, "AFV")
+                and not externalMassScalingCoversFillUnit(self, fillUnitIndex, fillUnit)
             then
                 local massPerLiter = getMaxFillTypeMassPerLiter(fillUnit)
                 local capacity = tonumber(fillUnit.capacity) or 0
@@ -247,4 +266,32 @@ function APC:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelec
     end
 
     Suite.addHelpText(helpText)
+end
+
+local function vehicleUsesReducedMountMass(vehicle)
+    local mountableSpec = vehicle.spec_mountable
+    return mountableSpec ~= nil and mountableSpec.reducedComponentMass == true
+end
+
+function APC.updateMass(vehicle, superFunc, ...)
+    local getAdditionalComponentMass = vehicle.getAdditionalComponentMass
+    if getAdditionalComponentMass == nil or vehicleUsesReducedMountMass(vehicle) then
+        return superFunc(vehicle, ...)
+    end
+
+    local ownFunction = rawget(vehicle, "getAdditionalComponentMass")
+    vehicle.getAdditionalComponentMass = function(object, component)
+        return math.max(tonumber(getAdditionalComponentMass(object, component)) or 0, 0)
+    end
+    local ok, result = safeCall(superFunc, vehicle, ...)
+    vehicle.getAdditionalComponentMass = ownFunction
+    if not ok then
+        error(result, 0)
+    end
+    return result
+end
+
+if APC.massFloorInstalled ~= true and Vehicle ~= nil and Vehicle.updateMass ~= nil then
+    APC.massFloorInstalled = true
+    Vehicle.updateMass = Utils.overwrittenFunction(Vehicle.updateMass, APC.updateMass)
 end
