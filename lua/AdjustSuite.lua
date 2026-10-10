@@ -143,12 +143,64 @@ end
 
 Suite.pricePercent = normalizePricePercent(Suite.pricePercent)
 
+local GUIDE_LINE_DEFAULTS = {
+    enabled = false,
+    red = 0,
+    green = 182,
+    blue = 255,
+    thickness = 0.1,
+    length = 20,
+}
+local GUIDE_LINE_MAX_THICKNESS = 1
+local GUIDE_LINE_MIN_LENGTH = 1
+local GUIDE_LINE_MAX_LENGTH = 200
+local GUIDE_LINE_SETTING_ATTRIBUTES = {
+    { field = "enabled", attribute = "module", kind = "bool" },
+    { field = "red", attribute = "red", kind = "int" },
+    { field = "green", attribute = "green", kind = "int" },
+    { field = "blue", attribute = "blue", kind = "int" },
+    { field = "thickness", attribute = "thickness", kind = "float" },
+    { field = "length", attribute = "length", kind = "float" },
+}
+
+local function clampSettingNumber(value, minValue, maxValue, defaultValue)
+    value = tonumber(value)
+    if value == nil or value ~= value then
+        return defaultValue
+    end
+    return math.min(math.max(value, minValue), maxValue)
+end
+
+local function normalizeColorChannel(value, defaultValue)
+    return math.floor(clampSettingNumber(value, 0, 255, defaultValue) + 0.5)
+end
+
+local function normalizeGuideLines(source)
+    source = source or {}
+    return {
+        enabled = source.enabled == true,
+        red = normalizeColorChannel(source.red, GUIDE_LINE_DEFAULTS.red),
+        green = normalizeColorChannel(source.green, GUIDE_LINE_DEFAULTS.green),
+        blue = normalizeColorChannel(source.blue, GUIDE_LINE_DEFAULTS.blue),
+        thickness = clampSettingNumber(source.thickness, 0, GUIDE_LINE_MAX_THICKNESS, GUIDE_LINE_DEFAULTS.thickness),
+        length = clampSettingNumber(
+            source.length,
+            GUIDE_LINE_MIN_LENGTH,
+            GUIDE_LINE_MAX_LENGTH,
+            GUIDE_LINE_DEFAULTS.length
+        ),
+    }
+end
+
+Suite.guideLines = normalizeGuideLines(Suite.guideLines)
+
 local SETTINGS_ROOT = "adjustSuiteSettings"
 local SETTINGS_HELP_MENU_KEY = SETTINGS_ROOT .. ".settings.helpmenu"
 local SETTINGS_PRICE_KEY = SETTINGS_ROOT .. ".settings.price"
 local SETTINGS_EXTERNAL_CAPACITY_KEY = SETTINGS_ROOT .. ".settings.externalCapacity"
 local SETTINGS_SILO_NETWORK_KEY = SETTINGS_ROOT .. ".settings.siloNetwork"
 local SETTINGS_PRODUCTION_STORAGE_KEY = SETTINGS_ROOT .. ".settings.productionStorage"
+local SETTINGS_GUIDE_LINES_KEY = SETTINGS_ROOT .. ".settings.guideLines"
 local SETTINGS_MODULES_KEY = SETTINGS_ROOT .. ".modules"
 local DEFAULT_MODULE_SETTINGS = {
     module = true,
@@ -677,6 +729,269 @@ function Suite.getWorkAreaNodes(workArea)
     end
 
     return nil, nil, nil
+end
+
+local GUIDE_LINE_HEIGHT_OFFSET = 0.05
+local GUIDE_LINE_SEGMENT_LENGTH = 1
+local GUIDE_LINE_MAX_SEGMENTS = 100
+local guideLineExtents = {}
+
+function Suite.getGuideLinesEnabled()
+    return Suite.guideLines ~= nil and Suite.guideLines.enabled == true
+end
+
+local function workAreaShowsGuideLine(vehicle, workArea)
+    if
+        workArea == nil
+        or workArea.type == nil
+        or g_workAreaTypeManager == nil
+        or not g_workAreaTypeManager:getWorkAreaTypeIsSteeringAssistArea(workArea.type)
+    then
+        return false
+    end
+
+    if workArea.sprayType ~= nil and vehicle.getActiveSprayType ~= nil then
+        local sprayType = vehicle:getActiveSprayType()
+        if sprayType ~= nil and sprayType.index ~= workArea.sprayType then
+            return false
+        end
+    end
+
+    local foldableSpec = vehicle.spec_foldable
+    if
+        foldableSpec ~= nil
+        and foldableSpec.foldAnimTime ~= nil
+        and workArea.foldMinLimit ~= nil
+        and workArea.foldMaxLimit ~= nil
+    then
+        local foldAnimTime = foldableSpec.foldAnimTime
+        if workArea.foldLimitedOuterRange == true then
+            if foldAnimTime <= workArea.foldMaxLimit and workArea.foldMinLimit < foldAnimTime then
+                return false
+            end
+        elseif workArea.foldMaxLimit < foldAnimTime or foldAnimTime < workArea.foldMinLimit then
+            return false
+        end
+    end
+
+    if workArea.needsSetIsTurnedOn == true and vehicle.getIsTurnedOn ~= nil and not vehicle:getIsTurnedOn() then
+        return false
+    end
+
+    if
+        WorkAreaType ~= nil
+        and workArea.type == WorkAreaType.CUTTER
+        and vehicle.spec_cutter ~= nil
+        and vehicle.spec_cutter.allowCuttingWhileRaised ~= true
+        and vehicle.getIsLowered ~= nil
+        and not vehicle:getIsLowered(true)
+    then
+        return false
+    end
+
+    if workArea.onlyActiveWhenLowered == true and vehicle.getIsLowered ~= nil and not vehicle:getIsLowered(false) then
+        return false
+    end
+
+    if
+        workArea.requiresGroundContact == true
+        and workArea.groundReferenceNode ~= nil
+        and vehicle.getIsGroundReferenceNodeActive ~= nil
+        and not vehicle:getIsGroundReferenceNodeActive(workArea.groundReferenceNode)
+    then
+        return false
+    end
+
+    return true
+end
+
+local function extendGuideLineExtents(node, referenceNode)
+    if node == nil then
+        return
+    end
+
+    local x, _, z = Suite.getNodePosition(node, referenceNode)
+    if x == nil then
+        return
+    end
+
+    if guideLineExtents.minX == nil then
+        guideLineExtents.minX = x
+        guideLineExtents.maxX = x
+        guideLineExtents.maxZ = z
+        return
+    end
+
+    guideLineExtents.minX = math.min(guideLineExtents.minX, x)
+    guideLineExtents.maxX = math.max(guideLineExtents.maxX, x)
+    guideLineExtents.maxZ = math.max(guideLineExtents.maxZ, z)
+end
+
+local function collectGuideLineExtents(rootVehicle, referenceNode)
+    guideLineExtents.minX = nil
+    guideLineExtents.maxX = nil
+    guideLineExtents.maxZ = nil
+
+    for _, vehicle in pairs(rootVehicle.childVehicles or { rootVehicle }) do
+        local workAreaSpec = vehicle.spec_workArea
+        if workAreaSpec ~= nil and workAreaSpec.workAreas ~= nil then
+            for _, workArea in ipairs(workAreaSpec.workAreas) do
+                if workAreaShowsGuideLine(vehicle, workArea) then
+                    local startNode, widthNode, heightNode = Suite.getWorkAreaNodes(workArea)
+                    extendGuideLineExtents(startNode, referenceNode)
+                    extendGuideLineExtents(widthNode, referenceNode)
+                    extendGuideLineExtents(heightNode, referenceNode)
+                end
+            end
+        end
+    end
+
+    return guideLineExtents.minX ~= nil and guideLineExtents.maxX - guideLineExtents.minX > 0.01
+end
+
+local function getGuideLinePoint(referenceNode, terrainNode, x, z)
+    local worldX, _, worldZ = localToWorld(referenceNode, x, 0, z)
+    local worldY = getTerrainHeightAtWorldPos(terrainNode, worldX, 0, worldZ) + GUIDE_LINE_HEIGHT_OFFSET
+    return worldX, worldY, worldZ
+end
+
+local function drawGuideLine(referenceNode, terrainNode, x, startZ, endZ, guideLines)
+    local r = guideLines.red / 255
+    local g = guideLines.green / 255
+    local b = guideLines.blue / 255
+    local halfThickness = guideLines.thickness * 0.5
+    local segments =
+        math.max(1, math.min(GUIDE_LINE_MAX_SEGMENTS, math.ceil((endZ - startZ) / GUIDE_LINE_SEGMENT_LENGTH)))
+    local step = (endZ - startZ) / segments
+    local lastLeftX, lastLeftY, lastLeftZ, lastRightX, lastRightY, lastRightZ
+
+    for index = 0, segments do
+        local z = startZ + step * index
+        local leftX, leftY, leftZ = getGuideLinePoint(referenceNode, terrainNode, x - halfThickness, z)
+
+        if halfThickness > 0 then
+            local rightX, rightY, rightZ = getGuideLinePoint(referenceNode, terrainNode, x + halfThickness, z)
+            if index > 0 then
+                drawDebugTriangle(
+                    lastLeftX,
+                    lastLeftY,
+                    lastLeftZ,
+                    leftX,
+                    leftY,
+                    leftZ,
+                    rightX,
+                    rightY,
+                    rightZ,
+                    r,
+                    g,
+                    b,
+                    1,
+                    false
+                )
+                drawDebugTriangle(
+                    lastLeftX,
+                    lastLeftY,
+                    lastLeftZ,
+                    rightX,
+                    rightY,
+                    rightZ,
+                    leftX,
+                    leftY,
+                    leftZ,
+                    r,
+                    g,
+                    b,
+                    1,
+                    false
+                )
+                drawDebugTriangle(
+                    lastLeftX,
+                    lastLeftY,
+                    lastLeftZ,
+                    rightX,
+                    rightY,
+                    rightZ,
+                    lastRightX,
+                    lastRightY,
+                    lastRightZ,
+                    r,
+                    g,
+                    b,
+                    1,
+                    false
+                )
+                drawDebugTriangle(
+                    lastLeftX,
+                    lastLeftY,
+                    lastLeftZ,
+                    lastRightX,
+                    lastRightY,
+                    lastRightZ,
+                    rightX,
+                    rightY,
+                    rightZ,
+                    r,
+                    g,
+                    b,
+                    1,
+                    false
+                )
+            end
+            lastRightX, lastRightY, lastRightZ = rightX, rightY, rightZ
+        elseif index > 0 then
+            drawDebugLine(lastLeftX, lastLeftY, lastLeftZ, r, g, b, leftX, leftY, leftZ, r, g, b, false)
+        end
+
+        lastLeftX, lastLeftY, lastLeftZ = leftX, leftY, leftZ
+    end
+end
+
+local function drawGuideLinesForVehicle(rootVehicle)
+    local referenceNode = rootVehicle.components ~= nil
+            and rootVehicle.components[1] ~= nil
+            and rootVehicle.components[1].node
+        or rootVehicle.rootNode
+    if type(referenceNode) ~= "number" or referenceNode == 0 then
+        return
+    end
+
+    local terrainNode = g_terrainNode or (g_currentMission ~= nil and g_currentMission.terrainRootNode or nil)
+    if terrainNode == nil or terrainNode == 0 then
+        return
+    end
+
+    if not collectGuideLineExtents(rootVehicle, referenceNode) then
+        return
+    end
+
+    local guideLines = Suite.guideLines
+    local startZ = guideLineExtents.maxZ
+    local size = rootVehicle.size
+    if size ~= nil and tonumber(size.length) ~= nil then
+        startZ = math.max(startZ, (tonumber(size.lengthOffset) or 0) + size.length * 0.5)
+    end
+    local endZ = startZ + guideLines.length
+
+    drawGuideLine(referenceNode, terrainNode, guideLineExtents.minX, startZ, endZ, guideLines)
+    drawGuideLine(referenceNode, terrainNode, guideLineExtents.maxX, startZ, endZ, guideLines)
+end
+
+function Suite:draw()
+    if not Suite.getGuideLinesEnabled() or g_localPlayer == nil or g_localPlayer.getCurrentVehicle == nil then
+        return
+    end
+
+    local vehicle = g_localPlayer:getCurrentVehicle()
+    if vehicle == nil then
+        return
+    end
+
+    local rootVehicle = vehicle.rootVehicle or vehicle
+    local ok, message = safeCall(drawGuideLinesForVehicle, rootVehicle)
+    if not ok and Suite.guideLineErrorReported ~= true then
+        Suite.guideLineErrorReported = true
+        print(string.format("Warning: AdjustSuite - could not draw guide lines: %s", tostring(message)))
+    end
 end
 
 function Suite.getFillUnits(vehicle)
@@ -1234,6 +1549,13 @@ local function boolToString(value)
     return value == true and "true" or "false"
 end
 
+local function formatSettingNumber(value)
+    local text = string.format("%.2f", tonumber(value) or 0)
+    text = string.gsub(text, "0+$", "")
+    text = string.gsub(text, "%.$", "")
+    return text
+end
+
 local function writeSettingsTemplate(
     filename,
     settingsByModule,
@@ -1242,7 +1564,8 @@ local function writeSettingsTemplate(
     respectExternalCapacityOverrides,
     siloNetworkEnabled,
     connectSiloNetwork,
-    connectProductionStorage
+    connectProductionStorage,
+    guideLines
 )
     if io == nil or io.open == nil then
         return false
@@ -1279,6 +1602,18 @@ local function writeSettingsTemplate(
             boolToString(connectProductionStorage ~= false)
         )
     )
+    guideLines = normalizeGuideLines(guideLines)
+    file:write(
+        string.format(
+            '        <guideLines module="%s" red="%d" green="%d" blue="%d" thickness="%s" length="%s"/>\n',
+            boolToString(guideLines.enabled),
+            guideLines.red,
+            guideLines.green,
+            guideLines.blue,
+            formatSettingNumber(guideLines.thickness),
+            formatSettingNumber(guideLines.length)
+        )
+    )
     file:write("    </settings>\n")
     file:write("    <modules>\n")
 
@@ -1310,9 +1645,11 @@ local function writeSettingsXml(
     respectExternalCapacityOverrides,
     siloNetworkEnabled,
     connectSiloNetwork,
-    connectProductionStorage
+    connectProductionStorage,
+    guideLines
 )
     pricePercent = normalizePricePercent(pricePercent)
+    guideLines = normalizeGuideLines(guideLines)
     if
         writeSettingsTemplate(
             filename,
@@ -1322,7 +1659,8 @@ local function writeSettingsXml(
             respectExternalCapacityOverrides,
             siloNetworkEnabled,
             connectSiloNetwork,
-            connectProductionStorage
+            connectProductionStorage,
+            guideLines
         )
     then
         return
@@ -1340,6 +1678,17 @@ local function writeSettingsXml(
     setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#module", siloNetworkEnabled == true)
     setXMLBool(xmlFile, SETTINGS_SILO_NETWORK_KEY .. "#connectAll", connectSiloNetwork ~= false)
     setXMLBool(xmlFile, SETTINGS_PRODUCTION_STORAGE_KEY .. "#connectSilos", connectProductionStorage ~= false)
+    for _, entry in ipairs(GUIDE_LINE_SETTING_ATTRIBUTES) do
+        local path = SETTINGS_GUIDE_LINES_KEY .. "#" .. entry.attribute
+        local value = guideLines[entry.field]
+        if entry.kind == "bool" then
+            setXMLBool(xmlFile, path, value == true)
+        elseif entry.kind == "int" then
+            setXMLInt(xmlFile, path, value)
+        else
+            setXMLFloat(xmlFile, path, value)
+        end
+    end
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = settingsByModule[moduleId] or getDefaultModuleSettings()
@@ -1375,6 +1724,7 @@ function Suite.loadSelectionSettings()
     local siloNetworkEnabled = false
     local connectSiloNetwork = true
     local connectProductionStorage = true
+    local guideLineValues = {}
     if settingsFileExists then
         local configuredShowHelpMenu = getXMLBool(xmlFile, SETTINGS_HELP_MENU_KEY .. "#show")
         if configuredShowHelpMenu == nil then
@@ -1424,7 +1774,27 @@ function Suite.loadSelectionSettings()
         else
             connectProductionStorage = configuredConnectProductionStorage == true
         end
+
+        for _, entry in ipairs(GUIDE_LINE_SETTING_ATTRIBUTES) do
+            local path = SETTINGS_GUIDE_LINES_KEY .. "#" .. entry.attribute
+            local configuredValue
+            if entry.kind == "bool" then
+                configuredValue = getXMLBool(xmlFile, path)
+            elseif entry.kind == "int" then
+                configuredValue = getXMLInt(xmlFile, path)
+            else
+                configuredValue = getXMLFloat(xmlFile, path)
+            end
+
+            if configuredValue == nil then
+                settingsFileChanged = true
+            else
+                guideLineValues[entry.field] = configuredValue
+            end
+        end
     end
+    local guideLines = normalizeGuideLines(guideLineValues)
+    Suite.guideLines = guideLines
     Suite.showHelpMenu = showHelpMenu
     Suite.respectExternalCapacityOverrides = respectExternalCapacityOverrides
     Suite.siloNetworkEnabled = siloNetworkEnabled
@@ -1465,7 +1835,8 @@ function Suite.loadSelectionSettings()
             respectExternalCapacityOverrides,
             siloNetworkEnabled,
             connectSiloNetwork,
-            connectProductionStorage
+            connectProductionStorage,
+            guideLines
         )
     end
 
@@ -1478,7 +1849,8 @@ function Suite.loadSelectionSettings()
             respectExternalCapacityOverrides,
             siloNetworkEnabled,
             connectSiloNetwork,
-            connectProductionStorage
+            connectProductionStorage,
+            guideLines
         )
     end
 end
@@ -1498,7 +1870,8 @@ function AdjustSuiteSettingsEvent.new(
     respectExternalCapacityOverrides,
     siloNetworkEnabled,
     connectSiloNetwork,
-    connectProductionStorage
+    connectProductionStorage,
+    guideLines
 )
     local self = AdjustSuiteSettingsEvent.emptyNew()
     self.settingsByModule = {}
@@ -1508,6 +1881,7 @@ function AdjustSuiteSettingsEvent.new(
     self.siloNetworkEnabled = siloNetworkEnabled == true
     self.connectSiloNetwork = connectSiloNetwork ~= false
     self.connectProductionStorage = connectProductionStorage ~= false
+    self.guideLines = normalizeGuideLines(guideLines)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         self.settingsByModule[moduleId] = copyModuleSettings(settingsByModule[moduleId])
@@ -1524,6 +1898,20 @@ function AdjustSuiteSettingsEvent:readStream(streamId, connection)
     self.siloNetworkEnabled = streamReadBool(streamId)
     self.connectSiloNetwork = streamReadBool(streamId)
     self.connectProductionStorage = streamReadBool(streamId)
+    local guideLinesEnabled = streamReadBool(streamId)
+    local guideLineRed = streamReadUInt8(streamId)
+    local guideLineGreen = streamReadUInt8(streamId)
+    local guideLineBlue = streamReadUInt8(streamId)
+    local guideLineThickness = streamReadFloat32(streamId)
+    local guideLineLength = streamReadFloat32(streamId)
+    self.guideLines = normalizeGuideLines({
+        enabled = guideLinesEnabled,
+        red = guideLineRed,
+        green = guideLineGreen,
+        blue = guideLineBlue,
+        thickness = guideLineThickness,
+        length = guideLineLength,
+    })
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = {}
@@ -1543,6 +1931,13 @@ function AdjustSuiteSettingsEvent:writeStream(streamId, _connection)
     streamWriteBool(streamId, self.siloNetworkEnabled == true)
     streamWriteBool(streamId, self.connectSiloNetwork ~= false)
     streamWriteBool(streamId, self.connectProductionStorage ~= false)
+    local guideLines = normalizeGuideLines(self.guideLines)
+    streamWriteBool(streamId, guideLines.enabled)
+    streamWriteUInt8(streamId, guideLines.red)
+    streamWriteUInt8(streamId, guideLines.green)
+    streamWriteUInt8(streamId, guideLines.blue)
+    streamWriteFloat32(streamId, guideLines.thickness)
+    streamWriteFloat32(streamId, guideLines.length)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = self.settingsByModule[moduleId]
@@ -1559,6 +1954,7 @@ function AdjustSuiteSettingsEvent:run(connection)
         Suite.siloNetworkEnabled = self.siloNetworkEnabled == true
         Suite.connectSiloNetwork = self.connectSiloNetwork ~= false
         Suite.connectProductionStorage = self.connectProductionStorage ~= false
+        Suite.guideLines = normalizeGuideLines(self.guideLines)
         applyPricePercent(self.pricePercent)
         for _, moduleId in ipairs(Suite.moduleIds) do
             applyModuleSettings(moduleId, self.settingsByModule[moduleId])
@@ -1576,7 +1972,8 @@ local function sendSelectionSettings(_baseMission, connection, _x, _y, _z, _view
                 Suite.respectExternalCapacityOverrides,
                 Suite.siloNetworkEnabled,
                 Suite.connectSiloNetwork,
-                Suite.connectProductionStorage
+                Suite.connectProductionStorage,
+                Suite.guideLines
             )
         )
     end
