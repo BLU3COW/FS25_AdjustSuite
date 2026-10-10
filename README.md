@@ -239,6 +239,7 @@ Die neueste Version verbessert außerdem die Kompatibilität mit <strong>Coursep
 | **EXTERNALCAPACITY** | Respect External Capacity Changes | Externe Kapazitätsänderungen respektieren | Off |
 | **SILONETWORK** | Silo Connection Between Silos | Silo-Verbindung untereinander | Off |
 | **PRODUCTIONSTORAGE** | Productions Use Nearby Silos | Produktionen nutzen Silos in der Nähe | Activ |
+| **GUIDELINES** | Working Width Guide Lines | Hilfslinien für die Arbeitsbreite | Off |
 
 </div>
 <br>
@@ -255,7 +256,10 @@ With <strong>PRICE</strong>, you can define how strongly adjustments affect pric
 <strong>SILONETWORK</strong> fixes how silos that extend each other connect. In the base game a silo only picks up the silos that already existed when it was built, never the ones built after it. Four silos standing side by side therefore form four different networks, each reports a different total capacity, and tipping into the oldest silo can only use the oldest storage. The setting has three states and is switched off by default. <code>module="true" connectAll="true"</code> lets every silo within reach join the same network no matter the order in which they were built; a demolished silo also stops counting towards its neighbours right away. <code>module="true" connectAll="false"</code> keeps every silo to its own storage and stops it from taking over the silos next to it. <code>module="false"</code> is the default and leaves everything to the base game, including the ghost capacity of a demolished silo. Whether productions use silos in their surroundings is a separate setting, PRODUCTIONSTORAGE.
 <br>
 <br>
-<strong>PRODUCTIONSTORAGE</strong> decides whether productions use silos and silo extensions in their surroundings as additional storage. The base game does this, which is why the production menu of a factory next to a grain silo suddenly shows a much larger capacity and crops the factory itself never received. Set <code>&lt;productionStorage connectSilos="false"/&gt;</code> to keep productions limited to their own storage, no matter whether the production or the silo was built first. Modular plants from Pumps N' Hoses are exempt, since they are built from several parts that have to reach the storages around them. The default keeps the base game behaviour.</div>
+<strong>PRODUCTIONSTORAGE</strong> decides whether productions use silos and silo extensions in their surroundings as additional storage. The base game does this, which is why the production menu of a factory next to a grain silo suddenly shows a much larger capacity and crops the factory itself never received. Set <code>&lt;productionStorage connectSilos="false"/&gt;</code> to keep productions limited to their own storage, no matter whether the production or the silo was built first. Modular plants from Pumps N' Hoses are exempt, since they are built from several parts that have to reach the storages around them. The default keeps the base game behaviour.
+<br>
+<br>
+<strong>GUIDELINES</strong> draws two lines on the ground that mark the outer edges of the working width ahead of the vehicle you are driving, so the next pass lines up exactly with the last one. They work on every implement with a working area, including harvester headers and the pickups of balers and loading wagons, and always show the width that actually applies, including a stage selected with AWW or APW. Powered implements show them while switched on, other implements while lowered, and foldable implements only when unfolded. The setting is switched off by default: <code>&lt;guideLines module="true" red="0" green="182" blue="255" thickness="0.1" length="20"/&gt;</code> switches it on, <code>red</code>, <code>green</code> and <code>blue</code> set the colour from 0 to 255, <code>thickness</code> sets the line thickness in metres (0 draws a thin line, at most 1) and <code>length</code> sets how far ahead the lines reach in metres (1 to 200).</div>
 <br>
 <div align="center">
 
@@ -274,7 +278,10 @@ Mit <strong>PRICE</strong> kannst du festlegen, wie stark sich Anpassungen auf d
 <strong>SILONETWORK</strong> behebt, wie sich Silos verbinden, die einander erweitern. Im Basisspiel übernimmt ein Silo nur die Silos, die beim Bau bereits standen, nie die danach gebauten. Vier Silos nebeneinander bilden dadurch vier verschiedene Netze, jedes meldet eine andere Gesamtkapazität, und beim Abkippen ins älteste Silo steht nur dessen eigener Speicher zur Verfügung. Die Einstellung hat drei Zustände und ist standardmäßig abgeschaltet. Mit <code>module="true" connectAll="true"</code> gehört jedes Silo in Reichweite zum selben Netz, egal in welcher Reihenfolge gebaut wurde, und ein abgerissenes Silo zählt sofort nicht mehr bei seinen Nachbarn mit. <code>module="true" connectAll="false"</code> lässt jedes Silo bei seinem eigenen Speicher und verhindert, dass es die Silos daneben übernimmt. <code>module="false"</code> ist der Standard und überlässt alles dem Basisspiel, einschließlich der Geisterkapazität eines abgerissenen Silos. Ob Produktionen Silos in der Umgebung nutzen, ist die separate Einstellung PRODUCTIONSTORAGE.
 <br>
 <br>
-<strong>PRODUCTIONSTORAGE</strong> legt fest, ob Produktionen Silos und Silo-Erweiterungen in ihrer Umgebung als zusätzliches Lager nutzen. Das Basisspiel macht das, deshalb zeigt das Produktionsmenü einer Fabrik neben einem Getreidesilo plötzlich eine viel größere Kapazität und Früchte, die die Fabrik selbst nie bekommen hat. Mit <code>&lt;productionStorage connectSilos="false"/&gt;</code> bleiben Produktionen auf ihr eigenes Lager beschränkt, egal ob zuerst die Produktion oder das Silo gebaut wurde. Modulare Anlagen aus Pumps N' Hoses sind ausgenommen, weil sie aus mehreren Teilen bestehen, die die Speicher in ihrer Umgebung erreichen müssen. Der Standardwert behält das Verhalten des Basisspiels bei.</div>
+<strong>PRODUCTIONSTORAGE</strong> legt fest, ob Produktionen Silos und Silo-Erweiterungen in ihrer Umgebung als zusätzliches Lager nutzen. Das Basisspiel macht das, deshalb zeigt das Produktionsmenü einer Fabrik neben einem Getreidesilo plötzlich eine viel größere Kapazität und Früchte, die die Fabrik selbst nie bekommen hat. Mit <code>&lt;productionStorage connectSilos="false"/&gt;</code> bleiben Produktionen auf ihr eigenes Lager beschränkt, egal ob zuerst die Produktion oder das Silo gebaut wurde. Modulare Anlagen aus Pumps N' Hoses sind ausgenommen, weil sie aus mehreren Teilen bestehen, die die Speicher in ihrer Umgebung erreichen müssen. Der Standardwert behält das Verhalten des Basisspiels bei.
+<br>
+<br>
+<strong>GUIDELINES</strong> zeichnet zwei Linien auf den Boden, die die Außenkanten der Arbeitsbreite vor dem gefahrenen Fahrzeug markieren, damit sich die nächste Bahn genau an die letzte anschließen lässt. Sie funktionieren an jedem Gerät mit Arbeitsbereich, auch an Schneidwerken von Erntemaschinen und an Pickups von Ballenpressen und Ladewagen, und zeigen immer die tatsächlich wirksame Breite, einschließlich einer mit AWW oder APW gewählten Stufe. Angetriebene Geräte zeigen sie im eingeschalteten Zustand, andere Geräte im abgesenkten Zustand und klappbare Geräte nur ausgeklappt. Die Einstellung ist standardmäßig abgeschaltet: <code>&lt;guideLines module="true" red="0" green="182" blue="255" thickness="0.1" length="20"/&gt;</code> schaltet sie ein, <code>red</code>, <code>green</code> und <code>blue</code> legen die Farbe von 0 bis 255 fest, <code>thickness</code> die Liniendicke in Metern (0 zeichnet eine dünne Linie, höchstens 1) und <code>length</code>, wie weit die Linien in Metern nach vorn reichen (1 bis 200).</div>
 </details>
 </div>
 <br>
@@ -343,6 +350,9 @@ New module that scales the braking force of the engine when the throttle is rele
 ### <strong>AAC-P</strong> - Animal Capacity
 New module that scales the number of animals a pen, barn or stable holds, selectable in construction mode, with the horse stable limit of 16 raised along with it. Animals already inside are never removed when a lower stage is chosen. Food and storage capacity stay with AFV-P, and buildings already placed on a map keep their base value.
 
+### <strong>GUIDELINES</strong> - Working Width Guide Lines
+New setting that draws the outer edges of the working width on the ground ahead of the vehicle you are driving, on every implement with a working area and including the stage selected with AWW or APW. Switched off by default; colour, line thickness and line length are set in modSettings.
+
 ### v1.0.0.4 (released)
 
 ### <strong>Farming Simulator 25 Patch 1.24</strong>
@@ -386,6 +396,9 @@ Neues Modul, das die Bremswirkung des Motors beim Gaswegnehmen skaliert. Die Wir
 
 ### <strong>AAC-P</strong> – Tierkapazität
 Neues Modul, das die Zahl der Tiere skaliert, die ein Stall, eine Scheune oder ein Pferdestall aufnimmt, wählbar im Baumodus, wobei die Pferdestall-Grenze von 16 mit angehoben wird. Bereits vorhandene Tiere werden bei einer niedrigeren Stufe nie entfernt. Futter- und Lagerkapazität bleiben bei AFV-P, und bereits auf der Karte platzierte Gebäude behalten ihren Grundwert.
+
+### <strong>GUIDELINES</strong> – Hilfslinien für die Arbeitsbreite
+Neue Einstellung, die die Außenkanten der Arbeitsbreite vor dem gefahrenen Fahrzeug auf den Boden zeichnet, an jedem Gerät mit Arbeitsbereich und einschließlich der mit AWW oder APW gewählten Stufe. Standardmäßig abgeschaltet; Farbe, Liniendicke und Linienlänge werden in modSettings festgelegt.
 
 ### v1.0.0.4 (Veröffentlicht)
 
