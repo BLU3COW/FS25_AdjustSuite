@@ -31,7 +31,8 @@ function Compatibility.install()
         return
     end
 
-    if ADTrailerModule == nil or ADTrailerModule.getBunkerSiloSpeed == nil then
+    local trailerModule = Suite.getForeignModGlobal("ADTrailerModule")
+    if type(trailerModule) ~= "table" or trailerModule.getBunkerSiloSpeed == nil then
         Compatibility.attempts = (Compatibility.attempts or 0) + 1
         if Compatibility.attempts >= 600 then
             Compatibility.abandoned = true
@@ -39,7 +40,7 @@ function Compatibility.install()
         return
     end
 
-    ADTrailerModule.getBunkerSiloSpeed =
-        Utils.overwrittenFunction(ADTrailerModule.getBunkerSiloSpeed, Compatibility.getBunkerSiloSpeed)
+    trailerModule.getBunkerSiloSpeed =
+        Utils.overwrittenFunction(trailerModule.getBunkerSiloSpeed, Compatibility.getBunkerSiloSpeed)
     Compatibility.installed = true
 end

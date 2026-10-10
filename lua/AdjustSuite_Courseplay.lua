@@ -146,7 +146,7 @@ local function registerProximityFilter(rootVehicle)
 end
 
 function Compatibility.update(source)
-    if source == nil or g_Courseplay == nil then
+    if source == nil or Suite.getForeignModGlobal("g_Courseplay") == nil then
         return
     end
 
