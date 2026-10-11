@@ -80,7 +80,8 @@ Egal ob du im Modus Real, Unreal oder Extreme spielen möchtest: Du entscheidest
 
 <div align="center">
 
-  
+<img width="1600" height="900" alt="adjustsuite-ai" src=".github/assets/screenshots/adjustsuite_ai.png" />
+
 <img width="1600" height="900" alt="008" src=".github/assets/screenshots/adjustsuite-gif.gif" />
 
 </div>
