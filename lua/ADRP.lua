@@ -8,6 +8,7 @@ local LOAD_TRIGGER_PATHS = {
     "placeable.buyingStation.loadTrigger",
     "placeable.husbandry.loadingStation.loadTrigger",
     "placeable.manureHeap.loadingStation.loadTrigger",
+    "placeable.VariableBunker.outputStation.loadTrigger",
 }
 local PRODUCTION_PATH = "placeable.productionPoint"
 local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfigurations.productionPointConfiguration"
