@@ -1236,6 +1236,71 @@ function Suite.capacityLooksExternallyOverridden(object, fillUnit, sourceModuleI
     return math.abs(currentCapacity - expectedCapacity) > 0.5
 end
 
+Suite.REPLACED_VEHICLE_ID_SUFFIX = "_adjustSuiteReplaced"
+
+function Suite.getReplacementVehicle(vehicle)
+    local uniqueId = vehicle ~= nil and vehicle.uniqueId or nil
+    local vehicleSystem = g_currentMission ~= nil and g_currentMission.vehicleSystem or nil
+    local vehicleByUniqueId = vehicleSystem ~= nil and vehicleSystem.vehicleByUniqueId or nil
+    if uniqueId == nil or type(vehicleByUniqueId) ~= "table" then
+        return nil
+    end
+
+    local replacement = vehicleByUniqueId[uniqueId]
+    if replacement == nil or replacement == vehicle then
+        return nil
+    end
+
+    return replacement
+end
+
+function Suite.vehicleHasForeignCapacity(vehicle)
+    local fillUnits = vehicle ~= nil and vehicle.spec_fillUnit ~= nil and vehicle.spec_fillUnit.fillUnits or nil
+    for _, fillUnit in ipairs(fillUnits or {}) do
+        if Suite.capacityLooksExternallyOverridden(vehicle, fillUnit, "AFV") then
+            return true
+        end
+    end
+
+    return false
+end
+
+function Suite.deleteReplacedVehicle(vehicle, superFunc, ...)
+    if Suite.respectExternalCapacityOverrides ~= true then
+        return superFunc(vehicle, ...)
+    end
+
+    local replacement = Suite.getReplacementVehicle(vehicle)
+    if replacement == nil then
+        return superFunc(vehicle, ...)
+    end
+
+    local uniqueId = vehicle.uniqueId
+    vehicle.uniqueId = tostring(uniqueId) .. Suite.REPLACED_VEHICLE_ID_SUFFIX
+    local ok, result = safeCall(superFunc, vehicle, ...)
+    vehicle.uniqueId = uniqueId
+    if not ok then
+        error(result, 0)
+    end
+
+    if vehicle.isDeleted == true and Suite.vehicleHasForeignCapacity(replacement) then
+        local name = nil
+        if replacement.getName ~= nil then
+            local nameOk, nameResult = safeCall(replacement.getName, replacement)
+            name = nameOk and nameResult or nil
+        end
+        print(
+            string.format(
+                "AdjustSuite externalCapacity: kept foreign values of %s (%s) while the vehicle was replaced",
+                tostring(name or "vehicle"),
+                tostring(uniqueId)
+            )
+        )
+    end
+
+    return result
+end
+
 function Suite.resolveConfiguration(object, moduleId, isServer)
     if object == nil or object.configurations == nil or object.configurations[moduleId] == nil then
         return nil
@@ -2012,6 +2077,11 @@ then
     Suite.connectionHookInstalled = true
     FSBaseMission.onConnectionFinishedLoading =
         Utils.prependedFunction(FSBaseMission.onConnectionFinishedLoading, sendSelectionSettings)
+end
+
+if Suite.replacedVehicleHookInstalled ~= true and Vehicle ~= nil and Vehicle.delete ~= nil then
+    Suite.replacedVehicleHookInstalled = true
+    Vehicle.delete = Utils.overwrittenFunction(Vehicle.delete, Suite.deleteReplacedVehicle)
 end
 
 Suite.loadSelectionSettings()
