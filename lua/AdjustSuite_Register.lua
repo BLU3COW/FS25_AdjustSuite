@@ -1928,7 +1928,9 @@ if Suite.storeConfigurationHookInstalled ~= true and ConfigurationUtil.getConfig
         Utils.overwrittenFunction(ConfigurationUtil.getConfigurationsFromXML, addSuiteStoreConfigurations)
 end
 
-function Suite:update(_dt)
+Suite.STORAGE_VERIFICATION_INTERVAL = 1000
+
+function Suite:update(dt)
     if AdjustSuiteAutoDrive ~= nil then
         AdjustSuiteAutoDrive.install()
     end
@@ -1939,8 +1941,16 @@ function Suite:update(_dt)
             Suite.storageVerificationDelay = pending - 1
         else
             Suite.storageVerificationDelay = nil
+            Suite.storageVerificationTimer = 0
             Suite.verifyPlaceableStorageCapacities()
         end
+    elseif Suite.respectExternalCapacityOverrides ~= true then
+        local elapsed = (tonumber(Suite.storageVerificationTimer) or 0) + (tonumber(dt) or 0)
+        if elapsed >= Suite.STORAGE_VERIFICATION_INTERVAL then
+            elapsed = 0
+            Suite.verifyPlaceableStorageCapacities()
+        end
+        Suite.storageVerificationTimer = elapsed
     end
 end
 
