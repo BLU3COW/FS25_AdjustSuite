@@ -102,10 +102,60 @@ local function dischargeNodeHasUsableFillUnit(vehicle, dischargeNode)
     return capacity == nil or (capacity > 0 and capacity < math.huge)
 end
 
-local function getSourceEmptySpeed(dischargeNode)
+local function getStorageCapacityEmptySpeed(vehicle, dischargeNode)
+    local storageCapacity = Suite.getForeignModGlobal("RmAdjustStorageCapacity")
+    local vehicleStorageCapacity = Suite.getForeignModGlobal("RmVehicleStorageCapacity")
+    if
+        type(storageCapacity) ~= "table"
+        or type(vehicleStorageCapacity) ~= "table"
+        or storageCapacity.autoScaleSpeed ~= true
+        or type(storageCapacity.vehicleCapacities) ~= "table"
+        or vehicleStorageCapacity.SPEC_TABLE_NAME == nil
+        or vehicle == nil
+        or vehicle.uniqueId == nil
+    then
+        return nil
+    end
+
+    local spec = vehicle[vehicleStorageCapacity.SPEC_TABLE_NAME]
+    local originalSpeeds = type(spec) == "table" and spec.originalDischargeSpeeds or nil
+    local nodeIndex = tonumber(dischargeNode ~= nil and dischargeNode.index)
+    local nodeData = type(originalSpeeds) == "table" and nodeIndex ~= nil and originalSpeeds[nodeIndex] or nil
+    if type(nodeData) ~= "table" then
+        return nil
+    end
+
+    local fillUnitIndex = tonumber(nodeData.fillUnitIndex)
+    local capacities = storageCapacity.vehicleCapacities[vehicle.uniqueId]
+    local capacity = type(capacities) == "table" and fillUnitIndex ~= nil and tonumber(capacities[fillUnitIndex]) or nil
+    local originalCapacities = spec.originalCapacities
+    local originalCapacity = type(originalCapacities) == "table"
+            and fillUnitIndex ~= nil
+            and tonumber(originalCapacities[fillUnitIndex])
+        or nil
+    local originalSpeed = tonumber(nodeData.emptySpeedLitersPerSec)
+    local fillUnits = vehicle.spec_fillUnit ~= nil and vehicle.spec_fillUnit.fillUnits or nil
+    local fillUnit = fillUnits ~= nil and fillUnitIndex ~= nil and fillUnits[fillUnitIndex] or nil
+    if
+        capacity == nil
+        or capacity <= 0
+        or originalCapacity == nil
+        or originalCapacity <= 0
+        or originalSpeed == nil
+        or originalSpeed <= 0
+        or fillUnit == nil
+        or tonumber(fillUnit.capacity) ~= capacity
+    then
+        return nil
+    end
+
+    return originalSpeed * capacity / originalCapacity / 1000
+end
+
+local function getSourceEmptySpeed(vehicle, dischargeNode)
     local emptySpeed = tonumber(dischargeNode ~= nil and dischargeNode.emptySpeed) or 0
     if Suite.respectExternalCapacityOverrides == true then
-        return emptySpeed
+        return getStorageCapacityEmptySpeed(vehicle, dischargeNode) or emptySpeed
     end
 
     local baseEmptySpeed = tonumber(dischargeNode ~= nil and dischargeNode.adjustSuiteBaseEmptySpeed)
@@ -128,7 +178,7 @@ function ADR.getEffectiveEmptySpeed(vehicle, dischargeNode)
         return emptySpeed
     end
 
-    return getSourceEmptySpeed(dischargeNode) * getFactor(vehicle)
+    return getSourceEmptySpeed(vehicle, dischargeNode) * getFactor(vehicle)
 end
 
 local function getAdjustedRates(vehicle)
@@ -146,7 +196,7 @@ local function getAdjustedRates(vehicle)
     for _, dischargeNode in ipairs(dischargeable.dischargeNodes) do
         local emptySpeed = tonumber(dischargeNode.emptySpeed)
         if emptySpeed ~= nil and emptySpeed > 0 and dischargeNodeHasUsableFillUnit(vehicle, dischargeNode) then
-            local rate = math.max(math.floor(getSourceEmptySpeed(dischargeNode) * 1000 * factor + 0.5), 1)
+            local rate = math.max(math.floor(getSourceEmptySpeed(vehicle, dischargeNode) * 1000 * factor + 0.5), 1)
             if not seen[rate] then
                 seen[rate] = true
                 table.insert(rates, rate)
