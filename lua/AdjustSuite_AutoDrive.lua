@@ -11,13 +11,23 @@ function Compatibility.getBunkerSiloSpeed(trailerModule, superFunc)
             and trailer:getCurrentDischargeNode()
         or nil
     local baseEmptySpeed = dischargeNode ~= nil and tonumber(dischargeNode.emptySpeed) or nil
-    local factor = Suite.getFactorFromOffset(Suite.getSelectedOffset(trailer, "ADR"))
+    local adr = Suite.moduleClasses["ADR"]
+    local effectiveEmptySpeed = baseEmptySpeed ~= nil
+            and adr ~= nil
+            and adr.getEffectiveEmptySpeed ~= nil
+            and adr.getEffectiveEmptySpeed(trailer, dischargeNode)
+        or nil
 
-    if baseEmptySpeed == nil or baseEmptySpeed <= 0 or factor == 1 then
+    if
+        baseEmptySpeed == nil
+        or baseEmptySpeed <= 0
+        or effectiveEmptySpeed == nil
+        or effectiveEmptySpeed == baseEmptySpeed
+    then
         return superFunc(trailerModule)
     end
 
-    dischargeNode.emptySpeed = baseEmptySpeed * factor
+    dischargeNode.emptySpeed = effectiveEmptySpeed
     local ok, speed = safeCall(superFunc, trailerModule)
     dischargeNode.emptySpeed = baseEmptySpeed
     if not ok then

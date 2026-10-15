@@ -1963,6 +1963,21 @@ if Suite.fillUnitBaseHookInstalled ~= true and FillUnit ~= nil and FillUnit.onLo
     FillUnit.onLoad = Utils.appendedFunction(FillUnit.onLoad, Suite.captureFillUnitBaseCapacities)
 end
 
+function Suite.captureDischargeNodeBaseSpeeds(vehicle)
+    local spec = vehicle ~= nil and vehicle.spec_dischargeable or nil
+    for _, dischargeNode in ipairs(spec ~= nil and spec.dischargeNodes or {}) do
+        local emptySpeed = tonumber(dischargeNode.emptySpeed)
+        if dischargeNode.adjustSuiteBaseEmptySpeed == nil and emptySpeed ~= nil and emptySpeed > 0 then
+            dischargeNode.adjustSuiteBaseEmptySpeed = emptySpeed
+        end
+    end
+end
+
+if Suite.dischargeBaseHookInstalled ~= true and Dischargeable ~= nil and Dischargeable.onLoad ~= nil then
+    Suite.dischargeBaseHookInstalled = true
+    Dischargeable.onLoad = Utils.appendedFunction(Dischargeable.onLoad, Suite.captureDischargeNodeBaseSpeeds)
+end
+
 function Suite.refreshProductionPoints()
     local manager = g_currentMission ~= nil and g_currentMission.productionChainManager or nil
     for _, productionPoint in ipairs(manager ~= nil and manager.productionPoints or {}) do

@@ -102,6 +102,35 @@ local function dischargeNodeHasUsableFillUnit(vehicle, dischargeNode)
     return capacity == nil or (capacity > 0 and capacity < math.huge)
 end
 
+local function getSourceEmptySpeed(dischargeNode)
+    local emptySpeed = tonumber(dischargeNode ~= nil and dischargeNode.emptySpeed) or 0
+    if Suite.respectExternalCapacityOverrides == true then
+        return emptySpeed
+    end
+
+    local baseEmptySpeed = tonumber(dischargeNode ~= nil and dischargeNode.adjustSuiteBaseEmptySpeed)
+    if baseEmptySpeed ~= nil and baseEmptySpeed > 0 then
+        return baseEmptySpeed
+    end
+
+    return emptySpeed
+end
+
+function ADR.getEffectiveEmptySpeed(vehicle, dischargeNode)
+    local emptySpeed = tonumber(dischargeNode ~= nil and dischargeNode.emptySpeed)
+    if
+        emptySpeed == nil
+        or emptySpeed <= 0
+        or isBufferDischargeNode(vehicle, dischargeNode)
+        or not hasSelectedConfiguration(vehicle)
+        or not dischargeNodeHasUsableFillUnit(vehicle, dischargeNode)
+    then
+        return emptySpeed
+    end
+
+    return getSourceEmptySpeed(dischargeNode) * getFactor(vehicle)
+end
+
 local function getAdjustedRates(vehicle)
     if getIsBufferCombine(vehicle) then
         return nil
@@ -117,7 +146,7 @@ local function getAdjustedRates(vehicle)
     for _, dischargeNode in ipairs(dischargeable.dischargeNodes) do
         local emptySpeed = tonumber(dischargeNode.emptySpeed)
         if emptySpeed ~= nil and emptySpeed > 0 and dischargeNodeHasUsableFillUnit(vehicle, dischargeNode) then
-            local rate = math.max(math.floor(emptySpeed * 1000 * factor + 0.5), 1)
+            local rate = math.max(math.floor(getSourceEmptySpeed(dischargeNode) * 1000 * factor + 0.5), 1)
             if not seen[rate] then
                 seen[rate] = true
                 table.insert(rates, rate)
@@ -196,11 +225,12 @@ function ADR:getDischargeNodeEmptyFactor(superFunc, dischargeNode)
         return emptyFactor
     end
 
-    if not hasSelectedConfiguration(self) or not dischargeNodeHasUsableFillUnit(self, dischargeNode) then
+    local emptySpeed = tonumber(dischargeNode ~= nil and dischargeNode.emptySpeed) or 0
+    if emptySpeed <= 0 then
         return emptyFactor
     end
 
-    return emptyFactor * getFactor(self)
+    return emptyFactor * ADR.getEffectiveEmptySpeed(self, dischargeNode) / emptySpeed
 end
 
 function ADR:onDraw(_isActiveForInput, isActiveForInputIgnoreSelection, _isSelected)
