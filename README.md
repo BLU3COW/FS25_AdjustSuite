@@ -350,7 +350,7 @@ New module that scales the consumption of a vehicle's engine per shop configurat
 New module that scales the braking force of the engine when the throttle is released. The effect is capped at the full engine brake.
 
 ### <strong>AAC-P</strong> - Animal Capacity
-New module that scales the number of animals a pen, barn or stable holds, selectable in construction mode, with the horse stable limit of 16 raised along with it. Animals already inside are never removed when a lower stage is chosen. Food and storage capacity stay with AFV-P, and buildings already placed on a map keep their base value.
+New module that scales the number of animals a pen, barn or stable holds, selectable in construction mode, with the horse stable limit of 16 raised along with it. Animals already inside are never removed when a lower stage is chosen. Food and storage capacity stay with AFV-P, and buildings already placed on a map keep their base value. The game itself shows only about 25 animals per building; any animals beyond that are counted and cared for, but not visible.
 
 ### <strong>AFE-P</strong> - Feeding Efficiency
 New module that scales how much food, water and straw the animals of a pen, barn or stable consume, selectable in construction mode. A positive stage lowers consumption, so +100 % means half the food, water and straw while the animals stay just as well fed. Pasture grass, feeding robots, automatic water supply and DLC bedding follow along; milk, slurry, eggs, wool and manure from straw stay unchanged.
@@ -400,7 +400,7 @@ Neues Modul, das den Verbrauch des Motors je Shop-Konfiguration skaliert. Eine p
 Neues Modul, das die Bremswirkung des Motors beim Gaswegnehmen skaliert. Die Wirkung ist auf die volle Motorbremse begrenzt.
 
 ### <strong>AAC-P</strong> – Tierkapazität
-Neues Modul, das die Zahl der Tiere skaliert, die ein Stall, eine Scheune oder ein Pferdestall aufnimmt, wählbar im Baumodus, wobei die Pferdestall-Grenze von 16 mit angehoben wird. Bereits vorhandene Tiere werden bei einer niedrigeren Stufe nie entfernt. Futter- und Lagerkapazität bleiben bei AFV-P, und bereits auf der Karte platzierte Gebäude behalten ihren Grundwert.
+Neues Modul, das die Zahl der Tiere skaliert, die ein Stall, eine Scheune oder ein Pferdestall aufnimmt, wählbar im Baumodus, wobei die Pferdestall-Grenze von 16 mit angehoben wird. Bereits vorhandene Tiere werden bei einer niedrigeren Stufe nie entfernt. Futter- und Lagerkapazität bleiben bei AFV-P, und bereits auf der Karte platzierte Gebäude behalten ihren Grundwert. Das Spiel selbst zeigt je Gebäude nur rund 25 Tiere an; alle weiteren Tiere werden mitgezählt und versorgt, sind aber nicht sichtbar.
 
 ### <strong>AFE-P</strong> – Fütterungseffizienz
 Neues Modul, das skaliert, wie viel Futter, Wasser und Stroh die Tiere eines Stalls, einer Scheune oder eines Pferdestalls verbrauchen, wählbar im Baumodus. Eine positive Stufe senkt den Verbrauch, +100 % bedeuten also halb so viel Futter, Wasser und Stroh bei gleich guter Versorgung. Weidegras, Futterroboter, automatische Wasserversorgung und DLC-Einstreu folgen mit; Milch, Gülle, Eier, Wolle und Mist aus Stroh bleiben unverändert.
