@@ -128,28 +128,28 @@ local function getStorageCapacityEmptySpeed(vehicle, dischargeNode)
     local fillUnitIndex = tonumber(nodeData.fillUnitIndex)
     local capacities = storageCapacity.vehicleCapacities[vehicle.uniqueId]
     local capacity = type(capacities) == "table" and fillUnitIndex ~= nil and tonumber(capacities[fillUnitIndex]) or nil
-    local originalCapacities = spec.originalCapacities
-    local originalCapacity = type(originalCapacities) == "table"
-            and fillUnitIndex ~= nil
-            and tonumber(originalCapacities[fillUnitIndex])
-        or nil
-    local originalSpeed = tonumber(nodeData.emptySpeedLitersPerSec)
     local fillUnits = vehicle.spec_fillUnit ~= nil and vehicle.spec_fillUnit.fillUnits or nil
     local fillUnit = fillUnits ~= nil and fillUnitIndex ~= nil and fillUnits[fillUnitIndex] or nil
+    local originalCapacities = spec.originalCapacities
+    local baseCapacity = tonumber(fillUnit ~= nil and fillUnit.adjustSuiteBaseCapacity)
+        or (type(originalCapacities) == "table" and fillUnitIndex ~= nil and tonumber(originalCapacities[fillUnitIndex]))
+        or nil
+    local ascSpeed = tonumber(nodeData.emptySpeedLitersPerSec)
+    local baseSpeed = tonumber(dischargeNode.adjustSuiteBaseEmptySpeed) or (ascSpeed ~= nil and ascSpeed / 1000) or nil
     if
         capacity == nil
         or capacity <= 0
-        or originalCapacity == nil
-        or originalCapacity <= 0
-        or originalSpeed == nil
-        or originalSpeed <= 0
+        or baseCapacity == nil
+        or baseCapacity <= 0
+        or baseSpeed == nil
+        or baseSpeed <= 0
         or fillUnit == nil
         or tonumber(fillUnit.capacity) ~= capacity
     then
         return nil
     end
 
-    return originalSpeed * capacity / originalCapacity / 1000
+    return baseSpeed * capacity / baseCapacity
 end
 
 local function getSourceEmptySpeed(vehicle, dischargeNode)
