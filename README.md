@@ -364,6 +364,9 @@ The setting now also decides how ADR and ADR-P treat a rate raised by AdjustStor
 ### <strong>ADR-P</strong> - VariableBunker
 ADR-P now also scales the loading point of VariableBunker.
 
+### <strong>AFV-P</strong> - Feeding Robot
+The storages of a feeding robot enlarged with AFV-P now fill their heaps up to the new capacity, and other players in multiplayer see the correct fill levels. Eggs, wool and goat milk leave a building on pallets and have no storage of their own, so AFV-P does not change them.
+
 ### v1.0.0.4 (released)
 
 ### <strong>Farming Simulator 25 Patch 1.24</strong>
@@ -419,6 +422,9 @@ Die Einstellung entscheidet jetzt auch, wie ADR und ADR-P mit einer Rate umgehen
 
 ### <strong>ADR-P</strong> – VariableBunker
 ADR-P skaliert jetzt auch die Ladestelle von VariableBunker.
+
+### <strong>AFV-P</strong> – Fütterungsroboter
+Die mit AFV-P vergrößerten Lager eines Fütterungsroboters füllen ihre Haufen jetzt bis zur neuen Kapazität, und andere Spieler sehen im Mehrspielermodus die richtigen Füllstände. Eier, Wolle und Ziegenmilch verlassen ein Gebäude auf Paletten und haben kein eigenes Lager, AFV-P ändert sie deshalb nicht.
 
 ### v1.0.0.4 (Veröffentlicht)
 
