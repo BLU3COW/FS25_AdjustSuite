@@ -18,21 +18,40 @@ function AACP.getStoreContext(xmlFile, _configurations, _defaultConfigurationIds
     return { basePrice = Suite.getStoreItemPrice(storeItem, xmlFile) }
 end
 
-function AACP.liftHorseLimit(placeable, outdoorAreaSqm)
+function AACP.getOutdoorAnimals(spec, outdoorAreaSqm)
+    local sqmPerAnimal = tonumber(spec.sqmPerAnimal)
+    if outdoorAreaSqm == nil or sqmPerAnimal == nil or sqmPerAnimal <= 0 then
+        return 0
+    end
+
+    return math.floor(outdoorAreaSqm / sqmPerAnimal)
+end
+
+function AACP.getScaledMaxNumAnimals(placeable, outdoorAreaSqm)
     local spec = placeable.spec_husbandryAnimals
+    local base = tonumber(placeable.adjustSuiteAACPBaseMaxNumAnimals) or tonumber(spec.baseMaxNumAnimals) or 0
+    local total = base + AACP.getOutdoorAnimals(spec, outdoorAreaSqm)
+
+    return math.min(scaleCount(total, placeable.adjustSuiteAACPFactor or 1), MAX_NETWORK_ANIMALS)
+end
+
+function AACP:setMaxNumAnimals(superFunc, outdoorAreaSqm)
+    local spec = self.spec_husbandryAnimals
     if spec == nil then
-        return
+        return superFunc(self, outdoorAreaSqm)
     end
 
-    local uncapped = tonumber(spec.baseMaxNumAnimals) or 0
-    if outdoorAreaSqm ~= nil and tonumber(spec.sqmPerAnimal) ~= nil and spec.sqmPerAnimal > 0 then
-        uncapped = uncapped + math.floor(outdoorAreaSqm / spec.sqmPerAnimal)
-    end
-    uncapped = math.min(uncapped, MAX_NETWORK_ANIMALS)
+    local target = AACP.getScaledMaxNumAnimals(self, outdoorAreaSqm)
+    local storedBase = spec.baseMaxNumAnimals
+    spec.baseMaxNumAnimals = target - AACP.getOutdoorAnimals(spec, outdoorAreaSqm)
+    local result = superFunc(self, outdoorAreaSqm)
+    spec.baseMaxNumAnimals = storedBase
 
-    if uncapped > (tonumber(spec.maxNumAnimals) or 0) then
-        spec.maxNumAnimals = uncapped
+    if target > (tonumber(spec.maxNumAnimals) or 0) then
+        spec.maxNumAnimals = target
     end
+
+    return result
 end
 
 function AACP.applyToPlaceableXML(placeable, offset)
@@ -54,16 +73,7 @@ function AACP.applyToPlaceableXML(placeable, offset)
     if placeable.setMaxNumAnimals ~= nil and placeable.adjustSuiteAACPHooked ~= true then
         placeable.adjustSuiteAACPHooked = true
         placeable.adjustSuiteAACPFactor = factor
-        placeable.setMaxNumAnimals = Utils.overwrittenFunction(
-            placeable.setMaxNumAnimals,
-            function(self, superFunc, outdoorAreaSqm)
-                if outdoorAreaSqm ~= nil then
-                    outdoorAreaSqm = outdoorAreaSqm * (self.adjustSuiteAACPFactor or 1)
-                end
-                local result = superFunc(self, outdoorAreaSqm)
-                AACP.liftHorseLimit(self, outdoorAreaSqm)
-                return result
-            end
-        )
+        placeable.adjustSuiteAACPBaseMaxNumAnimals = base
+        placeable.setMaxNumAnimals = Utils.overwrittenFunction(placeable.setMaxNumAnimals, AACP.setMaxNumAnimals)
     end
 end
