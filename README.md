@@ -252,7 +252,7 @@ Die neueste Version verbessert außerdem die Kompatibilität mit <strong>Coursep
 With <strong>PRICE</strong>, you can define how strongly adjustments affect prices. The default value is <strong>100%</strong>, which corresponds to the normal price calculation. Depending on your settings, vehicles and attachments can become cheaper, more expensive, or better suited to your preferred playstyle.
 <br>
 <br>
-<strong>EXTERNALCAPACITY</strong> is for players who also use a separate mod that lets you set a vehicle's storage or tank capacity to any custom value at runtime, such as <strong>AdjustStorageCapacity</strong> or similar mods. By default, AdjustSuite doesn't know about such changes and keeps recalculating capacities from its own settings, which would undo them after a reload. Enabling this option makes AdjustSuite recognize when another mod has changed a capacity since AdjustSuite last touched it, and leave that value alone instead of overwriting it. Leave this off if you don't use such a mod.
+<strong>EXTERNALCAPACITY</strong> is for players who also use a separate mod that lets you set a vehicle's storage or tank capacity to any custom value at runtime, such as <strong>AdjustStorageCapacity</strong> or similar mods. By default, AdjustSuite doesn't know about such changes and keeps recalculating capacities from its own settings, which would undo them after a reload. Enabling this option makes AdjustSuite recognize when another mod has changed a capacity since AdjustSuite last touched it, and leave that value alone instead of overwriting it. A discharge or loading rate raised by such a mod is kept as well, with ADR and ADR-P applied on top, and values the mod stores per vehicle survive a workshop reconfiguration or a vehicle reset. Leave this off if you don't use such a mod.
 <br>
 <br>
 <strong>SILONETWORK</strong> fixes how silos that extend each other connect. In the base game a silo only picks up the silos that already existed when it was built, never the ones built after it. Four silos standing side by side therefore form four different networks, each reports a different total capacity, and tipping into the oldest silo can only use the oldest storage. The setting has three states and is switched off by default. <code>module="true" connectAll="true"</code> lets every silo within reach join the same network no matter the order in which they were built; a demolished silo also stops counting towards its neighbours right away. <code>module="true" connectAll="false"</code> keeps every silo to its own storage and stops it from taking over the silos next to it. <code>module="false"</code> is the default and leaves everything to the base game, including the ghost capacity of a demolished silo. Whether productions use silos in their surroundings is a separate setting, PRODUCTIONSTORAGE.
@@ -274,7 +274,7 @@ With <strong>PRICE</strong>, you can define how strongly adjustments affect pric
 Mit <strong>PRICE</strong> kannst du festlegen, wie stark sich Anpassungen auf die Preise auswirken. Der Standardwert liegt bei <strong>100%</strong> und entspricht damit der normalen Preisberechnung. Je nach Einstellung können Fahrzeuge und Anbaugeräte günstiger, teurer oder besser an deinen gewünschten Spielstil angepasst werden.
 <br>
 <br>
-<strong>EXTERNALCAPACITY</strong> richtet sich an Spieler, die zusätzlich einen separaten Mod verwenden, mit dem sich die Lager- oder Tankkapazität eines Fahrzeugs jederzeit im Spiel auf einen beliebigen Wert setzen lässt, zum Beispiel <strong>AdjustStorageCapacity</strong> oder ähnliche Mods. Standardmäßig weiß AdjustSuite nichts von solchen Änderungen und berechnet Kapazitäten weiterhin nach seinen eigenen Einstellungen neu, wodurch sie nach einem Neustart wieder rückgängig gemacht würden. Ist diese Option aktiviert, erkennt AdjustSuite, wenn ein anderer Mod eine Kapazität seit der letzten eigenen Änderung angepasst hat, und lässt diesen Wert unangetastet, statt ihn zu überschreiben. Lass diese Option deaktiviert, wenn du keinen solchen Mod nutzt.
+<strong>EXTERNALCAPACITY</strong> richtet sich an Spieler, die zusätzlich einen separaten Mod verwenden, mit dem sich die Lager- oder Tankkapazität eines Fahrzeugs jederzeit im Spiel auf einen beliebigen Wert setzen lässt, zum Beispiel <strong>AdjustStorageCapacity</strong> oder ähnliche Mods. Standardmäßig weiß AdjustSuite nichts von solchen Änderungen und berechnet Kapazitäten weiterhin nach seinen eigenen Einstellungen neu, wodurch sie nach einem Neustart wieder rückgängig gemacht würden. Ist diese Option aktiviert, erkennt AdjustSuite, wenn ein anderer Mod eine Kapazität seit der letzten eigenen Änderung angepasst hat, und lässt diesen Wert unangetastet, statt ihn zu überschreiben. Eine von einem solchen Mod erhöhte Entlade- oder Laderate bleibt ebenfalls erhalten, ADR und ADR-P wirken dann zusätzlich, und Werte, die der Mod je Fahrzeug speichert, überstehen einen Werkstatt-Umbau oder das Zurücksetzen eines Fahrzeugs. Lass diese Option deaktiviert, wenn du keinen solchen Mod nutzt.
 <br>
 <br>
 <strong>SILONETWORK</strong> behebt, wie sich Silos verbinden, die einander erweitern. Im Basisspiel übernimmt ein Silo nur die Silos, die beim Bau bereits standen, nie die danach gebauten. Vier Silos nebeneinander bilden dadurch vier verschiedene Netze, jedes meldet eine andere Gesamtkapazität, und beim Abkippen ins älteste Silo steht nur dessen eigener Speicher zur Verfügung. Die Einstellung hat drei Zustände und ist standardmäßig abgeschaltet. Mit <code>module="true" connectAll="true"</code> gehört jedes Silo in Reichweite zum selben Netz, egal in welcher Reihenfolge gebaut wurde, und ein abgerissenes Silo zählt sofort nicht mehr bei seinen Nachbarn mit. <code>module="true" connectAll="false"</code> lässt jedes Silo bei seinem eigenen Speicher und verhindert, dass es die Silos daneben übernimmt. <code>module="false"</code> ist der Standard und überlässt alles dem Basisspiel, einschließlich der Geisterkapazität eines abgerissenen Silos. Ob Produktionen Silos in der Umgebung nutzen, ist die separate Einstellung PRODUCTIONSTORAGE.
@@ -344,7 +344,7 @@ The <strong>“modSettings.xml”</strong> file is created automatically when th
 ### v1.0.0.5 (in preparation)
 
 ### <strong>AFE</strong> - Fuel Efficiency
-New module that scales the consumption of a vehicle's engine per shop configuration. A positive stage lowers consumption, so +100 % means half the fuel for the same work. Air consumers are left untouched.
+New module that scales the consumption of a vehicle's engine per shop configuration. A positive stage lowers consumption, so +100 % means half the fuel for the same work. DEF follows the same stage, so it never runs out before the fuel; only compressed air is left untouched.
 
 ### <strong>AEB</strong> - Engine Brake
 New module that scales the braking force of the engine when the throttle is released. The effect is capped at the full engine brake.
@@ -357,6 +357,12 @@ New module that scales how much food, water and straw the animals of a pen, barn
 
 ### <strong>GUIDELINES</strong> - Working Width Guide Lines
 New setting that draws the outer edges of the working width on the ground ahead of the vehicle you are driving, on every implement with a working area and including the stage selected with AWW or APW. Switched off by default; colour, line thickness and line length are set in modSettings.
+
+### <strong>EXTERNALCAPACITY</strong> - Discharge Rates, Loading Rates and Replaced Vehicles
+The setting now also decides how ADR and ADR-P treat a rate raised by AdjustStorageCapacity or a similar mod. With <code>respect="true"</code> the selected stage is applied on top of the other mod's rate, and values the other mod stores per vehicle survive a workshop reconfiguration, a vehicle reset and a reload. With the default <code>"false"</code> ADR and ADR-P calculate from the original rate, and AFV-P checks every second, on the host and on every client, whether a storage capacity was changed by another mod.
+
+### <strong>ADR-P</strong> - VariableBunker
+ADR-P now also scales the loading point of VariableBunker.
 
 ### v1.0.0.4 (released)
 
@@ -394,7 +400,7 @@ ACA-P now takes effect on the modular biogas plant, which used to restore its ow
 ### v1.0.0.5 (in Vorbereitung)
 
 ### <strong>AFE</strong> – Kraftstoffeffizienz
-Neues Modul, das den Verbrauch des Motors je Shop-Konfiguration skaliert. Eine positive Stufe senkt den Verbrauch, +100 % bedeuten also halb so viel Kraftstoff für dieselbe Arbeit. Luftverbraucher bleiben unberührt.
+Neues Modul, das den Verbrauch des Motors je Shop-Konfiguration skaliert. Eine positive Stufe senkt den Verbrauch, +100 % bedeuten also halb so viel Kraftstoff für dieselbe Arbeit. AdBlue folgt derselben Stufe und ist damit nie vor dem Kraftstoff leer; nur die Druckluft bleibt unberührt.
 
 ### <strong>AEB</strong> – Motorbremse
 Neues Modul, das die Bremswirkung des Motors beim Gaswegnehmen skaliert. Die Wirkung ist auf die volle Motorbremse begrenzt.
@@ -407,6 +413,12 @@ Neues Modul, das skaliert, wie viel Futter, Wasser und Stroh die Tiere eines Sta
 
 ### <strong>GUIDELINES</strong> – Hilfslinien für die Arbeitsbreite
 Neue Einstellung, die die Außenkanten der Arbeitsbreite vor dem gefahrenen Fahrzeug auf den Boden zeichnet, an jedem Gerät mit Arbeitsbereich und einschließlich der mit AWW oder APW gewählten Stufe. Standardmäßig abgeschaltet; Farbe, Liniendicke und Linienlänge werden in modSettings festgelegt.
+
+### <strong>EXTERNALCAPACITY</strong> – Entladeraten, Laderaten und ersetzte Fahrzeuge
+Die Einstellung entscheidet jetzt auch, wie ADR und ADR-P mit einer Rate umgehen, die AdjustStorageCapacity oder ein ähnlicher Mod erhöht hat. Mit <code>respect="true"</code> wird die gewählte Stufe auf die Rate des anderen Mods aufgeschlagen, und Werte, die der andere Mod je Fahrzeug speichert, überstehen einen Werkstatt-Umbau, das Zurücksetzen eines Fahrzeugs und ein Neuladen. Mit dem Standardwert <code>"false"</code> rechnen ADR und ADR-P von der Originalrate, und AFV-P prüft jede Sekunde, auf dem Host und auf jedem Client, ob ein anderer Mod eine Lagerkapazität geändert hat.
+
+### <strong>ADR-P</strong> – VariableBunker
+ADR-P skaliert jetzt auch die Ladestelle von VariableBunker.
 
 ### v1.0.0.4 (Veröffentlicht)
 
