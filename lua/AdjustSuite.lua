@@ -173,8 +173,8 @@ local GUIDE_LINE_DEFAULTS = {
     red = 0,
     green = 182,
     blue = 255,
-    thickness = 0.1,
-    length = 20,
+    thickness = 0,
+    length = 5,
 }
 local GUIDE_LINE_MAX_THICKNESS = 1
 local GUIDE_LINE_MIN_LENGTH = 1
@@ -845,18 +845,21 @@ local function extendGuideLineExtents(node, referenceNode)
     if guideLineExtents.minX == nil then
         guideLineExtents.minX = x
         guideLineExtents.maxX = x
+        guideLineExtents.minZ = z
         guideLineExtents.maxZ = z
         return
     end
 
     guideLineExtents.minX = math.min(guideLineExtents.minX, x)
     guideLineExtents.maxX = math.max(guideLineExtents.maxX, x)
+    guideLineExtents.minZ = math.min(guideLineExtents.minZ, z)
     guideLineExtents.maxZ = math.max(guideLineExtents.maxZ, z)
 end
 
 local function collectGuideLineExtents(rootVehicle, referenceNode)
     guideLineExtents.minX = nil
     guideLineExtents.maxX = nil
+    guideLineExtents.minZ = nil
     guideLineExtents.maxZ = nil
 
     for _, vehicle in pairs(rootVehicle.childVehicles or { rootVehicle }) do
@@ -939,12 +942,8 @@ local function drawGuideLinesForVehicle(rootVehicle)
     end
 
     local guideLines = Suite.guideLines
-    local startZ = guideLineExtents.maxZ
-    local size = rootVehicle.size
-    if size ~= nil and tonumber(size.length) ~= nil then
-        startZ = math.max(startZ, (tonumber(size.lengthOffset) or 0) + size.length * 0.5)
-    end
-    local endZ = startZ + guideLines.length
+    local startZ = guideLineExtents.minZ
+    local endZ = guideLineExtents.maxZ + guideLines.length
 
     drawGuideLine(referenceNode, terrainNode, guideLineExtents.minX, startZ, endZ, guideLines)
     drawGuideLine(referenceNode, terrainNode, guideLineExtents.maxX, startZ, endZ, guideLines)
