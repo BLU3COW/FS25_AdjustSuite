@@ -16,33 +16,7 @@ local PRODUCTION_CONFIGURATIONS_PATH = PRODUCTION_PATH .. ".productionPointConfi
 local HUSBANDRY_FOOD_CAPACITY_PATH = "placeable.husbandry.food#capacity"
 local HUSBANDRY_FOOD_PLANE_CAPACITY_PATH = "placeable.husbandry.food.dynamicFoodPlane#capacity"
 local MANURE_HEAP_CAPACITY_PATH = "placeable.manureHeap#capacity"
-
-AFVP.visualFillVolumes = AFVP.visualFillVolumes or setmetatable({}, { __mode = "v" })
-AFVP.baseFillPlaneAdd = AFVP.baseFillPlaneAdd or fillPlaneAdd
-AFVP.hookedFillPlaneAdd = AFVP.hookedFillPlaneAdd
-    or function(fillPlaneId, delta, ...)
-        local fillVolume = AFVP.visualFillVolumes[fillPlaneId]
-        if fillVolume ~= nil and fillVolume.volume == fillPlaneId then
-            delta = delta / (tonumber(fillVolume.adjustSuiteAFVPVisualFactor) or 1)
-        end
-        return AFVP.baseFillPlaneAdd(fillPlaneId, delta, ...)
-    end
-
-local function updateFillPlaneHook()
-    if AFVP.baseFillPlaneAdd == nil then
-        return
-    end
-
-    if next(AFVP.visualFillVolumes) ~= nil then
-        if AFVP.fillPlaneHookInstalled ~= true then
-            AFVP.fillPlaneHookInstalled = true
-            fillPlaneAdd = AFVP.hookedFillPlaneAdd
-        end
-    elseif AFVP.fillPlaneHookInstalled == true and fillPlaneAdd == AFVP.hookedFillPlaneAdd then
-        AFVP.fillPlaneHookInstalled = false
-        fillPlaneAdd = AFVP.baseFillPlaneAdd
-    end
-end
+local FEEDING_ROBOT_SPOT_PATH = "feedingRobot.unloadingSpots.unloadingSpot"
 
 AFVP.storages = AFVP.storages or setmetatable({}, { __mode = "k" })
 
@@ -659,72 +633,6 @@ local function scaleCapacity(xmlFile, key, factor)
     end
 end
 
-local function recreateFillVolume(fillVolume, capacity, fillLevel, fillTypeIndex, factor)
-    factor = tonumber(factor) or 1
-    if type(fillVolume) ~= "table" or capacity == nil or capacity <= 0 or factor <= 0 then
-        return
-    end
-
-    fillVolume.capacity = capacity
-    if fillVolume.volume == nil or fillVolume.volume == 0 then
-        return
-    end
-
-    local visualCapacity = capacity / factor
-    local newVolume = Suite.createFillPlane(fillVolume.baseNode, visualCapacity, fillVolume)
-    if newVolume == nil then
-        return
-    end
-
-    AFVP.visualFillVolumes[fillVolume.volume] = nil
-    updateFillPlaneHook()
-    delete(fillVolume.volume)
-    fillVolume.volume = newVolume
-
-    AFVP.baseFillPlaneAdd(newVolume, 1, 0, 1, 0, 11, 0, 0, 0, 0, 11)
-    fillVolume.heightOffset = getFillPlaneHeightAtLocalPos(newVolume, 0, 0)
-    AFVP.baseFillPlaneAdd(newVolume, -1, 0, 1, 0, 11, 0, 0, 0, 0, 11)
-
-    for _, deformer in ipairs(fillVolume.deformers or {}) do
-        deformer.polyline = findPolyline(newVolume, deformer.posX, deformer.posZ)
-    end
-
-    fillTypeIndex = tonumber(fillTypeIndex) or tonumber(fillVolume.lastFillType)
-    if fillTypeIndex ~= nil and g_fillTypeManager ~= nil then
-        local textureArrayIndex = g_fillTypeManager:getTextureArrayIndexByFillTypeIndex(fillTypeIndex)
-        if textureArrayIndex ~= nil then
-            setShaderParameter(newVolume, "fillTypeId", textureArrayIndex - 1, 0, 0, 0, false)
-        end
-
-        local fillType = g_fillTypeManager:getFillTypeByIndex(fillTypeIndex)
-        if fillType ~= nil and fillType.maxPhysicalSurfaceAngle ~= nil then
-            fillVolume.maxPhysicalSurfaceAngle = fillType.maxPhysicalSurfaceAngle
-            setFillPlaneMaxPhysicalSurfaceAngle(newVolume, fillVolume.maxPhysicalSurfaceAngle)
-        end
-    end
-
-    fillLevel = math.min(tonumber(fillLevel) or tonumber(fillVolume.fillLevel) or 0, capacity)
-    local visualFillLevel = math.min(fillLevel / factor, visualCapacity)
-    if visualFillLevel > 0 then
-        local isFlat = fillVolume.maxPhysicalSurfaceAngle == 0 or fillVolume.maxSurfaceAngle == 0
-        local loadSize = isFlat and 10 or 0.1
-        local x, y, z = localToWorld(newVolume, -loadSize * 0.5, 0, -loadSize * 0.5)
-        local d1x, d1y, d1z = localDirectionToWorld(newVolume, loadSize, 0, 0)
-        local d2x, d2y, d2z = localDirectionToWorld(newVolume, 0, 0, loadSize)
-        local steps = math.min(math.max(math.floor(visualFillLevel / 400), 1), 50)
-        for _ = 1, steps do
-            AFVP.baseFillPlaneAdd(newVolume, visualFillLevel / steps, x, y, z, d1x, d1y, d1z, d2x, d2y, d2z)
-        end
-    end
-
-    fillVolume.fillLevel = fillLevel
-    fillVolume.lastFillType = fillTypeIndex
-    fillVolume.adjustSuiteAFVPVisualFactor = factor
-    AFVP.visualFillVolumes[newVolume] = fillVolume
-    updateFillPlaneHook()
-    setVisibility(newVolume, fillLevel > 0)
-end
-
 local function storageIsUsable(xmlFile, key)
     local handle = xmlFile.handle
     local fillTypes = handle ~= nil and getXMLString(handle, key .. "#fillTypes") or nil
@@ -823,56 +731,23 @@ function AFVP.applyToPlaceableXML(placeable, offset)
     scaleCapacity(placeable.xmlFile, MANURE_HEAP_CAPACITY_PATH, factor)
 end
 
-function AFVP.onFeedingRobotLoaded(placeable, robot, _args)
+function AFVP.scaleFeedingRobotXML(robot, _node, _failedReason, args)
+    local placeable = robot ~= nil and robot.owner or nil
     local factor = tonumber(placeable ~= nil and placeable.adjustSuiteAFVPFactor) or 1
-    if robot == nil or factor == 1 or robot.adjustSuiteAFVPScaled == true then
+    local xmlFile = type(args) == "table" and args.xmlFile or nil
+    if factor == 1 or xmlFile == nil then
         return
     end
 
-    for _, unloadingSpot in ipairs(robot.unloadingSpots or {}) do
-        local capacity = tonumber(unloadingSpot.capacity)
+    for _, spotKey in xmlFile:iterator(FEEDING_ROBOT_SPOT_PATH) do
+        local capacity = tonumber(xmlFile:getInt(spotKey .. "#capacity"))
         if capacity ~= nil and capacity > 0 then
-            unloadingSpot.capacity = math.max(math.ceil(capacity * factor - 0.000001), 1)
-            recreateFillVolume(
-                unloadingSpot.fillVolume,
-                unloadingSpot.capacity,
-                unloadingSpot.fillLevel,
-                unloadingSpot.fillTypeIndex,
-                factor
-            )
+            xmlFile:setInt(spotKey .. "#capacity", math.max(math.ceil(capacity * factor - 0.000001), 1))
         end
     end
-
-    robot.adjustSuiteAFVPScaled = true
 end
 
-function AFVP.onFeedingRobotDelete(robot)
-    for _, unloadingSpot in ipairs(robot.unloadingSpots or {}) do
-        local fillVolume = unloadingSpot.fillVolume
-        if type(fillVolume) == "table" and fillVolume.volume ~= nil then
-            AFVP.visualFillVolumes[fillVolume.volume] = nil
-        end
-    end
-
-    local fillPlane = robot.fillPlane
-    if type(fillPlane) == "table" and fillPlane.volume ~= nil then
-        AFVP.visualFillVolumes[fillPlane.volume] = nil
-    end
-
-    updateFillPlaneHook()
-end
-
-if
-    PlaceableHusbandryFeedingRobot ~= nil
-    and PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded ~= nil
-    and AFVP.feedingRobotHookInstalled ~= true
-then
+if FeedingRobot ~= nil and FeedingRobot.onI3DFileLoaded ~= nil and AFVP.feedingRobotHookInstalled ~= true then
     AFVP.feedingRobotHookInstalled = true
-    PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded =
-        Utils.appendedFunction(PlaceableHusbandryFeedingRobot.onFeedingRobotLoaded, AFVP.onFeedingRobotLoaded)
-end
-
-if FeedingRobot ~= nil and FeedingRobot.delete ~= nil and AFVP.feedingRobotDeleteHookInstalled ~= true then
-    AFVP.feedingRobotDeleteHookInstalled = true
-    FeedingRobot.delete = Utils.prependedFunction(FeedingRobot.delete, AFVP.onFeedingRobotDelete)
+    FeedingRobot.onI3DFileLoaded = Utils.prependedFunction(FeedingRobot.onI3DFileLoaded, AFVP.scaleFeedingRobotXML)
 end
