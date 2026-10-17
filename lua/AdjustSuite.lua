@@ -759,6 +759,8 @@ end
 local GUIDE_LINE_HEIGHT_OFFSET = 0.05
 local GUIDE_LINE_SEGMENT_LENGTH = 1
 local GUIDE_LINE_MAX_SEGMENTS = 100
+local GUIDE_LINE_STROKE_SPACING = 0.05
+local GUIDE_LINE_MAX_STROKES = 21
 local guideLineExtents = {}
 
 function Suite.getGuideLinesEnabled()
@@ -880,94 +882,41 @@ local function getGuideLinePoint(referenceNode, terrainNode, x, z)
     return worldX, worldY, worldZ
 end
 
+local function getGuideLineStrokeOffsets(thickness)
+    if thickness <= 0 then
+        return { 0 }
+    end
+
+    local strokes = math.min(math.floor(thickness / GUIDE_LINE_STROKE_SPACING + 0.5) + 1, GUIDE_LINE_MAX_STROKES)
+    strokes = math.max(strokes, 2)
+    local offsets = {}
+    for index = 0, strokes - 1 do
+        offsets[index + 1] = -thickness * 0.5 + thickness * index / (strokes - 1)
+    end
+    return offsets
+end
+
 local function drawGuideLine(referenceNode, terrainNode, x, startZ, endZ, guideLines)
     local r = guideLines.red / 255
     local g = guideLines.green / 255
     local b = guideLines.blue / 255
-    local halfThickness = guideLines.thickness * 0.5
+    local offsets = getGuideLineStrokeOffsets(guideLines.thickness)
+    local sideX, _, sideZ = localDirectionToWorld(referenceNode, 1, 0, 0)
     local segments =
         math.max(1, math.min(GUIDE_LINE_MAX_SEGMENTS, math.ceil((endZ - startZ) / GUIDE_LINE_SEGMENT_LENGTH)))
     local step = (endZ - startZ) / segments
-    local lastLeftX, lastLeftY, lastLeftZ, lastRightX, lastRightY, lastRightZ
+    local lastX, lastY, lastZ
 
     for index = 0, segments do
-        local z = startZ + step * index
-        local leftX, leftY, leftZ = getGuideLinePoint(referenceNode, terrainNode, x - halfThickness, z)
-
-        if halfThickness > 0 then
-            local rightX, rightY, rightZ = getGuideLinePoint(referenceNode, terrainNode, x + halfThickness, z)
-            if index > 0 then
-                drawDebugTriangle(
-                    lastLeftX,
-                    lastLeftY,
-                    lastLeftZ,
-                    leftX,
-                    leftY,
-                    leftZ,
-                    rightX,
-                    rightY,
-                    rightZ,
-                    r,
-                    g,
-                    b,
-                    1,
-                    false
-                )
-                drawDebugTriangle(
-                    lastLeftX,
-                    lastLeftY,
-                    lastLeftZ,
-                    rightX,
-                    rightY,
-                    rightZ,
-                    leftX,
-                    leftY,
-                    leftZ,
-                    r,
-                    g,
-                    b,
-                    1,
-                    false
-                )
-                drawDebugTriangle(
-                    lastLeftX,
-                    lastLeftY,
-                    lastLeftZ,
-                    rightX,
-                    rightY,
-                    rightZ,
-                    lastRightX,
-                    lastRightY,
-                    lastRightZ,
-                    r,
-                    g,
-                    b,
-                    1,
-                    false
-                )
-                drawDebugTriangle(
-                    lastLeftX,
-                    lastLeftY,
-                    lastLeftZ,
-                    lastRightX,
-                    lastRightY,
-                    lastRightZ,
-                    rightX,
-                    rightY,
-                    rightZ,
-                    r,
-                    g,
-                    b,
-                    1,
-                    false
-                )
+        local pointX, pointY, pointZ = getGuideLinePoint(referenceNode, terrainNode, x, startZ + step * index)
+        if index > 0 then
+            for _, offset in ipairs(offsets) do
+                local dx = sideX * offset
+                local dz = sideZ * offset
+                drawDebugLine(lastX + dx, lastY, lastZ + dz, r, g, b, pointX + dx, pointY, pointZ + dz, r, g, b, false)
             end
-            lastRightX, lastRightY, lastRightZ = rightX, rightY, rightZ
-        elseif index > 0 then
-            drawDebugLine(lastLeftX, lastLeftY, lastLeftZ, r, g, b, leftX, leftY, leftZ, r, g, b, false)
         end
-
-        lastLeftX, lastLeftY, lastLeftZ = leftX, leftY, leftZ
+        lastX, lastY, lastZ = pointX, pointY, pointZ
     end
 end
 
