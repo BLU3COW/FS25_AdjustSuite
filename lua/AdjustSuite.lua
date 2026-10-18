@@ -173,12 +173,14 @@ local GUIDE_LINE_DEFAULTS = {
     red = 0,
     green = 182,
     blue = 255,
-    thickness = 0,
+    thickness = 0.01,
     length = 5,
+    offset = 0,
 }
 local GUIDE_LINE_MAX_THICKNESS = 1
 local GUIDE_LINE_MIN_LENGTH = 1
 local GUIDE_LINE_MAX_LENGTH = 200
+local GUIDE_LINE_MAX_OFFSET = 50
 local GUIDE_LINE_SETTING_ATTRIBUTES = {
     { field = "enabled", attribute = "module", kind = "bool" },
     { field = "red", attribute = "red", kind = "int" },
@@ -186,6 +188,7 @@ local GUIDE_LINE_SETTING_ATTRIBUTES = {
     { field = "blue", attribute = "blue", kind = "int" },
     { field = "thickness", attribute = "thickness", kind = "float" },
     { field = "length", attribute = "length", kind = "float" },
+    { field = "offset", attribute = "offset", kind = "float" },
 }
 
 local function clampSettingNumber(value, minValue, maxValue, defaultValue)
@@ -213,6 +216,12 @@ local function normalizeGuideLines(source)
             GUIDE_LINE_MIN_LENGTH,
             GUIDE_LINE_MAX_LENGTH,
             GUIDE_LINE_DEFAULTS.length
+        ),
+        offset = clampSettingNumber(
+            source.offset,
+            -GUIDE_LINE_MAX_OFFSET,
+            GUIDE_LINE_MAX_OFFSET,
+            GUIDE_LINE_DEFAULTS.offset
         ),
     }
 end
@@ -942,8 +951,8 @@ local function drawGuideLinesForVehicle(rootVehicle)
     end
 
     local guideLines = Suite.guideLines
-    local startZ = guideLineExtents.minZ
-    local endZ = guideLineExtents.maxZ + guideLines.length
+    local startZ = guideLineExtents.minZ + guideLines.offset
+    local endZ = guideLineExtents.maxZ + guideLines.length + guideLines.offset
 
     drawGuideLine(referenceNode, terrainNode, guideLineExtents.minX, startZ, endZ, guideLines)
     drawGuideLine(referenceNode, terrainNode, guideLineExtents.maxX, startZ, endZ, guideLines)
@@ -1643,13 +1652,14 @@ local function writeSettingsTemplate(
     guideLines = normalizeGuideLines(guideLines)
     file:write(
         string.format(
-            '        <guideLines module="%s" red="%d" green="%d" blue="%d" thickness="%s" length="%s"/>\n',
+            '        <guideLines module="%s" red="%d" green="%d" blue="%d" thickness="%s" length="%s" offset="%s"/>\n',
             boolToString(guideLines.enabled),
             guideLines.red,
             guideLines.green,
             guideLines.blue,
             formatSettingNumber(guideLines.thickness),
-            formatSettingNumber(guideLines.length)
+            formatSettingNumber(guideLines.length),
+            formatSettingNumber(guideLines.offset)
         )
     )
     file:write("    </settings>\n")
@@ -1942,6 +1952,7 @@ function AdjustSuiteSettingsEvent:readStream(streamId, connection)
     local guideLineBlue = streamReadUInt8(streamId)
     local guideLineThickness = streamReadFloat32(streamId)
     local guideLineLength = streamReadFloat32(streamId)
+    local guideLineOffset = streamReadFloat32(streamId)
     self.guideLines = normalizeGuideLines({
         enabled = guideLinesEnabled,
         red = guideLineRed,
@@ -1949,6 +1960,7 @@ function AdjustSuiteSettingsEvent:readStream(streamId, connection)
         blue = guideLineBlue,
         thickness = guideLineThickness,
         length = guideLineLength,
+        offset = guideLineOffset,
     })
 
     for _, moduleId in ipairs(Suite.moduleIds) do
@@ -1976,6 +1988,7 @@ function AdjustSuiteSettingsEvent:writeStream(streamId, _connection)
     streamWriteUInt8(streamId, guideLines.blue)
     streamWriteFloat32(streamId, guideLines.thickness)
     streamWriteFloat32(streamId, guideLines.length)
+    streamWriteFloat32(streamId, guideLines.offset)
 
     for _, moduleId in ipairs(Suite.moduleIds) do
         local settings = self.settingsByModule[moduleId]
