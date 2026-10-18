@@ -13,7 +13,7 @@ With AdjustSuite, you can reduce the need for multiple separate mods when your g
 
 By default, the REAL and UNREAL ranges are enabled. If you want more freedom, you can unlock wider adjustment ranges in modSettings and tailor the mod even more precisely to your personal playstyle. However, always keep the game's logical and physical limits in mind, as values that are too extreme can affect handling, tool functionality or game balance.
 
-Select the desired adjustments directly in the vehicle and attachment shop or in construction mode before purchase. The settings file is created in modSettings after the first game start and controls modules, adjustment ranges, help menu entries, price scaling and external capacity. Restart the game after changing this file. In multiplayer, the host or dedicated server settings apply to every player.
+Select the desired adjustments directly in the vehicle and attachment shop or in construction mode before purchase. The settings file is created in modSettings after the first game start and controls modules, adjustment ranges, help menu entries, price scaling, external capacity, the silo network, production storage and the guide lines. Restart the game after changing this file. In multiplayer, the host or dedicated server settings apply to every player.
 
 AdjustSuite is compatible with Courseplay, AutoDrive, and Precision Farming. It also includes an optional setting for AdjustStorageCapacity and similar mods that let you change a vehicle's storage or tank capacity at runtime, so AdjustSuite doesn't overwrite those changes.
 
@@ -60,6 +60,7 @@ Changelog 1.0.0.5:
 - With respect="true", values that another mod stores per vehicle now survive a workshop reconfiguration, a vehicle reset and a reload. AdjustStorageCapacity, for example, lost a vehicle's capacity and discharge rate as soon as it was reconfigured, because the game deletes the old vehicle only after the new one has taken over its ID.
 - ADR-P now also scales the loading point of VariableBunker.
 - Fixed the storages of a feeding robot that AFV-P enlarges: their heaps were already full at the original amount, and in multiplayer other players saw wrong fill levels above roughly 131,000 litres of silage or 65,000 litres of straw, hay and mineral feed. AFV-P now sets the larger capacity before the robot is built, so the game sizes heaps and network data for it. Eggs, wool and goat milk leave a building on pallets and have no storage of their own, so AFV-P does not change them.
+- ACA-P is no longer offered for barns whose only reason for it was a feeding robot. On the robot it never changed anything, the amount of mixture follows the food consumption of the animals, which AFE-P adjusts. Barns already bought with an ACA-P stage lose that stage when the savegame is loaded, without any noticeable change; their purchase price and sale value stay the same.
 
 Changelog 1.0.0.4:
 - Tested with Farming Simulator 25 Patch 1.24.
@@ -88,7 +89,7 @@ Mit AdjustSuite kannst du die Anzahl zusätzlicher Einzelmods reduzieren, wenn e
 
 Standardmäßig sind die Bereiche REAL und UNREAL aktiviert. Wenn du mehr Freiheit bei den Einstellungen wünschst, kannst du in modSettings größere Anpassungsbereiche freischalten und den Mod noch genauer auf deinen persönlichen Spielstil abstimmen. Beachte dabei jedoch immer die logischen und physikalischen Grenzen des Spiels, da zu extreme Werte das Fahrverhalten, die Funktion einzelner Geräte oder die Spielbalance beeinflussen können.
 
-Wähle die gewünschten Anpassungen vor dem Kauf direkt im Fahrzeug- und Anbaugeräteshop oder im Baumodus. Die Einstellungsdatei wird nach dem ersten Spielstart in modSettings erstellt und steuert Module, Anpassungsbereiche, Hilfemenü-Einträge, Preisskalierung und externe Kapazität. Starte das Spiel nach Änderungen an dieser Datei neu. Im Multiplayer gelten für alle Spieler die Einstellungen des Hosts beziehungsweise Dedicated Servers.
+Wähle die gewünschten Anpassungen vor dem Kauf direkt im Fahrzeug- und Anbaugeräteshop oder im Baumodus. Die Einstellungsdatei wird nach dem ersten Spielstart in modSettings erstellt und steuert Module, Anpassungsbereiche, Hilfemenü-Einträge, Preisskalierung, externe Kapazität, das Silo-Netz, die Produktionslager und die Hilfslinien. Starte das Spiel nach Änderungen an dieser Datei neu. Im Multiplayer gelten für alle Spieler die Einstellungen des Hosts beziehungsweise Dedicated Servers.
 
 AdjustSuite ist kompatibel mit Courseplay, AutoDrive und Precision Farming. Zusätzlich gibt es eine optionale Einstellung für AdjustStorageCapacity und ähnliche Mods, mit denen sich die Lager- oder Tankkapazität eines Fahrzeugs zur Laufzeit ändern lässt, damit AdjustSuite diese Änderungen nicht überschreibt.
 
@@ -135,6 +136,7 @@ Changelog 1.0.0.5:
 - Mit respect="true" bleiben Werte, die ein anderer Mod je Fahrzeug speichert, jetzt auch nach einem Werkstatt-Umbau, dem Zurücksetzen eines Fahrzeugs und einem Neuladen erhalten. AdjustStorageCapacity verlor zum Beispiel Kapazität und Entladerate eines Fahrzeugs, sobald es umgebaut wurde, weil das Spiel das alte Fahrzeug erst löscht, nachdem das neue dessen ID übernommen hat.
 - ADR-P skaliert jetzt auch die Ladestelle von VariableBunker.
 - Behoben bei den Lagern eines Fütterungsroboters, die AFV-P vergrößert: Ihre Haufen waren schon bei der Originalmenge voll, und im Mehrspielermodus sahen andere Spieler oberhalb von etwa 131.000 Litern Silage bzw. 65.000 Litern Stroh, Heu und Mineralfutter falsche Füllstände. AFV-P setzt die größere Kapazität jetzt, bevor der Roboter aufgebaut wird, sodass das Spiel Haufen und Netzwerkdaten dafür auslegt. Eier, Wolle und Ziegenmilch verlassen ein Gebäude auf Paletten und haben kein eigenes Lager, AFV-P ändert sie deshalb nicht.
+- ACA-P wird für Ställe, bei denen nur ein Futterroboter der Grund dafür war, nicht mehr angeboten. Am Roboter hat es nie etwas verändert, die Menge der Mischung richtet sich nach dem Futterverbrauch der Tiere, den AFE-P anpasst. Bereits mit einer ACA-P-Stufe gekaufte Ställe verlieren diese Stufe beim Laden des Spielstands, ohne dass sich spürbar etwas ändert; Kaufpreis und Verkaufswert bleiben gleich.
 
 Changelog 1.0.0.4:
 - Getestet mit Farming Simulator 25 Patch 1.24.
@@ -163,7 +165,7 @@ Avec AdjustSuite, tu peux réduire le besoin de plusieurs mods séparés lorsque
 
 Par défaut, les niveaux REAL et UNREAL sont activés. Si tu veux plus de liberté, tu peux débloquer des plages d'ajustement plus larges dans modSettings et adapter le mod encore plus précisément à ton style de jeu. Garde toutefois toujours à l'esprit les limites logiques et physiques du jeu, car des valeurs trop extrêmes peuvent influencer la conduite, le fonctionnement de certains outils ou l'équilibre du jeu.
 
-Sélectionne les réglages souhaités avant l'achat dans le magasin des véhicules et outils ou dans le mode Construction. Le fichier de réglages est créé dans modSettings après le premier démarrage du jeu et contrôle les modules, les plages de réglage, les entrées du menu d'aide, l'échelle des prix et la capacité externe. Redémarre le jeu après avoir modifié ce fichier. En multijoueur, les paramètres de l'hôte ou du serveur dédié s'appliquent à tous les joueurs.
+Sélectionne les réglages souhaités avant l'achat dans le magasin des véhicules et outils ou dans le mode Construction. Le fichier de réglages est créé dans modSettings après le premier démarrage du jeu et contrôle les modules, les plages de réglage, les entrées du menu d'aide, l'échelle des prix, la capacité externe, le réseau de silos, le stockage des productions et les lignes de guidage. Redémarre le jeu après avoir modifié ce fichier. En multijoueur, les paramètres de l'hôte ou du serveur dédié s'appliquent à tous les joueurs.
 
 AdjustSuite est compatible avec Courseplay, AutoDrive et Precision Farming. Un réglage optionnel est également disponible pour AdjustStorageCapacity et les mods similaires qui permettent de modifier la capacité de stockage ou de réservoir d'un véhicule en cours de partie, afin qu'AdjustSuite ne les écrase pas.
 
@@ -210,6 +212,7 @@ Changelog 1.0.0.5 :
 - Avec respect="true", les valeurs qu'un autre mod enregistre pour chaque véhicule sont désormais conservées après une modification à l'atelier, une réinitialisation du véhicule et un rechargement. AdjustStorageCapacity perdait par exemple la capacité et le débit de déchargement d'un véhicule dès qu'il était modifié, car le jeu ne supprime l'ancien véhicule qu'après que le nouveau a repris son identifiant.
 - ADR-P met désormais aussi à l'échelle le point de chargement de VariableBunker.
 - Correction des stockages d'un robot d'alimentation agrandis par AFV-P : leurs tas étaient déjà pleins à la quantité d'origine, et en multijoueur les autres joueurs voyaient des niveaux de remplissage erronés au-delà d'environ 131 000 litres d'ensilage ou 65 000 litres de paille, de foin et d'aliment minéral. AFV-P définit désormais la capacité plus grande avant la construction du robot, afin que le jeu dimensionne les tas et les données réseau en conséquence. Les œufs, la laine et le lait de chèvre quittent un bâtiment sur des palettes et n'ont pas de stockage propre, AFV-P ne les modifie donc pas.
+- ACA-P n'est plus proposé pour les étables dont la seule raison était un robot d'alimentation. Sur le robot, il n'a jamais rien changé : la quantité de mélange suit la consommation de nourriture des animaux, que règle AFE-P. Les étables déjà achetées avec un niveau ACA-P perdent ce niveau au chargement de la partie, sans changement perceptible ; leur prix d'achat et leur valeur de revente restent identiques.
 
 Changelog 1.0.0.4 :
 - Testé avec Farming Simulator 25 Patch 1.24.
